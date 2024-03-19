@@ -1,7 +1,7 @@
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
-
+late Size mq;
 void main() {
   runApp(const MyApp());
 }
