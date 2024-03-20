@@ -1,3 +1,4 @@
+import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                      MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
                     );
                   },
                   child: Text(
@@ -149,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return const SignUpScreen();
+                      return const EmailLoginScreen();
                     }));
                   },
                   child: Text(

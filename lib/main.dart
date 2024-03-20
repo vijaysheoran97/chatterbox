@@ -1,3 +1,4 @@
+import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           theme: themeManager.currentTheme,
           darkTheme: darkTheme,
           title: 'Q',
-          home: SettingPage(),
+          home: LoginScreen(),
         );
       },
     );
