@@ -1,7 +1,12 @@
-import 'package:chatterbox/chatter_box/auth/login_screen.dart';
+
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
-import 'package:chatterbox/chatter_box/service/auth_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/callList.dart';
+import '../tabs/chatlist.dart';
+import '../tabs/statusList.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,7 +19,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+
+      length: 3,
+
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
@@ -32,10 +39,9 @@ class _HomePageState extends State<HomePage> {
           title: Text('ChatterBox'),
           actions: [
             IconButton(
-              onPressed: ()async {
-await AuthService().logOut();
-Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
-              },
+
+              onPressed: () {},
+
               icon: Icon(Icons.search_outlined),
             )
           ],
@@ -48,6 +54,11 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
                 text: 'Chats',
               ),
               Tab(
+
+                text: 'Status',
+              ),
+              Tab(
+
                 text: 'Calls',
               ),
             ],
@@ -55,17 +66,15 @@ Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
         ),
         body: TabBarView(
           children: [
-            // Add your content for the "Chats" tab here
-            Center(
-              child: Text('Chats Tab Content'),
-            ),
-            // Add your content for the "Calls" tab here
-            Center(
-              child: Text('Calls Tab Content'),
-            ),
+
+            ChatListPage(),
+            StatusListPage(),
+            CallListPage(),
           ],
         ),
-        drawer: DrawerPage(), // Use CustomDrawer widget here
+        drawer: DrawerPage(), 
+        // Use CustomDrawer widget here
+
       ),
     );
   }

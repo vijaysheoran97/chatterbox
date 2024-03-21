@@ -23,15 +23,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
+
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -66,4 +62,24 @@ class DefaultFirebaseOptions {
     projectId: 'chatterbox-891ae',
     storageBucket: 'chatterbox-891ae.appspot.com',
   );
+
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyBCzgGjXZVht5m70mcsxq0pCxGQCufcJfY',
+    appId: '1:70178944183:ios:943a4d5bcab409528cc932',
+    messagingSenderId: '70178944183',
+    projectId: 'chatterbox-891ae',
+    storageBucket: 'chatterbox-891ae.appspot.com',
+    iosBundleId: 'com.example.chatterbox',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBCzgGjXZVht5m70mcsxq0pCxGQCufcJfY',
+    appId: '1:70178944183:ios:3aa4262ebff095cc8cc932',
+    messagingSenderId: '70178944183',
+    projectId: 'chatterbox-891ae',
+    storageBucket: 'chatterbox-891ae.appspot.com',
+    iosBundleId: 'com.example.chatterbox.RunnerTests',
+  );
+
 }
