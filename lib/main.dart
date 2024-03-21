@@ -1,4 +1,5 @@
 
+import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:chatterbox/firebase_options.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           darkTheme: darkTheme,
           title: 'Q',
 
-          home: HomePage(),
+          home: LoginScreen(),
 
         );
       },

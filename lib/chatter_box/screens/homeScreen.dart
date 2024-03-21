@@ -1,4 +1,6 @@
+import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,7 +32,10 @@ class _HomePageState extends State<HomePage> {
           title: Text('ChatterBox'),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: ()async {
+await AuthService().logOut();
+Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+              },
               icon: Icon(Icons.search_outlined),
             )
           ],

@@ -1,9 +1,13 @@
 import 'package:chatterbox/chatter_box/auth/sign_up-screen.dart';
 import 'package:chatterbox/chatter_box/dialogbox/forget_password_dialog.dart';
+import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
+import 'package:chatterbox/model/user_info_model.dart';
+import 'package:chatterbox/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EmailLoginScreen extends StatefulWidget {
   const EmailLoginScreen({super.key});
@@ -16,10 +20,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    TextEditingController userPassword = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
     bool _isPasswordVisible = false;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -40,7 +48,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 5.0),
                 width: 400,
                 child: TextFormField(
-                  controller: TextEditingController(),
+                  controller: emailController,
                   cursorColor: AppColorConstant.appText2Color,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -59,7 +67,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 5.0),
                 width: 400,
                 child: TextFormField(
-                  controller: userPassword,
+                  controller: passwordController,
                   cursorColor: AppColorConstant.appText2Color,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: !_isPasswordVisible,
@@ -118,12 +126,23 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SettingPage()),
-                      );
-                    },
+                    onPressed: ()async {
+                      if (formKey.currentState!.validate()) {
+                        UserModel userModel = UserModel(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+
+                        UserProvider provider =
+                        Provider.of<UserProvider>(context, listen: false);
+
+                        await provider.login(userModel);
+                        if (!provider.isError) {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                            return const HomePage();
+                          }));
+                        }
+                      }                    },
                     child: Text(
                       AppStringConstant.login1,
                       style: const TextStyle(fontSize: 20, color: AppColorConstant.buttonText),
@@ -159,4 +178,20 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
       ),
     );
   }
+  // Future login() async {
+  //   UserModel userModel = UserModel(
+  //     email: emailController.text,
+  //     password: passwordController.text,
+  //   );
+  //
+  //   UserProvider provider =
+  //   Provider.of<UserProvider>(context, listen: false);
+  //
+  //   await provider.login(userModel);
+  //   if (!provider.isError) {
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+  //       return const HomePage();
+  //     }));
+  //   }
+  // }
 }
