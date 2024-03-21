@@ -160,9 +160,12 @@
 
 import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
 import 'package:chatterbox/chatter_box/auth/sign_up-screen.dart';
+import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -196,7 +199,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () async{
+                  await AuthService().gmailLogin();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()));
+                  Fluttertoast.showToast(msg: 'saved');
+                },
                 icon: Image.asset('assets/images/search1.png'),
                 label: Text(
                   AppStringConstant.signUpWithGoogle,
@@ -213,7 +222,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+
+                },
                 icon: Image.asset('assets/images/apple3.png'),
                 label: Text(
                   AppStringConstant.signUpWithGoogle,
