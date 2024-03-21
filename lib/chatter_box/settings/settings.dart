@@ -28,6 +28,7 @@ class SettingPage extends StatelessWidget {
         child: Column(
           children: [
             ListTile(
+
               leading: const Icon(Icons.person_outline),
               title: const Text('Your account'),
               subtitle: Text('See information about your account and learn about your account deactivation options.',
@@ -67,11 +68,14 @@ class SettingPage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.language_outlined),
               title: const Text('Languages'),
+
               subtitle: Text("Choose languages as per your preferences and compatibility",
                 style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
             ),
 
+
             const SizedBox(height: 10,),
+
             ListTile(
               onTap: () {
                 Navigator.push(
@@ -79,16 +83,20 @@ class SettingPage extends StatelessWidget {
                   CupertinoPageRoute(builder: (context) => const ThemesPage()),
                 );
               },
+
               leading: const Icon(Icons.light_mode_outlined),
               title: const Text('Themes'),
+
               subtitle: Text("Choose themes as per your preferences and compatibility",
                 style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
             ),
+
 
             const SizedBox(height: 10,),
             ListTile(
               leading: const Icon(Icons.help_outline_outlined),
               title: const Text('Help centre'),
+
               subtitle: Text("Get answer to some common questions related to Q and get 24*7 assistance.",
                 style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
             )

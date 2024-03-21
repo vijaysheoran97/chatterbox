@@ -1,3 +1,4 @@
+
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../tabs/callList.dart';
 import '../tabs/chatlist.dart';
 import '../tabs/statusList.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,7 +19,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+
       length: 3,
+
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
@@ -35,7 +39,9 @@ class _HomePageState extends State<HomePage> {
           title: Text('ChatterBox'),
           actions: [
             IconButton(
+
               onPressed: () {},
+
               icon: Icon(Icons.search_outlined),
             )
           ],
@@ -48,9 +54,11 @@ class _HomePageState extends State<HomePage> {
                 text: 'Chats',
               ),
               Tab(
+
                 text: 'Status',
               ),
               Tab(
+
                 text: 'Calls',
               ),
             ],
@@ -58,6 +66,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: TabBarView(
           children: [
+
             ChatListPage(),
             StatusListPage(),
             CallListPage(),
@@ -65,6 +74,7 @@ class _HomePageState extends State<HomePage> {
         ),
         drawer: DrawerPage(), 
         // Use CustomDrawer widget here
+
       ),
     );
   }

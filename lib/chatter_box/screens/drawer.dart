@@ -1,3 +1,4 @@
+
 import 'package:chatterbox/chatter_box/screens/newMessage.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
 
+
 class DrawerPage extends StatefulWidget {
   const DrawerPage({Key? key}) : super(key: key);
 
@@ -17,6 +19,7 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
+
   late String _selectedMode = 'light'; // Initialize with default value
   bool _showThemeOptions = false; // Added to control whether to show theme options
 
@@ -36,6 +39,7 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   Widget build(BuildContext context) {
     final themeManager = Provider.of<ThemeManager>(context, listen: false);
+
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.background,
       child: ListView(
@@ -64,11 +68,13 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: Icon(Icons.person_outline_rounded),
             title: Text('Contacts'),
             onTap: () {
+
               Navigator.pop(context);
               Navigator.push(
                 context,
                 CupertinoPageRoute(builder: (context) => const NewMessagePage(title: Text('Contacts'),)),
               );
+
             },
           ),
           ListTile(
@@ -96,6 +102,7 @@ class _DrawerPageState extends State<DrawerPage> {
               // Add onTap handler for Item 2
             },
           ),
+
           Divider(
             color: Colors.grey.shade300,
           ),
@@ -141,6 +148,7 @@ class _DrawerPageState extends State<DrawerPage> {
               activeColor: Colors.blue,
             ),
           ],
+
           ListTile(
             leading: Icon(Icons.help_outline_outlined),
             title: Text('Help center'),
@@ -149,8 +157,10 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
+
             leading: Icon(Icons.logout_outlined, color: Colors.red,),
             title: Text('Logout', style: TextStyle(color: Colors.red),),
+
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -161,6 +171,7 @@ class _DrawerPageState extends State<DrawerPage> {
     );
   }
 
+
   Future<void> _saveThemePreference(String theme) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -169,4 +180,5 @@ class _DrawerPageState extends State<DrawerPage> {
       print('Error saving theme preference: $e');
     }
   }
+
 }

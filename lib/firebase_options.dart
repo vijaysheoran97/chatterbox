@@ -23,9 +23,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
+
         return ios;
       case TargetPlatform.macOS:
         return macos;
+
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -61,6 +63,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'chatterbox-891ae.appspot.com',
   );
 
+
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBCzgGjXZVht5m70mcsxq0pCxGQCufcJfY',
     appId: '1:70178944183:ios:943a4d5bcab409528cc932',
@@ -78,4 +81,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'chatterbox-891ae.appspot.com',
     iosBundleId: 'com.example.chatterbox.RunnerTests',
   );
+
 }
