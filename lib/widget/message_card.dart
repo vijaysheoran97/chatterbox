@@ -208,7 +208,6 @@ class _MessageCardState extends State<MessageCard> {
                       })
                   :
 
-                  //save option
                   _OptionItem(
                       icon: const Icon(Icons.download_rounded,
                           color: Colors.blue, size: 26),
@@ -231,7 +230,6 @@ class _MessageCardState extends State<MessageCard> {
                         }
                       }),
 
-              //separator or divider
               if (isMe)
                 Divider(
                   color: Colors.black54,
@@ -251,7 +249,7 @@ class _MessageCardState extends State<MessageCard> {
                       _showMessageUpdateDialog();
                     }),
 
-              //delete option
+
               if (isMe)
                 _OptionItem(
                     icon: const Icon(Icons.delete_forever,
