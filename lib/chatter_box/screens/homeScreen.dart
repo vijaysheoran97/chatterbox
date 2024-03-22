@@ -33,7 +33,6 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: ()async {
-await AuthService().logOut();
 Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
               },
               icon: Icon(Icons.search_outlined),
