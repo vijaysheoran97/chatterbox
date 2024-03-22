@@ -227,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 icon: Image.asset('assets/images/apple3.png'),
                 label: Text(
-                  AppStringConstant.signUpWithGoogle,
+                  AppStringConstant.signUpWithApple,
                   style: const TextStyle(color: AppColorConstant.buttonText),
                 ),
               ),
@@ -249,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 icon: Image.asset('assets/images/gmail2.png'),
                 label: Text(
-                  AppStringConstant.signUpWithGoogle,
+                  AppStringConstant.signUpWithEmail,
                   style: const TextStyle(color: AppColorConstant.buttonText),
                 ),
               ),
