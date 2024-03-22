@@ -1,12 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/main.dart';
+import 'package:chatterbox/models/chat_user_model.dart';
+import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
-import '../../main.dart';
-
-import '../../models/chat_user_model.dart';
-import '../../screens/view_profile_screen.dart';
 
 class ProfileDialog extends StatelessWidget {
   const ProfileDialog({super.key, required this.user});

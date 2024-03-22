@@ -7,8 +7,6 @@ import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/chat_user_model.dart';
 
-
-//view profile screen -- to view profile of user
 class ViewProfileScreen extends StatefulWidget {
   final ChatUser user;
 
@@ -22,7 +20,6 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // for hiding keyboard
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         //app bar
