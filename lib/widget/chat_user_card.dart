@@ -30,7 +30,6 @@ class _ChatUserCardState extends State<ChatUserCard> {
         horizontal: mq.width * .04,
         vertical: 4,
       ),
-      // color: Colors.blue.shade100,
       elevation: 0.5,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
