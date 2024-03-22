@@ -1,4 +1,5 @@
 import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:chatterbox/model/user_info_model.dart';
@@ -14,21 +15,23 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+
+  TextEditingController userPassword = TextEditingController();
+  bool _isPasswordVisible = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
+
   Widget build(BuildContext context) {
 
-    TextEditingController userPassword = TextEditingController();
-    bool _isPasswordVisible = false;
-    TextEditingController emailController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmPasswordController = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView( // Wrap your Column with SingleChildScrollView
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -41,86 +44,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 80),
-              // Email TextField
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                width: 400,
-                child: TextFormField(
-                  controller: emailController,
-                  cursorColor: AppColorConstant.appText2Color,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: AppStringConstant.email,
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    contentPadding: const EdgeInsets.only(top: 2, left: 8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+
+              TextFormField(
+                controller: emailController,
+                cursorColor: AppColorConstant.appText2Color,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: AppStringConstant.email,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  contentPadding: const EdgeInsets.only(top: 2, left: 8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               // Password TextField
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                width: 400,
-                child: TextFormField(
-                  controller: passwordController,
-                  cursorColor: AppColorConstant.appText2Color,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: AppStringConstant.password,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
+              TextFormField(
+                controller: passwordController,
+                cursorColor: AppColorConstant.appText2Color,
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: !_isPasswordVisible,
+                decoration: InputDecoration(
+                  hintText: AppStringConstant.password,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
-                    contentPadding: const EdgeInsets.only(top: 2, left: 8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
+                  contentPadding: const EdgeInsets.only(top: 2, left: 8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
-          
+
               const SizedBox(height: 24),
               // Password TextField
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                width: 400,
-                child: TextFormField(
-                  controller: confirmPasswordController,
-                  cursorColor: AppColorConstant.appText2Color,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: !_isPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: AppStringConstant.confirmPassword,
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
+              TextFormField(
+                controller: confirmPasswordController,
+                cursorColor: AppColorConstant.appText2Color,
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: !_isPasswordVisible,
+                decoration: InputDecoration(
+                  hintText: AppStringConstant.confirmPassword,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                     ),
-                    contentPadding: const EdgeInsets.only(top: 2, left: 8),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
+                  contentPadding: const EdgeInsets.only(top: 2, left: 8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),
-          
+
               const SizedBox(height: 24),
               // Login Button
               Padding(
@@ -129,16 +120,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all(AppColorConstant.buttonColor),
+                      backgroundColor: MaterialStateProperty.all(AppColorConstant.buttonColor),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
-                    onPressed: ()async {
-                      if (formKey.currentState!.validate()) {
+                    onPressed: () async {
                         UserModel userModel = UserModel(
                           email: emailController.text,
                           password: passwordController.text,
@@ -147,19 +136,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Provider.of<UserProvider>(context, listen: false);
                         await provider.createAccount(userModel);
                         if (!provider.isError) {
-                          Navigator.pop(context);
+                          // Navigate to login screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EmailLoginScreen(),
+                            ),
+                          );
                         }
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const EmailLoginScreen()),
-                      );
+
                     },
                     child: Text(
                       AppStringConstant.signUp11,
                       style: const TextStyle(fontSize: 20, color: AppColorConstant.buttonText),
                     ),
                   ),
+
                 ),
               ),
               const SizedBox(height: 40),
@@ -190,4 +182,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
 }
