@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
   AuthProvider userProvider =AuthProvider();
   userProvider.loadLoginStatus();
     return MaterialApp(
-      title: 'Public Chats',
+      title: 'Chatter Box',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
