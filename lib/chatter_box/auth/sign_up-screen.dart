@@ -1,9 +1,9 @@
 import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
+import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:chatterbox/model/user_info_model.dart';
-import 'package:chatterbox/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -132,8 +132,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           email: emailController.text,
                           password: passwordController.text,
                         );
-                        UserProvider provider =
-                        Provider.of<UserProvider>(context, listen: false);
+                        AuthProvider provider =
+                        Provider.of<AuthProvider>(context, listen: false);
                         await provider.createAccount(userModel);
                         if (!provider.isError) {
                           // Navigate to login screen

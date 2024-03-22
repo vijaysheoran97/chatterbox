@@ -1,17 +1,9 @@
-
-import 'package:chatterbox/chatter_box/auth/email_login_screen.dart';
-import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
+import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:chatterbox/chatter_box/utils/storage_halper.dart';
 import 'package:chatterbox/firebase_options.dart';
-import 'package:chatterbox/provider/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
-import 'package:chatterbox/chatter_box/settings/themes.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +22,7 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeManager(selectedTheme),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 
@@ -43,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(AuthService());
     Get.put(StorageHalper());
-    UserProvider userProvider =UserProvider();
+    AuthProvider userProvider =AuthProvider();
     userProvider.loadLoginStatus();
     return Consumer<ThemeManager>(
       builder: (context, themeManager, child) {
@@ -53,7 +45,7 @@ class MyApp extends StatelessWidget {
           darkTheme: darkTheme,
           title: 'Q',
 
-          home: LoginScreen(),
+          home: const LoginScreen(),
 
         );
       },

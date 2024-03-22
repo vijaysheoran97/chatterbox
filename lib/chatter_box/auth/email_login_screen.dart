@@ -1,10 +1,11 @@
 import 'package:chatterbox/chatter_box/auth/sign_up-screen.dart';
 import 'package:chatterbox/chatter_box/dialogbox/forget_password_dialog.dart';
+import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:chatterbox/model/user_info_model.dart';
-import 'package:chatterbox/provider/auth_provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -125,8 +126,8 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
                           password: passwordController.text,
                         );
 
-                        UserProvider provider =
-                        Provider.of<UserProvider>(context, listen: false);
+                        AuthProvider provider =
+                        Provider.of<AuthProvider>(context, listen: false);
 
                         await provider.login(userModel);
                         if (!provider.isError) {
