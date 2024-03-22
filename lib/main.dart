@@ -22,46 +22,32 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chatter_box/theme/dark_theme.dart';
 import 'chatter_box/theme/theme_manager.dart';
-
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? selectedTheme = prefs.getString('selectedTheme');
-
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeManager(selectedTheme),
-      child: const MyApp(),
-    ),
-  );
-
-
 import 'firebase_options.dart';
 
 late Size mq;
 
 
+
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  // SystemChrome.setPreferredOrientations(
-  //         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-  //     .then((value) {
-  //   _initializeFirebase();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? selectedTheme = prefs.getString('selectedTheme');
   var result = await FlutterNotificationChannel.registerNotificationChannel(
       description: 'For Showing Message Notification',
       id: 'chats',
       importance: NotificationImportance.IMPORTANCE_HIGH,
       name: 'Chats');
   log('\nNotification Channel Result: $result');
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeManager(selectedTheme),
+    child: const MyApp(),
+  ),);
   // }
   // );
+
 }
 
 class MyApp extends StatelessWidget {
