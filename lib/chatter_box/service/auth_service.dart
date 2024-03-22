@@ -7,13 +7,13 @@ class AuthService {
   final auth = FirebaseAuth.instance;
   final googleLogin = GoogleSignIn();
 
-  gmailLogin() async {
+  Future gmailLogin() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
-      await googleLogin.signIn();
+          await googleLogin.signIn();
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+            await googleSignInAccount.authentication;
         final AuthCredential authCre = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken,
@@ -25,35 +25,30 @@ class AuthService {
     }
   }
 
-  logOut() async {
+  Future logOut() async {
     await auth.signOut();
     await googleLogin.signOut();
   }
 
-
-
-
-
-
-  Future createAccount(UserModel userModel)async{
-  final  credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  email:userModel .email,
-  password:userModel. password,
-  );
-  if (kDebugMode) {
-  print('Account created');
+  Future createAccount(UserModel userModel) async {
+    final credential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: userModel.email,
+      password: userModel.password,
+    );
+    if (kDebugMode) {
+      print('Account created');
+    }
   }
 
+  Future login(UserModel userModel) async {
+    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: userModel.email,
+      password: userModel.password,
+    );
+  }
 
+  Future logout() async {
+    await FirebaseAuth.instance.signOut();
   }
-  Future login(UserModel userModel)async{
-  final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-  email: userModel.email,
-  password: userModel.password,
-  );
-
-  }
-  Future logout()async{
-  await FirebaseAuth.instance.signOut();
-  }
-  }
+}
