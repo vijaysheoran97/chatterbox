@@ -2,44 +2,63 @@ import 'dart:developer';
 
 import 'package:chatterbox/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
+import 'package:chatterbox/chatter_box/utils/storage_halper.dart';
+import 'package:chatterbox/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:chatterbox/chatter_box/auth/login_screen.dart';
+import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
+import 'package:chatterbox/chatter_box/settings/settings.dart';
+import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 
-
-
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'chatter_box/theme/dark_theme.dart';
+import 'chatter_box/theme/theme_manager.dart';
 import 'firebase_options.dart';
 
 late Size mq;
 
 
+
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  // SystemChrome.setPreferredOrientations(
-  //         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
-  //     .then((value) {
-  //   _initializeFirebase();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? selectedTheme = prefs.getString('selectedTheme');
   var result = await FlutterNotificationChannel.registerNotificationChannel(
       description: 'For Showing Message Notification',
       id: 'chats',
       importance: NotificationImportance.IMPORTANCE_HIGH,
       name: 'Chats');
   log('\nNotification Channel Result: $result');
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeManager(selectedTheme),
+    child: const MyApp(),
+  ),);
   // }
   // );
+
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+  Get.put(AuthService());
+  Get.put(StorageHalper());
+  AuthProvider userProvider =AuthProvider();
+  userProvider.loadLoginStatus();
     return MaterialApp(
       title: 'Public Chats',
       debugShowCheckedModeBanner: false,
