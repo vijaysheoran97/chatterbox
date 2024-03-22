@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "70178944183",
+    "firebase_url": "https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "chatterbox-891ae",
     "storage_bucket": "chatterbox-891ae.appspot.com"
   },
@@ -12,7 +13,28 @@
           "package_name": "com.example.chatterbox"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "70178944183-0vmstuth8k6tlt7sn0t3cl91890f0eh3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chatterbox",
+            "certificate_hash": "4c3910f0fbbeb36cd7b52cba3bd1d558052ed3d6"
+          }
+        },
+        {
+          "client_id": "70178944183-j368bjqkklq3o0hd8herlv9rl1e7ml7n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chatterbox",
+            "certificate_hash": "f536994e8424a2e23f0bb43bef10297a8b339984"
+          }
+        },
+        {
+          "client_id": "70178944183-1m9cj8di16oqlo9hlmldfeung5iuen7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBAO4CzJp6-FKxkPENSBh7lwVwL_jboZsU"
@@ -20,7 +42,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "70178944183-1m9cj8di16oqlo9hlmldfeung5iuen7q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "70178944183-4232pldalpnqa49hkfmp74hcetaoenf7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.chatterbox"
+              }
+            }
+          ]
         }
       }
     }

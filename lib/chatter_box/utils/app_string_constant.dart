@@ -11,10 +11,8 @@ class AppStringConstant {
   static String donotHaveAnAccount ="Don't have an account? ";
   static String alreadyHaveAnAccount ="Already have an account? ";
   static String login =' Login';
-  static String signUpWithGoogle = 'Sign in with google';
-
-
-
-
+  static String signUpWithGoogle = 'Sign in with Google';
+  static String signUpWithApple = 'Sign in with Apple';
+  static String signUpWithEmail = 'Sign in with Email';
 
 }

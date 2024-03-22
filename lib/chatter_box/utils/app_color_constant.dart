@@ -9,7 +9,4 @@ class AppColorConstant {
   static const buttonColor = Color(0xFF39dbc8);
   static const forgetpassword = Color(0xFFf50c18);
 
-
-
-
 }
