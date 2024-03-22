@@ -1,15 +1,15 @@
 class ChatUser {
-  ChatUser({
-    required this.image,
-    required this.about,
-    required this.name,
-    required this.createdAt,
-    required this.isOnline,
-    required this.id,
-    required this.lastActive,
-    required this.email,
-    required this.pushToken,
-  });
+  ChatUser(
+      {required this.image,
+      required this.about,
+      required this.name,
+      required this.createdAt,
+      required this.isOnline,
+      required this.id,
+      required this.lastActive,
+      required this.email,
+      required this.pushToken});
+
   late String image;
   late String about;
   late String name;

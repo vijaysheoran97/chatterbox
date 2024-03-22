@@ -5,7 +5,7 @@ class Message {
     required this.read,
     required this.type,
     required this.fromId,
-    required this.sent,
+    required this.sent
   });
 
   late final String toId;
