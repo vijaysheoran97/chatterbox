@@ -30,40 +30,40 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.2.0
 
     # For handling firebase authentication
   firebase_auth: ^4.1.3
 
-    # For handling google sign in
-  google_sign_in: ^5.4.2
-
-    # For accessing cloud firestore database
+  # For accessing cloud firestore database
   cloud_firestore: ^4.1.0
 
-    # For showing network images
+  # For showing network images
   cached_network_image: ^3.2.3
 
-    # For picking images
+  # For picking images
   image_picker: ^0.8.6
 
-    # For accessing Firebase Storage (for uploading files)
+  # For accessing Firebase Storage (for uploading files)
   firebase_storage: ^11.0.6
 
-    # For showing Emojis
+  # For showing Emojis
   emoji_picker_flutter: ^1.5.1
 
-    # For accessing firebase messaging (Push Notification)
+  # For accessing firebase messaging (Push Notification)
   firebase_messaging: ^14.2.0
 
-    # For calling RestAPIs
+  # For calling RestAPIs
   http: ^0.13.5
 
-    # For creating notification channel
+  # For creating notification channel
   flutter_notification_channel: ^2.0.0
 
-    # For storing images into gallery
+  # For storing images into gallery
   gallery_saver: ^2.3.2
+  google_sign_in: ^6.2.1
+  pinput: ^4.0.0
+  fluttertoast: ^8.2.4
+  get: ^4.6.6
 
 
 
@@ -72,6 +72,12 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  provider: ^6.1.2
+  shared_preferences: ^2.2.2
+  firebase_core: ^2.27.0
+
+
+
 
 dev_dependencies:
   flutter_test:
@@ -97,7 +103,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+
+
     - assets/images/
+
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
