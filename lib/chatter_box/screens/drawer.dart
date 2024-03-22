@@ -1,5 +1,6 @@
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/newMessage.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -166,6 +167,7 @@ class _DrawerPageState extends State<DrawerPage> {
               style: TextStyle(color: Colors.red),
             ),
             onTap: () async {
+             await AuthService().logOut();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => LoginScreen()));
             },
