@@ -136,7 +136,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Provider.of<AuthProvider>(context, listen: false);
                         await provider.createAccount(userModel);
                         if (!provider.isError) {
-                          // Navigate to login screen
                           Navigator.push(
                             context,
                             MaterialPageRoute(
