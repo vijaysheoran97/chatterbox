@@ -85,5 +85,8 @@ class DefaultFirebaseOptions {
     androidClientId: '70178944183-0vmstuth8k6tlt7sn0t3cl91890f0eh3.apps.googleusercontent.com',
     iosClientId: '70178944183-qsseijtrho23g1k6luo2q9tot9er0335.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatterbox.RunnerTests',
+    databaseURL: 'https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app',
+    androidClientId: '70178944183-0vmstuth8k6tlt7sn0t3cl91890f0eh3.apps.googleusercontent.com',
+    iosClientId: '70178944183-qsseijtrho23g1k6luo2q9tot9er0335.apps.googleusercontent.com',
   );
 }

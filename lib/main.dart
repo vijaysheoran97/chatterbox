@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:chatterbox/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
@@ -6,25 +10,40 @@ import 'package:chatterbox/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
+
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chatter_box/theme/dark_theme.dart';
 import 'chatter_box/theme/theme_manager.dart';
+import 'firebase_options.dart';
+
+late Size mq;
 
 
-Future<void> main() async {
+
+void main()async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? selectedTheme = prefs.getString('selectedTheme');
-
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeManager(selectedTheme),
-      child: const MyApp(),
-    ),
-  );
+  var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+  log('\nNotification Channel Result: $result');
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeManager(selectedTheme),
+    child: const MyApp(),
+  ),);
+  // }
+  // );
 
 }
 
@@ -33,6 +52,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     Get.put(AuthService());
     Get.put(StorageHalper());
     AuthProvider userProvider =AuthProvider();
@@ -52,12 +72,19 @@ class MyApp extends StatelessWidget {
 
             title: 'Q',
 
-            home:  LoginScreen(),
+            home:  SplashScreen(),
 
 
           );
         },
       ),
+
     );
   }
+}
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }

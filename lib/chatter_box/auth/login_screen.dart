@@ -204,7 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const HomePage()));
-                  Fluttertoast.showToast(msg: 'saved');
                 },
                 icon: Image.asset('assets/images/search1.png'),
                 label: Text(

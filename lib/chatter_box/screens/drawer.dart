@@ -1,5 +1,6 @@
 
 import 'package:chatterbox/chatter_box/screens/newMessage.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -158,6 +159,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           ListTile(
 
+
             leading: Icon(Icons.logout_outlined, color: Colors.red,),
             title: Text('Logout', style: TextStyle(color: Colors.red),),
 
@@ -165,6 +167,7 @@ class _DrawerPageState extends State<DrawerPage> {
               AuthService().logOut();
               Navigator.pop(context);
               // Add onTap handler for Item 2
+
             },
           ),
           // Add more ListTiles for additional drawer items
