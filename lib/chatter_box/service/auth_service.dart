@@ -10,10 +10,10 @@ class AuthService {
   Future gmailLogin() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
-          await googleLogin.signIn();
+      await googleLogin.signIn();
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
+        await googleSignInAccount.authentication;
         final AuthCredential authCre = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken,
@@ -32,7 +32,7 @@ class AuthService {
 
   Future createAccount(UserModel userModel) async {
     final credential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: userModel.email,
       password: userModel.password,
     );
@@ -51,4 +51,5 @@ class AuthService {
   Future logout() async {
     await FirebaseAuth.instance.signOut();
   }
+
 }

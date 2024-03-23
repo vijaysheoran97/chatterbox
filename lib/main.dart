@@ -5,9 +5,6 @@ import 'package:chatterbox/chatter_box/utils/storage_halper.dart';
 import 'package:chatterbox/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
-import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
-import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -40,20 +37,27 @@ class MyApp extends StatelessWidget {
     Get.put(StorageHalper());
     AuthProvider userProvider =AuthProvider();
     userProvider.loadLoginStatus();
-    return Consumer<ThemeManager>(
-      builder: (context, themeManager, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: themeManager.currentTheme,
-          darkTheme: darkTheme,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context){
+          return userProvider;
+        })
+      ],
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: themeManager.currentTheme,
+            darkTheme: darkTheme,
 
-          title: 'Q',
+            title: 'Q',
 
-          home: const LoginScreen(),
+            home:  LoginScreen(),
 
 
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

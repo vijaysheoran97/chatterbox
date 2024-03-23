@@ -23,11 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-
         return ios;
       case TargetPlatform.macOS:
         return macos;
-
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -51,6 +49,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '70178944183',
     projectId: 'chatterbox-891ae',
     authDomain: 'chatterbox-891ae.firebaseapp.com',
+    databaseURL: 'https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chatterbox-891ae.appspot.com',
     measurementId: 'G-1KT3TDV67F',
   );
@@ -60,16 +59,19 @@ class DefaultFirebaseOptions {
     appId: '1:70178944183:android:f88496075c1906308cc932',
     messagingSenderId: '70178944183',
     projectId: 'chatterbox-891ae',
+    databaseURL: 'https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chatterbox-891ae.appspot.com',
   );
-
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBCzgGjXZVht5m70mcsxq0pCxGQCufcJfY',
     appId: '1:70178944183:ios:943a4d5bcab409528cc932',
     messagingSenderId: '70178944183',
     projectId: 'chatterbox-891ae',
+    databaseURL: 'https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chatterbox-891ae.appspot.com',
+    androidClientId: '70178944183-0vmstuth8k6tlt7sn0t3cl91890f0eh3.apps.googleusercontent.com',
+    iosClientId: '70178944183-4232pldalpnqa49hkfmp74hcetaoenf7.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatterbox',
   );
 
@@ -78,8 +80,10 @@ class DefaultFirebaseOptions {
     appId: '1:70178944183:ios:3aa4262ebff095cc8cc932',
     messagingSenderId: '70178944183',
     projectId: 'chatterbox-891ae',
+    databaseURL: 'https://chatterbox-891ae-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chatterbox-891ae.appspot.com',
+    androidClientId: '70178944183-0vmstuth8k6tlt7sn0t3cl91890f0eh3.apps.googleusercontent.com',
+    iosClientId: '70178944183-qsseijtrho23g1k6luo2q9tot9er0335.apps.googleusercontent.com',
     iosBundleId: 'com.example.chatterbox.RunnerTests',
   );
-
 }
