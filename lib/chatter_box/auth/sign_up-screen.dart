@@ -242,11 +242,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
                             return null;
                           },
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
+
                           decoration: InputDecoration(
                             hintText: AppStringConstant.email,
                             prefixIcon: const Icon(Icons.email_outlined),
@@ -269,11 +265,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
                             return null;
                           },
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
+
                           decoration: InputDecoration(
                             hintText: AppStringConstant.password,
                             prefixIcon: const Icon(Icons.lock_outline),
@@ -310,11 +302,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
                             return null;
                           },
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                          ),
+
                           decoration: InputDecoration(
                             hintText: AppStringConstant.confirmPassword,
                             prefixIcon: const Icon(Icons.lock_outline),

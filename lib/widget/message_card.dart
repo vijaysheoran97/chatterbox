@@ -186,7 +186,8 @@ class _MessageCardState extends State<MessageCard> {
                 margin: EdgeInsets.symmetric(
                     vertical: mq.height * .015, horizontal: mq.width * .4),
                 decoration: BoxDecoration(
-                    color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(8)),
               ),
 
               widget.message.type == Type.text
@@ -374,7 +375,7 @@ class _OptionItem extends StatelessWidget {
                 child: Text('    $name',
                     style: const TextStyle(
                         fontSize: 15,
-                        color: Colors.black54,
+                       // color: Colors.black54,
                         letterSpacing: 0.5)))
           ]),
         ));

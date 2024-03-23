@@ -31,7 +31,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               const Text(
                 'Joined On: ',
                 style: TextStyle(
-                    color: Colors.black87,
+                    //color: Colors.black87,
                     fontWeight: FontWeight.w500,
                     fontSize: 15),
               ),
@@ -40,7 +40,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       context: context,
                       time: widget.user.createdAt,
                       showYear: true),
-                  style: const TextStyle(color: Colors.black54, fontSize: 15)),
+                  style: const TextStyle(
+                     // color: Colors.black54,
+                      fontSize: 15)),
             ],
           ),
 
@@ -72,7 +74,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                   // user email label
                   Text(widget.user.email,
                       style:
-                      const TextStyle(color: Colors.black87, fontSize: 16)),
+                      const TextStyle(
+                          //color: Colors.black87,
+                    fontSize: 16)),
 
                   // for adding some space
                   SizedBox(height: mq.height * .02),
@@ -84,13 +88,14 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       const Text(
                         'About: ',
                         style: TextStyle(
-                            color: Colors.black87,
+                           // color: Colors.black87,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
                       Text(widget.user.about,
                           style: const TextStyle(
-                              color: Colors.black54, fontSize: 15)),
+                             // color: Colors.black54,
+                              fontSize: 15)),
                     ],
                   ),
                 ],

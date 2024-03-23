@@ -50,7 +50,7 @@ class _ChatScreenState extends State<ChatScreen> {
               automaticallyImplyLeading: false,
               flexibleSpace: _appBar(),
             ),
-            backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+          //  backgroundColor: const Color.fromARGB(255, 234, 248, 255),
             //body
             body: Column(
               children: [
@@ -149,7 +149,9 @@ class _ChatScreenState extends State<ChatScreen> {
               //back button
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                icon: const Icon(Icons.arrow_back,
+                   // color: Colors.black54
+                ),
               ),
 
               //user profile picture
@@ -178,7 +180,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     list.isNotEmpty ? list[0].name : widget.user.name,
                     style: const TextStyle(
                         fontSize: 16,
-                        color: Colors.black87,
+                       // color: Colors.black87,
                         fontWeight: FontWeight.w500),
                   ),
 
@@ -196,7 +198,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         : MyDateUtil.getLastActiveTime(
                             context: context,
                             lastActive: widget.user.lastActive),
-                    style: const TextStyle(fontSize: 13, color: Colors.black54),
+                    style: const TextStyle(fontSize: 13,
+                       // color: Colors.black54
+                    ),
                   ),
                 ],
               ),

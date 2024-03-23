@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -163,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: mq.height * .02,
                   ),
                   ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
+                    style: ElevatedButton.styleFrom(backgroundColor:  AppColorConstant.buttonColor,
                       shape: const StadiumBorder(),
                       minimumSize: Size(mq.width * .5, mq.height * .07),
                     ),
@@ -235,7 +236,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
                       Navigator.pop(context);
                     },
-                    child: Image.asset("assets/images/gallery.png"),
+                    child: Image.asset("assets/images/image-.png"),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -255,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
                       Navigator.pop(context);
                     },
-                    child: Image.asset("assets/images/camera.png"),
+                    child: Image.asset("assets/images/circle.png"),
                   ),
                 ],
               )

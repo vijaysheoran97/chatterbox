@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return const HomeScreen();
+              return const LoginScreen();
             },
           ),
         );
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Welcome to Public chat'),
+        title: const Text('Welcome to ChatterBox'),
       ),
       body: Stack(
         children: [
@@ -63,15 +63,15 @@ class _SplashScreenState extends State<SplashScreen> {
               top: mq.height * .15,
               right: mq.width * .25,
               width: mq.width * .5,
-              child: Image.asset('assets/images/icon.png')),
+              child: Image.asset('assets/images/chat1.png')),
           Positioned(
             bottom: mq.height * .15,
             width: mq.width,
             child: const Text(
-              "Made in INDIA with ❤️ ",
+              "MADE IN INDIA  ",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 20, color: Colors.black54, letterSpacing: .5),
+                  fontSize: 20,  letterSpacing: .5),
             ),
           ),
         ],
