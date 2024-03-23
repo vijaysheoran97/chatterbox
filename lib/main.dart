@@ -9,9 +9,6 @@ import 'package:chatterbox/chatter_box/utils/storage_halper.dart';
 import 'package:chatterbox/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
-import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
-import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
@@ -55,29 +52,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  Get.put(AuthService());
-  Get.put(StorageHalper());
-  AuthProvider userProvider =AuthProvider();
-  userProvider.loadLoginStatus();
-    return MaterialApp(
-      title: 'Chatter Box',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 1,
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            fontSize: 19,
-          ),
-          backgroundColor: Colors.white,
-        ),
+
+    Get.put(AuthService());
+    Get.put(StorageHalper());
+    AuthProvider userProvider =AuthProvider();
+    userProvider.loadLoginStatus();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context){
+          return userProvider;
+        })
+      ],
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: themeManager.currentTheme,
+            darkTheme: darkTheme,
+
+            title: 'Q',
+
+            home:  SplashScreen(),
+
+
+          );
+        },
       ),
-      home: const SplashScreen(),
+
     );
   }
 }

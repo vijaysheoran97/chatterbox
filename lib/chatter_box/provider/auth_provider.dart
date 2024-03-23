@@ -20,7 +20,8 @@ class AuthProvider extends ChangeNotifier {
       await authService.createAccount(userModel);
       isLoading = false;
       notifyListeners();
-    } on FirebaseAuthException catch (e) {
+    }
+    on FirebaseAuthException catch (e) {
       isLoading = false;
       isError = true;
       notifyListeners();

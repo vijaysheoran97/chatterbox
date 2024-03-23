@@ -1,4 +1,4 @@
-import 'package:chatterbox/chatter_box/auth/login_screen.dart';
+
 import 'package:chatterbox/chatter_box/screens/newMessage.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/settings/settings.dart';
@@ -11,6 +11,7 @@ import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
 
+
 class DrawerPage extends StatefulWidget {
   const DrawerPage({Key? key}) : super(key: key);
 
@@ -19,9 +20,9 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
+
   late String _selectedMode = 'light'; // Initialize with default value
-  bool _showThemeOptions =
-      false; // Added to control whether to show theme options
+  bool _showThemeOptions = false; // Added to control whether to show theme options
 
   @override
   void initState() {
@@ -68,14 +69,13 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: Icon(Icons.person_outline_rounded),
             title: Text('Contacts'),
             onTap: () {
+
               Navigator.pop(context);
               Navigator.push(
                 context,
-                CupertinoPageRoute(
-                    builder: (context) => const NewMessagePage(
-                          title: Text('Contacts'),
-                        )),
+                CupertinoPageRoute(builder: (context) => const NewMessagePage(title: Text('Contacts'),)),
               );
+
             },
           ),
           ListTile(
@@ -158,18 +158,16 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-            leading: Icon(
-              Icons.logout_outlined,
-              color: Colors.red,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () async {
-             await AuthService().logOut();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+
+
+            leading: Icon(Icons.logout_outlined, color: Colors.red,),
+            title: Text('Logout', style: TextStyle(color: Colors.red),),
+
+            onTap: () {
+              AuthService().logOut();
+              Navigator.pop(context);
+              // Add onTap handler for Item 2
+
             },
           ),
           // Add more ListTiles for additional drawer items
@@ -177,6 +175,7 @@ class _DrawerPageState extends State<DrawerPage> {
       ),
     );
   }
+
 
   Future<void> _saveThemePreference(String theme) async {
     try {
@@ -186,4 +185,5 @@ class _DrawerPageState extends State<DrawerPage> {
       print('Error saving theme preference: $e');
     }
   }
+
 }
