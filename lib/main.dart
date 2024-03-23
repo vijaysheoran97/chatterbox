@@ -1,32 +1,20 @@
 import 'dart:developer';
-
 import 'package:chatterbox/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/utils/storage_halper.dart';
 import 'package:chatterbox/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:chatterbox/chatter_box/auth/login_screen.dart';
-import 'package:chatterbox/chatter_box/screens/homeScreen.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
-import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
-
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'chatter_box/theme/dark_theme.dart';
 import 'chatter_box/theme/theme_manager.dart';
-import 'firebase_options.dart';
 
 late Size mq;
-
-
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +48,7 @@ class MyApp extends StatelessWidget {
   AuthProvider userProvider =AuthProvider();
   userProvider.loadLoginStatus();
     return MaterialApp(
-      title: 'Public Chats',
+      title: 'Chatter Box',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(

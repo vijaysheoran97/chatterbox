@@ -17,7 +17,7 @@ import '../widget/message_card.dart';
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
 
-  const ChatScreen({super.key, required this.user});
+  const ChatScreen( {required this.user, Key? key}) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
