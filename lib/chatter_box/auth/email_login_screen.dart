@@ -369,7 +369,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
     }
         else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Login failed. Incorrect email or password.'),
             ),
           );
