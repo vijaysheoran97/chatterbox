@@ -58,54 +58,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
         },
         child: Scaffold(
-          appBar: AppBar(
-            leading: const Icon(Icons.home),
-            title: _isSearching
-                ? TextField(
-                    decoration: const InputDecoration(
-                        border: InputBorder.none, hintText: "Name,Email,..."),
-                    autofocus: true,
-                    style: const TextStyle(fontSize: 16, letterSpacing: 1),
-                    onChanged: (val) {
-                      _searchList.clear();
-                      for (var i in _list) {
-                        if (i.name.toLowerCase().contains(val.toLowerCase()) ||
-                            i.email.toLowerCase().contains(val.toLowerCase())) {
-                          _searchList.add(i);
-                        }
-                        setState(() {
-                          _searchList;
-                        });
-                      }
-                    },
-                  )
-                : Text('ChatterBox'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _isSearching = !_isSearching;
-                  });
-                },
-                icon: Icon(
-                  _isSearching ? Icons.clear_outlined : Icons.search,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProfileScreen(user: APIs.me),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.more_vert,
-                ),
-              ),
-            ],
-          ),
+          // appBar: AppBar(
+          //   leading: const Icon(Icons.home),
+          //   title: _isSearching
+          //       ? TextField(
+          //           decoration: const InputDecoration(
+          //               border: InputBorder.none, hintText: "Name,Email,..."),
+          //           autofocus: true,
+          //           style: const TextStyle(fontSize: 16, letterSpacing: 1),
+          //           onChanged: (val) {
+          //             _searchList.clear();
+          //             for (var i in _list) {
+          //               if (i.name.toLowerCase().contains(val.toLowerCase()) ||
+          //                   i.email.toLowerCase().contains(val.toLowerCase())) {
+          //                 _searchList.add(i);
+          //               }
+          //               setState(() {
+          //                 _searchList;
+          //               });
+          //             }
+          //           },
+          //         )
+          //       : Text('ChatterBox'),
+          //   actions: [
+          //     IconButton(
+          //       onPressed: () {
+          //         setState(() {
+          //           _isSearching = !_isSearching;
+          //         });
+          //       },
+          //       icon: Icon(
+          //         _isSearching ? Icons.clear_outlined : Icons.search,
+          //       ),
+          //     ),
+          //     IconButton(
+          //       onPressed: () {
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(
+          //             builder: (_) => ProfileScreen(user: APIs.me),
+          //           ),
+          //         );
+          //       },
+          //       icon: const Icon(
+          //         Icons.more_vert,
+          //       ),
+          //     ),
+          //   ],
+          // ),
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: FloatingActionButton(
