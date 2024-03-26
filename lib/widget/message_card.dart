@@ -48,9 +48,9 @@ class _MessageCardState extends State<MessageCard> {
             margin: EdgeInsets.symmetric(
                 horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-              color: Color.fromARGB(225, 221, 245, 255),
+              color: const Color.fromARGB(225, 221, 245, 255),
               border: Border.all(color: Colors.lightBlue),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
                 bottomRight: Radius.circular(30),
@@ -59,14 +59,14 @@ class _MessageCardState extends State<MessageCard> {
             child: widget.message.type == Type.text
                 ? Text(
                     widget.message.msg,
-                    style: TextStyle(fontSize: 15, color: Colors.black87),
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: CachedNetworkImage(
                       imageUrl: widget.message.msg,
-                      placeholder: (context, url) => Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
@@ -84,7 +84,7 @@ class _MessageCardState extends State<MessageCard> {
           child: Text(
             MyDateUtil.getFormattedTime(
                 context: context, time: widget.message.sent),
-            style: TextStyle(fontSize: 13, color: Colors.black54),
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
       ],
@@ -117,13 +117,13 @@ class _MessageCardState extends State<MessageCard> {
               color: Colors.red,
               size: 20,
             ),
-            SizedBox(
+            const SizedBox(
               width: 2,
             ),
             Text(
               MyDateUtil.getFormattedTime(
                   context: context, time: widget.message.sent),
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
         ),
@@ -135,9 +135,9 @@ class _MessageCardState extends State<MessageCard> {
             margin: EdgeInsets.symmetric(
                 horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-              color: Color.fromARGB(225, 218, 255, 176),
+              color: const Color.fromARGB(225, 218, 255, 176),
               border: Border.all(color: Colors.lightGreen),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
                 bottomLeft: Radius.circular(30),
@@ -146,14 +146,14 @@ class _MessageCardState extends State<MessageCard> {
             child: widget.message.type == Type.text
                 ? Text(
                     widget.message.msg,
-                    style: TextStyle(fontSize: 15, color: Colors.black87),
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: CachedNetworkImage(
                       imageUrl: widget.message.msg,
-                      placeholder: (context, url) => Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
@@ -216,7 +216,7 @@ class _MessageCardState extends State<MessageCard> {
                         try {
                           log('Image Url: ${widget.message.msg}');
                           await GallerySaver.saveImage(widget.message.msg,
-                              albumName: 'Public Chats')
+                              albumName: 'Chatter Box')
                               .then((success) {
                             //for hiding bottom sheet
                             Navigator.pop(context);
@@ -300,8 +300,8 @@ class _MessageCardState extends State<MessageCard> {
               borderRadius: BorderRadius.circular(20)),
 
           //title
-          title: Row(
-            children: const [
+          title: const Row(
+            children: [
               Icon(
                 Icons.message,
                 color: Colors.blue,
