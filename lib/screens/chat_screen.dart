@@ -204,8 +204,25 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+
+                    },
+                    icon: const Icon(Icons.videocam),
+                  ),
+                  IconButton(
+                    onPressed: () {
+
+                    },
+                    icon: const Icon(Icons.call),
+                  ),
+                ],
+              ),
             ],
           );
+
         },
       ),
     );
