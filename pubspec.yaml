@@ -30,35 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-    # For handling firebase authentication
   firebase_auth: ^4.1.3
-
-  # For accessing cloud firestore database
   cloud_firestore: ^4.1.0
-
-  # For showing network images
   cached_network_image: ^3.2.3
-
-  # For picking images
   image_picker: ^0.8.6
-
-  # For accessing Firebase Storage (for uploading files)
   firebase_storage: ^11.0.6
-
-  # For showing Emojis
   emoji_picker_flutter: ^1.5.1
-
-  # For accessing firebase messaging (Push Notification)
   firebase_messaging: ^14.2.0
-
-  # For calling RestAPIs
   http: ^0.13.5
-
-  # For creating notification channel
   flutter_notification_channel: ^2.0.0
-
-  # For storing images into gallery
   gallery_saver: ^2.3.2
   google_sign_in: ^6.2.1
   pinput: ^4.0.0
@@ -66,8 +46,19 @@ dependencies:
   get: ^4.6.6
 
 
-
-
+  page_route_animator: ^1.0.3
+  country_picker: ^2.0.23
+  flutter_riverpod: ^2.4.9
+  flutter_contacts: ^1.1.7+1
+  equatable: ^2.0.0
+  uuid: ^4.3.1
+  intl: ^0.19.0
+  video_player: ^2.8.1
+  permission_handler: ^11.1.0
+  path_provider: ^2.1.2
+  audioplayers: ^5.2.1
+  swipe_to: ^1.0.5
+  story_view: ^0.16.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

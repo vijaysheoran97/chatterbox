@@ -33,9 +33,6 @@ class APIs {
           "body": msg,
           "android_channel_id": "chats"
         },
-        // "data": {
-        //   "some_data": "User ID: ${me.id}",
-        // },
       };
 
       var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -62,7 +59,6 @@ class APIs {
     }
   }
 
-  // for getting firebase messaging token
   static Future<void> getFirebaseMessagingToken() async {
     await fMessaging.requestPermission();
 
@@ -89,7 +85,6 @@ class APIs {
     log('data: ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
-      //user exists
 
       log('user exists: ${data.docs.first.data()}');
 
@@ -102,7 +97,6 @@ class APIs {
 
       return true;
     } else {
-      //user doesn't exists
 
       return false;
     }
@@ -114,7 +108,6 @@ class APIs {
         me = ChatUser.fromJson(user.data()!);
         await getFirebaseMessagingToken();
 
-        //for setting user status to active
         APIs.updateActiveStatus(true);
         log('My Data: ${user.data()}');
       } else {
@@ -163,11 +156,11 @@ class APIs {
     final ref = storage.ref().child("profile_picture/${user.uid}.$ext");
     await ref
         .putFile(
-          file,
-          SettableMetadata(contentType: 'image/$ext'),
-        )
+      file,
+      SettableMetadata(contentType: 'image/$ext'),
+    )
         .then((p0) =>
-            {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
+    {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
     me.image = await ref.getDownloadURL();
     await firestore.collection('users').doc(user.uid).update({
       'image': me.image,

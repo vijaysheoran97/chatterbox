@@ -1,4 +1,8 @@
+import 'package:chatterbox/api/apis.dart';
+import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
+import 'package:chatterbox/screens/home_screen.dart';
+import 'package:chatterbox/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +16,16 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 class _HomePageState extends State<HomePage> {
+  late TextEditingController _searchController;
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(); // Initialize _searchController
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -26,30 +38,57 @@ class _HomePageState extends State<HomePage> {
             builder: (BuildContext context) {
               return IconButton(
                 onPressed: () {
-                  Scaffold.of(context)
-                      .openDrawer(); // Open drawer on button click
+                  Scaffold.of(context).openDrawer();
                 },
-                icon: Icon(Icons.menu_outlined),
+                icon: const Icon(Icons.menu_outlined),
               );
             },
           ),
-          title: Text('ChatterBox'),
+          title: _isSearching
+              ? TextField(
+            controller: _searchController,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: "Search...",
+            ),
+            onChanged: (query) {
+              // Handle search query
+              // Pass the query to HomeScreen for search functionality
+            },
+          )
+              : const Text('ChatterBox'),
           actions: [
             IconButton(
-              onPressed: () async {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => LoginScreen()));
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) {
+                    _searchController.clear();
+                  }
+                });
               },
-              icon: Icon(Icons.search_outlined),
-            )
+              icon: Icon(
+                _isSearching ? Icons.clear : Icons.search_outlined,
+              ),
+            ),
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (_) => ProfileScreen(user: APIs.me),
+            //       ),
+            //     );
+            //   },
+            //   icon: const Icon(
+            //     Icons.more_vert,
+            //   ),
+            // ),
           ],
-          bottom: TabBar(
+          bottom: const TabBar(
             isScrollable: false,
-            // make tabs non-scrollable
             labelPadding: EdgeInsets.zero,
-            // remove padding around labels
             indicatorSize: TabBarIndicatorSize.tab,
-            // set indicator size to full tab
             tabs: [
               Tab(
                 text: 'Chats',
@@ -63,15 +102,14 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            ChatListPage(),
+            HomeScreen(),
             StatusListPage(),
             CallListPage(),
           ],
         ),
-        drawer: DrawerPage(),
-        // Use CustomDrawer widget here
+        drawer: const DrawerPage(),
       ),
     );
   }

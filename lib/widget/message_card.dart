@@ -48,9 +48,9 @@ class _MessageCardState extends State<MessageCard> {
             margin: EdgeInsets.symmetric(
                 horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-              color: Color.fromARGB(225, 221, 245, 255),
+              color: const Color.fromARGB(225, 221, 245, 255),
               border: Border.all(color: Colors.lightBlue),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
                 bottomRight: Radius.circular(30),
@@ -58,25 +58,25 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-                    widget.message.msg,
-                    style: TextStyle(fontSize: 15, color: Colors.black87),
-                  )
+              widget.message.msg,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.message.msg,
-                      placeholder: (context, url) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.image,
-                        size: 70,
-                      ),
-                    ),
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: widget.message.msg,
+                placeholder: (context, url) => const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
                   ),
+                ),
+                errorWidget: (context, url, error) => const Icon(
+                  Icons.image,
+                  size: 70,
+                ),
+              ),
+            ),
           ),
         ),
         Padding(
@@ -84,7 +84,7 @@ class _MessageCardState extends State<MessageCard> {
           child: Text(
             MyDateUtil.getFormattedTime(
                 context: context, time: widget.message.sent),
-            style: TextStyle(fontSize: 13, color: Colors.black54),
+            style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
       ],
@@ -117,13 +117,13 @@ class _MessageCardState extends State<MessageCard> {
               color: Colors.red,
               size: 20,
             ),
-            SizedBox(
+            const SizedBox(
               width: 2,
             ),
             Text(
               MyDateUtil.getFormattedTime(
                   context: context, time: widget.message.sent),
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
         ),
@@ -135,9 +135,9 @@ class _MessageCardState extends State<MessageCard> {
             margin: EdgeInsets.symmetric(
                 horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
-              color: Color.fromARGB(225, 218, 255, 176),
+              color: const Color.fromARGB(225, 218, 255, 176),
               border: Border.all(color: Colors.lightGreen),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
                 bottomLeft: Radius.circular(30),
@@ -145,25 +145,25 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-                    widget.message.msg,
-                    style: TextStyle(fontSize: 15, color: Colors.black87),
-                  )
+              widget.message.msg,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: widget.message.msg,
-                      placeholder: (context, url) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => const Icon(
-                        Icons.image,
-                        size: 70,
-                      ),
-                    ),
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: widget.message.msg,
+                placeholder: (context, url) => const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
                   ),
+                ),
+                errorWidget: (context, url, error) => const Icon(
+                  Icons.image,
+                  size: 70,
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -186,49 +186,50 @@ class _MessageCardState extends State<MessageCard> {
                 margin: EdgeInsets.symmetric(
                     vertical: mq.height * .015, horizontal: mq.width * .4),
                 decoration: BoxDecoration(
-                    color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(8)),
               ),
 
               widget.message.type == Type.text
                   ?
-                  //copy option
-                  _OptionItem(
-                      icon: const Icon(Icons.copy_all_rounded,
-                          color: Colors.blue, size: 26),
-                      name: 'Copy Text',
-                      onTap: () async {
-                        await Clipboard.setData(
-                                ClipboardData(text: widget.message.msg))
-                            .then((value) {
-                          //for hiding bottom sheet
-                          Navigator.pop(context);
+              //copy option
+              _OptionItem(
+                  icon: const Icon(Icons.copy_all_rounded,
+                      color: Colors.blue, size: 26),
+                  name: 'Copy Text',
+                  onTap: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: widget.message.msg))
+                        .then((value) {
+                      //for hiding bottom sheet
+                      Navigator.pop(context);
 
-                          Dialogs.showSnackbar(context, 'Text Copied!');
-                        });
-                      })
+                      Dialogs.showSnackbar(context, 'Text Copied!');
+                    });
+                  })
                   :
 
-                  _OptionItem(
-                      icon: const Icon(Icons.download_rounded,
-                          color: Colors.blue, size: 26),
-                      name: 'Save Image',
-                      onTap: () async {
-                        try {
-                          log('Image Url: ${widget.message.msg}');
-                          await GallerySaver.saveImage(widget.message.msg,
-                              albumName: 'Public Chats')
-                              .then((success) {
-                            //for hiding bottom sheet
-                            Navigator.pop(context);
-                            if (success != null && success) {
-                              Dialogs.showSnackbar(
-                                  context, 'Image Successfully Saved!');
-                            }
-                          });
-                        } catch (e) {
-                          log('ErrorWhileSavingImg: $e');
+              _OptionItem(
+                  icon: const Icon(Icons.download_rounded,
+                      color: Colors.blue, size: 26),
+                  name: 'Save Image',
+                  onTap: () async {
+                    try {
+                      log('Image Url: ${widget.message.msg}');
+                      await GallerySaver.saveImage(widget.message.msg,
+                          albumName: 'Chatter Box')
+                          .then((success) {
+                        //for hiding bottom sheet
+                        Navigator.pop(context);
+                        if (success != null && success) {
+                          Dialogs.showSnackbar(
+                              context, 'Image Successfully Saved!');
                         }
-                      }),
+                      });
+                    } catch (e) {
+                      log('ErrorWhileSavingImg: $e');
+                    }
+                  }),
 
               if (isMe)
                 Divider(
@@ -272,8 +273,8 @@ class _MessageCardState extends State<MessageCard> {
               //sent time
               _OptionItem(
                   icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-          name:
-          'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+                  name:
+                  'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
 
               //read time
@@ -300,8 +301,8 @@ class _MessageCardState extends State<MessageCard> {
               borderRadius: BorderRadius.circular(20)),
 
           //title
-          title: Row(
-            children: const [
+          title: const Row(
+            children: [
               Icon(
                 Icons.message,
                 color: Colors.blue,
@@ -374,7 +375,7 @@ class _OptionItem extends StatelessWidget {
                 child: Text('    $name',
                     style: const TextStyle(
                         fontSize: 15,
-                        color: Colors.black54,
+                        // color: Colors.black54,
                         letterSpacing: 0.5)))
           ]),
         ));

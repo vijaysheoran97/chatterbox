@@ -12,9 +12,12 @@ import 'package:flutter_notification_channel/notification_importance.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'chatter_box/theme/dark_theme.dart';
 import 'chatter_box/theme/theme_manager.dart';
 
 late Size mq;
+
+
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,29 +46,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  Get.put(AuthService());
-  Get.put(StorageHalper());
-  AuthProvider userProvider =AuthProvider();
-  userProvider.loadLoginStatus();
-    return MaterialApp(
-      title: 'Chatter Box',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          elevation: 1,
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            fontSize: 19,
-          ),
-          backgroundColor: Colors.white,
-        ),
+
+    Get.put(AuthService());
+    Get.put(StorageHalper());
+    AuthProvider userProvider =AuthProvider();
+    userProvider.loadLoginStatus();
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context){
+          return userProvider;
+        })
+      ],
+      child: Consumer<ThemeManager>(
+        builder: (context, themeManager, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: themeManager.currentTheme,
+            darkTheme: darkTheme,
+
+            title: 'Q',
+
+            home:  SplashScreen(),
+
+
+          );
+        },
       ),
-      home: const SplashScreen(),
+
     );
   }
 }
