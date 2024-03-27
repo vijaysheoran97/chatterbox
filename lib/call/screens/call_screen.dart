@@ -1,4 +1,4 @@
-import 'package:chatterbox/models/call_models.dart';
+import 'package:chatterbox/models/call_model.dart';
 import 'package:chatterbox/widget/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +25,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   void initState() {
     super.initState();
 
-    /* client = AgoraClient(
+   /* client = AgoraClient(
       agoraConnectionData: AgoraConnectionData(
         appId: AgoraConfig.appId,
         channelName: widget.channelId,

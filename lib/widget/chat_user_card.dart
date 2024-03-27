@@ -75,30 +75,30 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 subtitle: Text(
                   _message != null
                       ? _message!.type == Type.image
-                      ? 'image'
-                      : _message!.msg
+                          ? 'image'
+                          : _message!.msg
                       : widget.user.about,
                   maxLines: 1,
                 ),
                 trailing: _message == null
                     ? null
                     : _message!.read.isEmpty &&
-                    _message!.fromId != APIs.user.uid
-                    ? Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent.shade400,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                )
-                    : Text(
-                  MyDateUtil.getLastMessageTime(
-                      context: context, time: _message!.sent),
-                  style: const TextStyle(
-                    // color: Colors.black54,
-                  ),
-                ),
+                            _message!.fromId != APIs.user.uid
+                        ? Container(
+                            width: 15,
+                            height: 15,
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent.shade400,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          )
+                        : Text(
+                            MyDateUtil.getLastMessageTime(
+                                context: context, time: _message!.sent),
+                            style: const TextStyle(
+                             // color: Colors.black54,
+                            ),
+                          ),
               );
             },
           )),

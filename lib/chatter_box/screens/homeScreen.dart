@@ -1,4 +1,3 @@
-import 'package:chatterbox/api/apis.dart';
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
 import 'package:chatterbox/screens/home_screen.dart';
@@ -71,19 +70,19 @@ class _HomePageState extends State<HomePage> {
                 _isSearching ? Icons.clear : Icons.search_outlined,
               ),
             ),
-            // IconButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (_) => ProfileScreen(user: APIs.me),
-            //       ),
-            //     );
-            //   },
-            //   icon: const Icon(
-            //     Icons.more_vert,
-            //   ),
-            // ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProfileScreen(user: APIs.me),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.more_vert,
+              ),
+            ),
           ],
           bottom: const TabBar(
             isScrollable: false,
@@ -114,3 +113,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+

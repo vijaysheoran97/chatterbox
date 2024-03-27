@@ -1,9 +1,9 @@
-import 'package:chatterbox/call/controllers/call_controllers.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
-import 'package:chatterbox/models/call_models.dart';
+import 'package:chatterbox/models/call_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../controllers/call_controller.dart';
 import 'call_screen.dart';
 
 class CallPickupScreen extends ConsumerWidget {
@@ -21,7 +21,7 @@ class CallPickupScreen extends ConsumerWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data!.data() != null) {
           Call call =
-          Call.fromMap(snapshot.data!.data() as Map<String, dynamic>);
+              Call.fromMap(snapshot.data!.data() as Map<String, dynamic>);
 
           if (!call.hasDialled) {
             return Scaffold(
@@ -52,9 +52,9 @@ class CallPickupScreen extends ConsumerWidget {
                           .textTheme
                           .headlineLarge
                           ?.copyWith(
-                          fontSize: 28.0,
-                          fontWeight: FontWeight.w900,
-                          color: AppColorConstant.black.withOpacity(0.7)),
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.w900,
+                              color: AppColorConstant.black.withOpacity(0.7)),
                     ),
                     const SizedBox(height: 64.0),
                     Row(

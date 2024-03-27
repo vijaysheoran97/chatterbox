@@ -58,25 +58,25 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
+                    widget.message.msg,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  )
                 : ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: CachedNetworkImage(
-                imageUrl: widget.message.msg,
-                placeholder: (context, url) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
+                    borderRadius: BorderRadius.circular(15),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.message.msg,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.image,
+                        size: 70,
+                      ),
+                    ),
                   ),
-                ),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.image,
-                  size: 70,
-                ),
-              ),
-            ),
           ),
         ),
         Padding(
@@ -145,25 +145,25 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
+                    widget.message.msg,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  )
                 : ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: CachedNetworkImage(
-                imageUrl: widget.message.msg,
-                placeholder: (context, url) => const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
+                    borderRadius: BorderRadius.circular(15),
+                    child: CachedNetworkImage(
+                      imageUrl: widget.message.msg,
+                      placeholder: (context, url) => const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => const Icon(
+                        Icons.image,
+                        size: 70,
+                      ),
+                    ),
                   ),
-                ),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.image,
-                  size: 70,
-                ),
-              ),
-            ),
           ),
         ),
       ],
@@ -192,44 +192,44 @@ class _MessageCardState extends State<MessageCard> {
 
               widget.message.type == Type.text
                   ?
-              //copy option
-              _OptionItem(
-                  icon: const Icon(Icons.copy_all_rounded,
-                      color: Colors.blue, size: 26),
-                  name: 'Copy Text',
-                  onTap: () async {
-                    await Clipboard.setData(
-                        ClipboardData(text: widget.message.msg))
-                        .then((value) {
-                      //for hiding bottom sheet
-                      Navigator.pop(context);
+                  //copy option
+                  _OptionItem(
+                      icon: const Icon(Icons.copy_all_rounded,
+                          color: Colors.blue, size: 26),
+                      name: 'Copy Text',
+                      onTap: () async {
+                        await Clipboard.setData(
+                                ClipboardData(text: widget.message.msg))
+                            .then((value) {
+                          //for hiding bottom sheet
+                          Navigator.pop(context);
 
-                      Dialogs.showSnackbar(context, 'Text Copied!');
-                    });
-                  })
+                          Dialogs.showSnackbar(context, 'Text Copied!');
+                        });
+                      })
                   :
 
-              _OptionItem(
-                  icon: const Icon(Icons.download_rounded,
-                      color: Colors.blue, size: 26),
-                  name: 'Save Image',
-                  onTap: () async {
-                    try {
-                      log('Image Url: ${widget.message.msg}');
-                      await GallerySaver.saveImage(widget.message.msg,
-                          albumName: 'Chatter Box')
-                          .then((success) {
-                        //for hiding bottom sheet
-                        Navigator.pop(context);
-                        if (success != null && success) {
-                          Dialogs.showSnackbar(
-                              context, 'Image Successfully Saved!');
+                  _OptionItem(
+                      icon: const Icon(Icons.download_rounded,
+                          color: Colors.blue, size: 26),
+                      name: 'Save Image',
+                      onTap: () async {
+                        try {
+                          log('Image Url: ${widget.message.msg}');
+                          await GallerySaver.saveImage(widget.message.msg,
+                              albumName: 'Chatter Box')
+                              .then((success) {
+                            //for hiding bottom sheet
+                            Navigator.pop(context);
+                            if (success != null && success) {
+                              Dialogs.showSnackbar(
+                                  context, 'Image Successfully Saved!');
+                            }
+                          });
+                        } catch (e) {
+                          log('ErrorWhileSavingImg: $e');
                         }
-                      });
-                    } catch (e) {
-                      log('ErrorWhileSavingImg: $e');
-                    }
-                  }),
+                      }),
 
               if (isMe)
                 Divider(
@@ -273,8 +273,8 @@ class _MessageCardState extends State<MessageCard> {
               //sent time
               _OptionItem(
                   icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-                  name:
-                  'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+          name:
+          'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
 
               //read time
@@ -375,7 +375,7 @@ class _OptionItem extends StatelessWidget {
                 child: Text('    $name',
                     style: const TextStyle(
                         fontSize: 15,
-                        // color: Colors.black54,
+                       // color: Colors.black54,
                         letterSpacing: 0.5)))
           ]),
         ));
