@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/call/video_call/video_call_screen.dart';
 import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -50,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
               automaticallyImplyLeading: false,
               flexibleSpace: _appBar(),
             ),
-          //  backgroundColor: const Color.fromARGB(255, 234, 248, 255),
+            //  backgroundColor: const Color.fromARGB(255, 234, 248, 255),
             //body
             body: Column(
               children: [
@@ -149,8 +150,9 @@ class _ChatScreenState extends State<ChatScreen> {
               //back button
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back,
-                   // color: Colors.black54
+                icon: const Icon(
+                  Icons.arrow_back,
+                  // color: Colors.black54
                 ),
               ),
 
@@ -180,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     list.isNotEmpty ? list[0].name : widget.user.name,
                     style: const TextStyle(
                         fontSize: 16,
-                       // color: Colors.black87,
+                        // color: Colors.black87,
                         fontWeight: FontWeight.w500),
                   ),
 
@@ -198,8 +200,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         : MyDateUtil.getLastActiveTime(
                             context: context,
                             lastActive: widget.user.lastActive),
-                    style: const TextStyle(fontSize: 11,
-                       // color: Colors.black54
+                    style: const TextStyle(
+                      fontSize: 11,
+                      // color: Colors.black54
                     ),
                   ),
                 ],
@@ -209,21 +212,24 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   IconButton(
                     onPressed: () {
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoCallScreen(calleeName: widget.user.name),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.videocam),
                   ),
-                  IconButton(
-                    onPressed: () {
 
-                    },
+                  IconButton(
+                    onPressed: () {},
                     icon: const Icon(Icons.call),
                   ),
                 ],
               ),
             ],
           );
-
         },
       ),
     );
@@ -299,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                     icon: const Icon(Icons.camera_alt_rounded,
                         color: Colors.blueAccent, size: 26),
-                    ),
+                  ),
 
                   //adding some space
                   SizedBox(width: mq.width * .02),

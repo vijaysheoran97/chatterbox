@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  audioplayers_windows
+  agora_rtc_engine
   cloud_firestore
   emoji_picker_flutter
   file_selector_windows
