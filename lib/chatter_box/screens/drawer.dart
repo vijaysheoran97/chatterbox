@@ -1,16 +1,15 @@
-
-import 'package:chatterbox/chatter_box/screens/newMessage.dart';
-import 'package:chatterbox/chatter_box/service/auth_service.dart';
-import 'package:chatterbox/chatter_box/settings/settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../service/auth_service.dart';
+import '../settings/settings.dart';
 import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
-
+import 'newMessage.dart';
 
 class DrawerPage extends StatefulWidget {
   const DrawerPage({Key? key}) : super(key: key);
@@ -20,14 +19,20 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-
   late String _selectedMode = 'light'; // Initialize with default value
   bool _showThemeOptions = false; // Added to control whether to show theme options
+
+  late User _currentUser; // To store the current user data
 
   @override
   void initState() {
     super.initState();
     _loadThemePreference(); // Load theme preference when the widget initializes
+    _loadCurrentUser(); // Load current user when the widget initializes
+  }
+
+  Future<void> _loadCurrentUser() async {
+    _currentUser = FirebaseAuth.instance.currentUser!;
   }
 
   Future<void> _loadThemePreference() async {
@@ -50,12 +55,34 @@ class _DrawerPageState extends State<DrawerPage> {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text(
-              'Drawer Header',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Welcome,',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+                Text(
+                  '${_currentUser.displayName ?? 'User'}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 26,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  _currentUser.email!,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(
@@ -69,13 +96,13 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: Icon(Icons.person_outline_rounded),
             title: Text('Contacts'),
             onTap: () {
-
               Navigator.pop(context);
               Navigator.push(
                 context,
-                CupertinoPageRoute(builder: (context) => const NewMessagePage(title: Text('Contacts'),)),
+                CupertinoPageRoute(
+                  builder: (context) => const NewMessagePage(title: Text('Contacts')),
+                ),
               );
-
             },
           ),
           ListTile(
@@ -103,7 +130,6 @@ class _DrawerPageState extends State<DrawerPage> {
               // Add onTap handler for Item 2
             },
           ),
-
           Divider(
             color: Colors.grey.shade300,
           ),
@@ -149,7 +175,6 @@ class _DrawerPageState extends State<DrawerPage> {
               activeColor: Colors.blue,
             ),
           ],
-
           ListTile(
             leading: Icon(Icons.help_outline_outlined),
             title: Text('Help center'),
@@ -158,24 +183,20 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-
-
-            leading: Icon(Icons.logout_outlined, color: Colors.red,),
-            title: Text('Logout', style: TextStyle(color: Colors.red),),
-
+            leading: Icon(Icons.logout_outlined, color: Colors.red),
+            title: Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
             onTap: () {
               AuthService().logOut();
               Navigator.pop(context);
-              // Add onTap handler for Item 2
-
             },
           ),
-          // Add more ListTiles for additional drawer items
         ],
       ),
     );
   }
-
 
   Future<void> _saveThemePreference(String theme) async {
     try {
@@ -185,5 +206,4 @@ class _DrawerPageState extends State<DrawerPage> {
       print('Error saving theme preference: $e');
     }
   }
-
 }
