@@ -251,7 +251,8 @@ class _ChatScreenState extends State<ChatScreen> {
         stream: APIs.getUserInfo(widget.user),
         builder: (context, snapshot) {
           final data = snapshot.data?.docs;
-          final list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+          final list =
+              data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
 
           return AppBar(
             automaticallyImplyLeading: false,
@@ -267,8 +268,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: CachedNetworkImage(
                     width: mq.height * .05,
                     height: mq.height * .05,
-                    imageUrl: list.isNotEmpty ? list[0].image : widget.user.image,
-                    errorWidget: (context, url, error) => const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                    imageUrl:
+                        list.isNotEmpty ? list[0].image : widget.user.image,
+                    errorWidget: (context, url, error) =>
+                        const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -278,15 +281,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Text(
                       list.isNotEmpty ? list[0].name : widget.user.name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       list.isNotEmpty
                           ? list[0].isOnline
-                          ? 'Online'
-                          : MyDateUtil.getLastActiveTime(context: context, lastActive: list[0].lastActive)
-                          : MyDateUtil.getLastActiveTime(context: context, lastActive: widget.user.lastActive),
+                              ? 'Online'
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: list[0].lastActive)
+                          : MyDateUtil.getLastActiveTime(
+                              context: context,
+                              lastActive: widget.user.lastActive),
                       style: const TextStyle(fontSize: 13),
                     ),
                   ],
@@ -294,7 +302,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
             actions: [
-
               IconButton(
                 onPressed: () {
                   showModalBottomSheet(
@@ -305,7 +312,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         children: [
                           ListTile(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => VideoCallScreen(
+                                            calleeName: '',
+                                          )));
                             },
                             leading: Icon(Icons.videocam),
                             title: Text('Video Call'),
@@ -324,14 +336,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
                 icon: const Icon(Icons.add_ic_call_outlined),
               ),
-
               PopupMenuButton<String>(
                 onSelected: (value) {
                   if (value == 'view_contact') {
                   } else if (value == 'clear_chat') {
                   } else if (value == 'block_user') {
-                  } else if (value == 'delete_user') {
-                  }
+                  } else if (value == 'delete_user') {}
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
@@ -365,7 +375,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
                 icon: const Icon(Icons.more_vert),
               ),
-
             ],
           );
         },
@@ -467,5 +476,4 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
 }
