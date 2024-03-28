@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:chatterbox/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
@@ -13,13 +14,32 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chatter_box/theme/dark_theme.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'chatter_box/theme/theme_manager.dart';
 
 late Size mq;
 
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main()async {
+  if (foundation.kDebugMode) {
+    debugPrint('release mode');
+  } else {
+    debugPrint('debug mode');
+  }
+
+  WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
