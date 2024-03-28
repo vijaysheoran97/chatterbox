@@ -198,9 +198,9 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
 
     AuthProvider provider = Provider.of<AuthProvider>(context, listen: false);
 
-    bool loginSuccessful = await provider.login(userModel);
-    //
-        if( loginSuccessful ){
+    bool? loginSuccessful = await provider.login(userModel);
+
+        if( loginSuccessful! ){
 
           Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
     }
