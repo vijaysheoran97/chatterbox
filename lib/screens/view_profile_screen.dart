@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/chat_user_model.dart';
@@ -22,10 +21,12 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        //app bar
-          appBar: AppBar(title: Text(widget.user.name)),
+          //app bar
+          appBar: AppBar(
+            title: Text(widget.user.name),
+          ),
           floatingActionButton: //user about
-          Row(
+              Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
@@ -41,7 +42,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       time: widget.user.createdAt,
                       showYear: true),
                   style: const TextStyle(
-                     // color: Colors.black54,
+                      // color: Colors.black54,
                       fontSize: 15)),
             ],
           ),
@@ -52,10 +53,10 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // for adding some space
+
                   SizedBox(width: mq.width, height: mq.height * .03),
 
-                  //user profile picture
+
                   ClipRRect(
                     borderRadius: BorderRadius.circular(mq.height * .1),
                     child: CachedNetworkImage(
@@ -68,33 +69,28 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                     ),
                   ),
 
-                  // for adding some space
                   SizedBox(height: mq.height * .03),
 
-                  // user email label
                   Text(widget.user.email,
-                      style:
-                      const TextStyle(
+                      style: const TextStyle(
                           //color: Colors.black87,
-                    fontSize: 16)),
+                          fontSize: 16)),
 
-                  // for adding some space
                   SizedBox(height: mq.height * .02),
 
-                  //user about
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'About: ',
                         style: TextStyle(
-                           // color: Colors.black87,
+                            // color: Colors.black87,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
                       ),
                       Text(widget.user.about,
                           style: const TextStyle(
-                             // color: Colors.black54,
+                              // color: Colors.black54,
                               fontSize: 15)),
                     ],
                   ),

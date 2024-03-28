@@ -1,8 +1,10 @@
 import 'package:chatterbox/api/apis.dart';
 import 'package:chatterbox/chatter_box/auth/login_screen.dart';
 import 'package:chatterbox/chatter_box/screens/drawer.dart';
+import 'package:chatterbox/model/user_info_model.dart';
 import 'package:chatterbox/screens/home_screen.dart';
 import 'package:chatterbox/screens/profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,15 +21,28 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late TextEditingController _searchController;
   bool _isSearching = false;
+ //final me = User;
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController(); // Initialize _searchController
+    _searchController = TextEditingController();
+    APIs.getSelfInfo().then((_) {
+      setState(() {
+
+      });
+    } );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (APIs.me == null) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -109,7 +124,7 @@ class _HomePageState extends State<HomePage> {
             CallListPage(),
           ],
         ),
-        drawer: const DrawerPage(),
+        drawer:  DrawerPage(user: APIs.me),
       ),
     );
   }

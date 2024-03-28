@@ -148,11 +148,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 } else {
                   return const Center(
                       child: Text(
-                    'No Connections Found!',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ));
+                        'No Connections Found!',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ));
                 }
               }),
         ),
