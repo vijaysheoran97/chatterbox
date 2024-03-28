@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:chatterbox/firebase_options.dart';
 import 'package:chatterbox/models/chat_user_model.dart';
 import 'package:chatterbox/models/message.dart';
@@ -123,7 +122,7 @@ class APIs {
         id: user.uid,
         name: user.displayName.toString(),
         email: user.email.toString(),
-        about: "Hey, I'm using We Chat!",
+        about: "Hey, I'm using Chatter Box!",
         image: user.photoURL.toString(),
         createdAt: time,
         isOnline: false,

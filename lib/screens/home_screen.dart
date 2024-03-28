@@ -172,8 +172,8 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(20)),
 
           //title
-          title: Row(
-            children: const [
+          title: const Row(
+            children: [
               Icon(
                 Icons.person_add,
                 color: Colors.blue,

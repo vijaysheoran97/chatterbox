@@ -10,7 +10,6 @@ import '../chatter_box/auth/login_screen.dart';
 import '../main.dart';
 import 'home_screen.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -24,8 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(
-          const SystemUiOverlayStyle(systemNavigationBarColor: Colors.white,statusBarColor: Colors.white));
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.white,
+          statusBarColor: Colors.white));
       if (APIs.auth.currentUser != null) {
         log("\nUser: ${APIs.auth.currentUser}");
         log("\nUserAdditionalInfo: ${FirebaseAuth.instance.currentUser}");
@@ -70,8 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: const Text(
               "MADE IN INDIA  ",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20,  letterSpacing: .5),
+              style: TextStyle(fontSize: 20, letterSpacing: .5),
             ),
           ),
         ],

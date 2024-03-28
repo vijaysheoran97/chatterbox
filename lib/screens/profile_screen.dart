@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding:
                 EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .05),
             children: [
-              Text(
+              const Text(
                 "Pick Profile Picture",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -241,7 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        shape: CircleBorder(),
+                        shape: const CircleBorder(),
                         fixedSize: Size(mq.width * .3, mq.height * .15)),
                     onPressed: () async {
                       final ImagePicker picker = ImagePicker();

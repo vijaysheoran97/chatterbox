@@ -15,21 +15,21 @@ class ForgetPasswordDialog extends StatelessWidget {
       content: TextField(
         controller: userEmail,
         keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(hintText: 'Enter your email'),
+        decoration: const InputDecoration(hintText: 'Enter your email'),
       ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             resetPassword(userEmail.text);
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: Text('Reset Password'),
+          child: const Text('Reset Password'),
         ),
       ],
     );
