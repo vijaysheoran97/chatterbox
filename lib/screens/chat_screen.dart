@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
 import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -221,9 +222,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                     icon: const Icon(Icons.videocam),
                   ),
-
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const JoinIncomingCall(),
+                        ),
+                      );
+                    },
                     icon: const Icon(Icons.call),
                   ),
                 ],

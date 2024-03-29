@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
-import 'package:permission_handler/permission_handler.dart';
 
 class VideoCallScreen extends StatefulWidget {
   final String calleeName;
@@ -18,7 +15,6 @@ class VideoCallScreen extends StatefulWidget {
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
 }
-
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
   Object? image;
@@ -81,18 +77,18 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
           children: [
             _remoteUid == null
                 ? Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(image.toString()),
-                    fit: BoxFit.fill,
-                  )),
-            )
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      image: NetworkImage(image.toString()),
+                      fit: BoxFit.fill,
+                    )),
+                  )
                 : Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: Center(child: _remoteVideo())),
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(child: _remoteVideo())),
             Positioned(
               right: 0,
               top: 0,
@@ -104,8 +100,8 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -126,11 +122,10 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                                 color: AppColorConstant.black,
                               ),
                             ),
-
                             Card(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(360))),
+                                      BorderRadius.all(Radius.circular(360))),
                               child: CircleAvatar(
                                 radius: radius,
                                 backgroundColor: Colors.white,
@@ -154,14 +149,14 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                           shape: const RoundedRectangleBorder(
                               side: BorderSide(color: Colors.grey),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(360))),
+                                  BorderRadius.all(Radius.circular(360))),
                           child: CircleAvatar(
                             radius: radius,
                             backgroundColor: Colors.white,
                             child: GestureDetector(
                               onTap: () {
                                 setState(
-                                      () {
+                                  () {
                                     _engine?.disableAudio();
                                   },
                                 );
@@ -183,7 +178,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                             Card(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(360))),
+                                      BorderRadius.all(Radius.circular(360))),
                               child: CircleAvatar(
                                 radius: radius,
                                 backgroundColor: Colors.white,
@@ -223,7 +218,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                             Card(
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(360))),
+                                      BorderRadius.all(Radius.circular(360))),
                               child: CircleAvatar(
                                 radius: radius,
                                 backgroundColor: Colors.white,
