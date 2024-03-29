@@ -32,15 +32,15 @@ class SettingPage extends StatelessWidget {
               leading: const Icon(Icons.person_outline),
               title: const Text('Your account'),
               subtitle: Text('See information about your account and learn about your account deactivation options.',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
             ),
             const SizedBox(height: 10,),
 
             ListTile(
-              leading: const Icon(Icons.lock_outlined),
-              title: const Text('Security and account access'),
-              subtitle: Text("Manage your account's security and keep track of your account's usages, including apps that you have connected to your account.",
-                style: TextStyle(color: Theme.of(context).colorScheme.secondary),)
+                leading: const Icon(Icons.lock_outlined),
+                title: const Text('Security and account access'),
+                subtitle: Text("Manage your account's security and keep track of your account's usages, including apps that you have connected to your account.",
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),)
             ),
             const SizedBox(height: 10,),
 

@@ -155,11 +155,11 @@ class APIs {
     final ref = storage.ref().child("profile_picture/${user.uid}.$ext");
     await ref
         .putFile(
-          file,
-          SettableMetadata(contentType: 'image/$ext'),
-        )
+      file,
+      SettableMetadata(contentType: 'image/$ext'),
+    )
         .then((p0) =>
-            {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
+    {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
     me.image = await ref.getDownloadURL();
     await firestore.collection('users').doc(user.uid).update({
       'image': me.image,

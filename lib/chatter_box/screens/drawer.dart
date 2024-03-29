@@ -1,6 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/api/apis.dart';
+import 'package:chatterbox/chatter_box/auth/login_screen.dart';
+import 'package:chatterbox/chatter_box/screens/newMessage.dart';
+import 'package:chatterbox/chatter_box/service/auth_service.dart';
+import 'package:chatterbox/chatter_box/settings/settings.dart';
+import 'package:chatterbox/helper/dialogs.dart';
+import 'package:chatterbox/helper/my_date_util.dart';
+import 'package:chatterbox/main.dart';
+import 'package:chatterbox/models/chat_user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,22 +24,24 @@ import '../theme/theme_manager.dart';
 import 'newMessage.dart';
 
 class DrawerPage extends StatefulWidget {
-  const DrawerPage({Key? key}) : super(key: key);
+  final ChatUser user;
+  const DrawerPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<DrawerPage> createState() => _DrawerPageState();
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  late String _selectedMode = 'light'; // Initialize with default value
-  bool _showThemeOptions = false; // Added to control whether to show theme options
+
+  late String _selectedMode = 'light';
+  bool _showThemeOptions = false;
 
   late User _currentUser; // To store the current user data
 
   @override
   void initState() {
     super.initState();
-    _loadThemePreference(); // Load theme preference when the widget initializes
+    _loadThemePreference();
     _loadCurrentUser(); // Load current user when the widget initializes
   }
 
@@ -57,34 +71,65 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Welcome,',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
+                Expanded(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        child: CircleAvatar(
+                          radius: mq.height * 0.04,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(mq.height * .1),
+                            child: CachedNetworkImage(
+                              // width: mq.height * .14,
+                              // height:  mq.height * .14,
+                              fit: BoxFit.cover,
+                              imageUrl: widget.user.image,
+                              errorWidget: (context, url, error) => CircleAvatar(
+                                child: Icon(CupertinoIcons.person),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: mq.height * 0.1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.user.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  '${_currentUser.displayName ?? 'User'}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 26,
-                  ),
-                ),
-                SizedBox(height: 15),
-                Text(
-                  _currentUser.email!,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    widget.user.email,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+
+
+
           ListTile(
             leading: Icon(Icons.group_outlined),
             title: Text('New Group'),
@@ -183,16 +228,48 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout_outlined, color: Colors.red),
-            title: Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
-            ),
-            onTap: () {
-              AuthService().logOut();
-              Navigator.pop(context);
+
+
+            leading: Icon(Icons.logout_outlined, color: Colors.red,),
+            title: Text('Logout', style: TextStyle(color: Colors.red),),
+
+            onTap: () async {
+              Dialogs.showProgressBar(context);
+              await APIs.updateActiveStatus(false);
+              await APIs.auth.signOut().then((value) async {
+                await GoogleSignIn().signOut().then((value) {
+
+                  Navigator.pop(context);
+                  APIs.auth = FirebaseAuth.instance;
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()));
+                });
+              });
             },
           ),
+          SizedBox(height: mq.height * .02),
+          ListTile(
+            title: Row(mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Joined On: ',
+                  style: TextStyle(
+                    //color: Colors.black87,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15),
+                ),
+                Text(
+                    MyDateUtil.getLastMessageTime(
+                        context: context,
+                        time: widget.user.createdAt,
+                        showYear: true),
+                    style: const TextStyle(
+                      // color: Colors.black54,
+                        fontSize: 15)),
+              ],
+            ),
+
+          )
         ],
       ),
     );
