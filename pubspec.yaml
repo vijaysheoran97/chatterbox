@@ -39,7 +39,7 @@ dependencies:
 
   firebase_auth: ^4.1.3
 
-  # For accessing cloud firestore database
+  # For accessing cloud firestorm database
   cloud_firestore: ^4.1.0
 
   # For showing network images

@@ -28,7 +28,7 @@ class AppStringConstant {
   static const String isGroupChat = 'isGroupChat';
 
 
- // AgoraDetails
+ // AgoraDetail
   static const String appId = "d95680fe3a6b466c8a2b778d1a5e4a06";
   static const String appPrimCertificate = "d5a9517439ca4035b045d9c99696c3d8";
   static const String appSecCertificate = "e35ce649bb394f818905a5c790fdb181";
