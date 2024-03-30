@@ -372,7 +372,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const JoinIncomingCall(),
+                          builder: (context) => const JoinIncomingCall(callerName: ''),
+
                         ),
                       );
                     },

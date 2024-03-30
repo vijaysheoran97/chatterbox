@@ -34,5 +34,5 @@ class AppStringConstant {
   static const String appSecCertificate = "e35ce649bb394f818905a5c790fdb181";
   static const String appChannelName = "Chatter Box";
   static const String appToken =
-  "007eJxTYNhrxKD9O+i1cqaDWiz38n23Vm7ndIkIdbtyTKnQ4Xx270oFhhRLUzMLg7RU40SzJBMzs2SLRKMkc3OLFMNE01STRAOzrHC2tIZARoZnt1kYGKEQxOdmcM5ILClJLVJwyq9gYAAArBQgKg==";
+  "007eJxTYFix5sGtms0lf34+ePbuNNtztsm/vwqv3/lJZjLvrbApc7IPKjCkWJqaWRikpRonmiWZmJklWyQaJZmbW6QYJpqmmiQamNXvYU9rCGRk+Cz8noERCkF8bgbnjMSSktQiBaf8CgYGAPgYJr0=";
   }
