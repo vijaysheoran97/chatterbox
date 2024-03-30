@@ -1,20 +1,125 @@
-import 'dart:convert';
+// import 'package:flutter/material.dart';
+// import 'package:agora_rtc_engine/rtc_engine.dart';
+//
+// class JoinIncomingCall extends StatefulWidget {
+//   const JoinIncomingCall({Key? key}) : super(key: key);
+//
+//   @override
+//   _JoinIncomingCallState createState() => _JoinIncomingCallState();
+// }
+//
+// class _JoinIncomingCallState extends State<JoinIncomingCall> {
+//   late final RtcEngine _engine;
+//   bool _joined = false;
+//   bool _muted = false;
+//   bool _enableSpeakerphone = false;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _initEngine();
+//   }
+//
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     _engine.destroy();
+//   }
+//
+//   _initEngine() async {
+//     _engine = await RtcEngine.createWithContext(RtcEngineContext('d95680fe3a6b466c8a2b778d1a5e4a06'));
+//     _addListeners();
+//     await _engine.enableAudio();
+//     setState(() {});
+//     await _joinChannel();
+//   }
+//
+//   void _addListeners() {
+//     _engine.setEventHandler(
+//       RtcEngineEventHandler(
+//         joinChannelSuccess: (channel, uid, elapsed) {
+//           setState(() {
+//             _joined = true;
+//           });
+//         },
+//         leaveChannel: (stats) {
+//           setState(() {
+//             _joined = false;
+//           });
+//         },
+//         error: (errorCode) {
+//           print('Error code: $errorCode');
+//         },
+//       ),
+//     );
+//   }
+//
+//   _joinChannel() async {
+//     await _engine.joinChannel('007eJxTYJBSKGJOnmgfnXe8W2J7R0yQ1XFmx2L216YV8d6m0RzP1ykwpFiamlkYpKUaJ5olmZiZJVskGiWZm1ukGCaappokGpidmMuW1hDIyHBH0JCZkQECQXxuBueMxJKS1CIFp/wKBgYA6pgd8g==', 'Chatter Box', null, 0);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Join Call')),
+//       body: Center(
+//         child: _joined
+//             ? _buildControls()
+//             : const CircularProgressIndicator(),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildControls() {
+//     return Column(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         const Text('You are in the call!'),
+//         const SizedBox(height: 20),
+//         ElevatedButton(
+//           onPressed: () {
+//             setState(() {
+//               _muted = !_muted;
+//             });
+//             _engine.muteLocalAudioStream(_muted);
+//           },
+//           child: Text(_muted ? 'Unmute Microphone' : 'Mute Microphone'),
+//         ),
+//         const SizedBox(height: 10),
+//         ElevatedButton(
+//           onPressed: () {
+//             setState(() {
+//               _enableSpeakerphone = !_enableSpeakerphone;
+//             });
+//             _engine.setEnableSpeakerphone(_enableSpeakerphone);
+//           },
+//           child: Text(_enableSpeakerphone ? 'Disable Speakerphone' : 'Enable Speakerphone'),
+//         ),
+//         const SizedBox(height: 10),
+//         ElevatedButton(
+//           onPressed: () async {
+//             await _engine.leaveChannel();
+//           },
+//           child: const Text('Leave Call'),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+
+import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: JoinIncomingCall(),
-  ));
-}
-
 class JoinIncomingCall extends StatefulWidget {
-  const JoinIncomingCall({Key? key}) : super(key: key);
+  final String callerName; // Add this line to accept caller's name
+  const JoinIncomingCall({Key? key, required this.callerName}) : super(key: key);
 
   @override
   _JoinIncomingCallState createState() => _JoinIncomingCallState();
 }
+
 
 class _JoinIncomingCallState extends State<JoinIncomingCall> {
   late final RtcEngine _engine;
@@ -35,11 +140,11 @@ class _JoinIncomingCallState extends State<JoinIncomingCall> {
   }
 
   _initEngine() async {
-    _engine = await RtcEngine.createWithContext(RtcEngineContext('YOUR_APP_ID'));
+    _engine = await RtcEngine.createWithContext(
+        RtcEngineContext('d95680fe3a6b466c8a2b778d1a5e4a06'));
     _addListeners();
     await _engine.enableAudio();
     setState(() {});
-    await fetchAudioTokenAndChannelId();
     await _joinChannel();
   }
 
@@ -64,67 +169,122 @@ class _JoinIncomingCallState extends State<JoinIncomingCall> {
   }
 
   _joinChannel() async {
-    await _engine.joinChannel(null, 'CHANNEL_ID', null, 0);
+    await _engine.joinChannel(
+        '007eJxTYFix5sGtms0lf34+ePbuNNtztsm/vwqv3/lJZjLvrbApc7IPKjCkWJqaWRikpRonmiWZmJklWyQaJZmbW6QYJpqmmiQamNXvYU9rCGRk+Cz8noERCkF8bgbnjMSSktQiBaf8CgYGAPgYJr0=',
+        'Chatter Box', null, 0);
   }
 
-  Future<void> fetchAudioTokenAndChannelId() async {
-    final response = await http.get(Uri.parse('YOUR_API_ENDPOINT'));
-
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      final audioToken = responseData['audioToken'];
-      final channelId = responseData['channelId'];
-      await _engine.joinChannel(audioToken, channelId, null, 0);
-    } else {
-      print('Failed to fetch audio token and channel ID');
-    }
+  void _endCall() async {
+    await _engine.leaveChannel();
+    Navigator.pop(context); // Navigate back to the previous screen
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Join Incoming Call')),
-      body: Center(
-        child: _joined
-            ? _buildControls()
-            : CircularProgressIndicator(), // Placeholder for UI when joining the call
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColorConstant.buttonColor,  AppColorConstant.buttonColor,
+                ],
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  'Incoming Call',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    size: 100,
+                    color: Colors.blue.shade800,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  widget.callerName, // Display caller's name
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Calling...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+                Expanded(child: Container()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _muted = !_muted;
+                        });
+                        _engine.muteLocalAudioStream(_muted);
+                      },
+                      icon: Icon(
+                        _muted ? Icons.mic_off : Icons.mic,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                    const SizedBox(width: 40),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _enableSpeakerphone = !_enableSpeakerphone;
+                        });
+                        _engine.setEnableSpeakerphone(_enableSpeakerphone);
+                      },
+                      icon: Icon(
+                        _enableSpeakerphone
+                            ? Icons.volume_off
+                            : Icons.volume_up,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                FloatingActionButton(
+                  onPressed: _endCall,
+                  backgroundColor: Colors.red,
+                  child: const Icon(Icons.call_end),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  Widget _buildControls() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('You are in the call!'),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              _muted = !_muted;
-            });
-            _engine.muteLocalAudioStream(_muted);
-          },
-          child: Text(_muted ? 'Unmute Microphone' : 'Mute Microphone'),
-        ),
-        SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              _enableSpeakerphone = !_enableSpeakerphone;
-            });
-            _engine.setEnableSpeakerphone(_enableSpeakerphone);
-          },
-          child: Text(_enableSpeakerphone ? 'Disable Speakerphone' : 'Enable Speakerphone'),
-        ),
-        SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () async {
-            await _engine.leaveChannel();
-          },
-          child: Text('Leave Call'),
-        ),
-      ],
-    );
-  }
 }
+
+
+
