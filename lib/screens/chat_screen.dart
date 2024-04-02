@@ -125,7 +125,118 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  // Widget _appBar() {
+  //   return InkWell(
+  //     onTap: () {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (_) => ViewProfileScreen(user: widget.user),
+  //         ),
+  //       );
+  //     },
+  //     child: StreamBuilder(
+  //       stream: APIs.getUserInfo(widget.user),
+  //       builder: (context, snapshot) {
+  //         final data = snapshot.data?.docs;
+  //         final list =
+  //             data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+  //
+  //         return Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 IconButton(
+  //                   onPressed: () => Navigator.pop(context),
+  //                   icon: const Icon(Icons.arrow_back),
+  //                 ),
+  //                 ClipRRect(
+  //                   borderRadius: BorderRadius.circular(mq.height * .03),
+  //                   child: CachedNetworkImage(
+  //                     width: mq.height * .05,
+  //                     height: mq.height * .05,
+  //                     imageUrl:
+  //                         list.isNotEmpty ? list[0].image : widget.user.image,
+  //                     errorWidget: (context, url, error) => const CircleAvatar(
+  //                       child: Icon(CupertinoIcons.person),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(width: 10),
+  //                 Column(
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       list.isNotEmpty ? list[0].name : widget.user.name,
+  //                       style: const TextStyle(
+  //                         fontSize: 16,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 2),
+  //                     SingleChildScrollView(
+  //                       scrollDirection: Axis.horizontal,
+  //                       child: Text(
+  //                         list.isNotEmpty
+  //                             ? list[0].isOnline
+  //                                 ? 'Online'
+  //                                 : MyDateUtil.getLastActiveTime(
+  //                                     context: context,
+  //                                     lastActive: list[0].lastActive)
+  //                             : MyDateUtil.getLastActiveTime(
+  //                                 context: context,
+  //                                 lastActive: widget.user.lastActive),
+  //                         style: const TextStyle(fontSize: 13),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //             Row(
+  //               children: [
+  //                 IconButton(
+  //                   onPressed: () {
+  //                     // Implement video call functionality
+  //                   },
+  //                   icon: const Icon(Icons.videocam),
+  //                 ),
+  //                 IconButton(
+  //                   onPressed: () {
+  //                     // Implement voice call functionality
+  //                   },
+  //                   icon: const Icon(Icons.call),
+  //                 ),
+  //                 PopupMenuButton<String>(
+  //                   onSelected: (value) {
+  //                     if (value == 'clear_chat') {
+  //                       // Implement clear chat functionality
+  //                     }
+  //                   },
+  //                   itemBuilder: (BuildContext context) =>
+  //                       <PopupMenuEntry<String>>[
+  //                     const PopupMenuItem<String>(
+  //                       value: 'clear_chat',
+  //                       child: ListTile(
+  //                         leading: Icon(Icons.clear),
+  //                         title: Text('Clear Chat'),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                   icon: const Icon(Icons.more_vert),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
+  // bottom chat input field
 
   Widget _appBar() {
     return InkWell(
@@ -205,8 +316,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VideoCallScreen(
+                                      builder: (context) => const VideoCallScreen(
                                             calleeName: '',
                                           )));
                             },
@@ -218,10 +328,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AudioCallScreen(
-                                            callerName: '',
-                                          )));
+                                      builder: (context) => const AudioCallScreen(
+                                        callerName: '',
+                                      )));
                             },
                             leading: const Icon(Icons.call),
                             title: const Text('Voice Call'),
@@ -262,6 +371,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       title: Text('Block User'),
                     ),
                   ),
+
                 ],
                 icon: const Icon(Icons.more_vert),
               ),
