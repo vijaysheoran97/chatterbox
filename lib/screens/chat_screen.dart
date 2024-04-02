@@ -371,6 +371,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       title: Text('Block User'),
                     ),
                   ),
+
                 ],
                 icon: const Icon(Icons.more_vert),
               ),
