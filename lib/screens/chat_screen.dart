@@ -371,6 +371,26 @@ class _ChatScreenState extends State<ChatScreen> {
                       title: Text('Block User'),
                     ),
                   ),
+                  const PopupMenuItem<String>(
+                    value: 'delete_user',
+                    child: ListTile(
+                      leading: Icon(Icons.delete),
+                      title: Text('Delete User'),
+                    ),
+                  ),
+
+                  // IconButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => const JoinIncomingCall(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   icon: const Icon(Icons.call),
+                  //
+                  // ),
 
                 ],
                 icon: const Icon(Icons.more_vert),
