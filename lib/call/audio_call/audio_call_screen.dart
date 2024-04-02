@@ -1,3 +1,4 @@
+
 // import 'package:flutter/material.dart';
 // import 'package:agora_rtc_engine/rtc_engine.dart';
 //
@@ -112,16 +113,20 @@ import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-class JoinIncomingCall extends StatefulWidget {
+
+class AudioCallScreen extends StatefulWidget {
   final String callerName; // Add this line to accept caller's name
-  const JoinIncomingCall({Key? key, required this.callerName}) : super(key: key);
+  const AudioCallScreen({Key? key, required this.callerName}) : super(key: key);
+
 
   @override
-  _JoinIncomingCallState createState() => _JoinIncomingCallState();
+  _AudioCallScreenState createState() => _AudioCallScreenState();
 }
 
 
-class _JoinIncomingCallState extends State<JoinIncomingCall> {
+
+class _AudioCallScreenState extends State<AudioCallScreen> {
+
   late final RtcEngine _engine;
   bool _joined = false;
   bool _muted = false;

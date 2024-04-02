@@ -316,19 +316,24 @@ class _ChatScreenState extends State<ChatScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => VideoCallScreen(
+                                      builder: (context) => const VideoCallScreen(
                                             calleeName: '',
                                           )));
                             },
-                            leading: Icon(Icons.videocam),
-                            title: Text('Video Call'),
+                            leading: const Icon(Icons.videocam),
+                            title: const Text('Video Call'),
                           ),
                           ListTile(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AudioCallScreen(
+                                        callerName: '',
+                                      )));
                             },
-                            leading: Icon(Icons.call),
-                            title: Text('Voice Call'),
+                            leading: const Icon(Icons.call),
+                            title: const Text('Voice Call'),
                           ),
                         ],
                       );
@@ -367,19 +372,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
 
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const JoinIncomingCall(callerName: ''),
-
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.call),
-
-                  ),
                 ],
                 icon: const Icon(Icons.more_vert),
               ),
