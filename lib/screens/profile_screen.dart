@@ -45,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               await APIs.updateActiveStatus(false);
               await APIs.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
-
                   Navigator.pop(context);
                   APIs.auth = FirebaseAuth.instance;
                   Navigator.pushReplacement(context,
@@ -264,4 +263,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         });
   }
+
 }

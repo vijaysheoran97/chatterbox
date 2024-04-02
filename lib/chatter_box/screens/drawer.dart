@@ -66,7 +66,7 @@ class _DrawerPageState extends State<DrawerPage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
@@ -87,7 +87,7 @@ class _DrawerPageState extends State<DrawerPage> {
                               // height:  mq.height * .14,
                               fit: BoxFit.cover,
                               imageUrl: widget.user.image,
-                              errorWidget: (context, url, error) => CircleAvatar(
+                              errorWidget: (context, url, error) => const CircleAvatar(
                                 child: Icon(CupertinoIcons.person),
                               ),
                             ),
@@ -102,7 +102,7 @@ class _DrawerPageState extends State<DrawerPage> {
                           children: [
                             Text(
                               widget.user.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -118,7 +118,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     widget.user.email,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                     ),
@@ -131,15 +131,15 @@ class _DrawerPageState extends State<DrawerPage> {
 
 
           ListTile(
-            leading: Icon(Icons.group_outlined),
-            title: Text('New Group'),
+            leading: const Icon(Icons.group_outlined),
+            title: const Text('New Group'),
             onTap: () {
               // Add onTap handler for Item 1
             },
           ),
           ListTile(
-            leading: Icon(Icons.person_outline_rounded),
-            title: Text('Contacts'),
+            leading: const Icon(Icons.person_outline_rounded),
+            title: const Text('Contacts'),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -151,15 +151,15 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.bookmark_border_outlined),
-            title: Text('Saved'),
+            leading: const Icon(Icons.bookmark_border_outlined),
+            title: const Text('Saved'),
             onTap: () {
               // Add onTap handler for Item 2
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings_outlined),
-            title: Text('Settings'),
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('Settings'),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -169,8 +169,8 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.monetization_on_outlined),
-            title: Text('Monetisation'),
+            leading: const Icon(Icons.monetization_on_outlined),
+            title: const Text('Monetisation'),
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -179,8 +179,8 @@ class _DrawerPageState extends State<DrawerPage> {
             color: Colors.grey.shade300,
           ),
           ListTile(
-            leading: Icon(Icons.change_circle_outlined),
-            title: Text('Themes'),
+            leading: const Icon(Icons.change_circle_outlined),
+            title: const Text('Themes'),
             trailing: Icon(_showThemeOptions
                 ? Icons.keyboard_arrow_up_outlined
                 : Icons.keyboard_arrow_down_outlined),
@@ -221,8 +221,8 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
           ],
           ListTile(
-            leading: Icon(Icons.help_outline_outlined),
-            title: Text('Help center'),
+            leading: const Icon(Icons.help_outline_outlined),
+            title: const Text('Help center'),
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -230,8 +230,8 @@ class _DrawerPageState extends State<DrawerPage> {
           ListTile(
 
 
-            leading: Icon(Icons.logout_outlined, color: Colors.red,),
-            title: Text('Logout', style: TextStyle(color: Colors.red),),
+            leading: const Icon(Icons.logout_outlined, color: Colors.red,),
+            title: const Text('Logout', style: TextStyle(color: Colors.red),),
 
             onTap: () async {
               Dialogs.showProgressBar(context);
@@ -251,7 +251,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ListTile(
             title: Row(mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Joined On: ',
                   style: TextStyle(
                     //color: Colors.black87,
