@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
 class AudioCallScreen extends StatefulWidget {
-  final String callerName; // Add this line to accept caller's name
+  final String callerName;
   const AudioCallScreen({Key? key, required this.callerName}) : super(key: key);
 
   @override
