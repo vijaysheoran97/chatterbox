@@ -11,19 +11,15 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
 
-
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
-
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   static FirebaseStorage storage = FirebaseStorage.instance;
   static late ChatUser me;
-
   static User get user => auth.currentUser!;
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
-  static Future<void> sendPushNotification(
-      ChatUser chatUser, String msg) async {
+
+  static Future<void> sendPushNotification(ChatUser chatUser, String msg) async {
     try {
       final body = {
         "to": chatUser.pushToken,
@@ -47,6 +43,7 @@ class APIs {
       log('\nsendPushNotificationE: $e');
     }
   }
+
   static Future<void> deleteMessage(Message message) async {
     await firestore
         .collection('chats/${getConversationID(message.toId)}/messages/')
@@ -70,7 +67,7 @@ class APIs {
   }
 
   static Future<bool> userExists(User user) async {
-    if(user == null) return false; // Check if user is null
+    if (user == null) return false; // Check if user is null
 
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
@@ -84,7 +81,6 @@ class APIs {
     log('data: ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
-
       log('user exists: ${data.docs.first.data()}');
 
       firestore
@@ -96,7 +92,6 @@ class APIs {
 
       return true;
     } else {
-
       return false;
     }
   }
@@ -119,15 +114,17 @@ class APIs {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final chatUser = ChatUser(
-        id: user.uid,
-        name: user.displayName.toString(),
-        email: user.email.toString(),
-        about: "Hey, I'm using Chatter Box!",
-        image: user.photoURL.toString(),
-        createdAt: time,
-        isOnline: false,
-        lastActive: time,
-        pushToken: '');
+      id: user.uid,
+      name: user.displayName.toString(),
+      email: user.email.toString(),
+      about: "Hey, I'm using Chatter Box!",
+      image: user.photoURL.toString(),
+      createdAt: time,
+      isOnline: false,
+      lastActive: time,
+      pushToken: '',
+      isProfessional: false, // Initializing isProfessional
+    );
 
     return await firestore
         .collection('users')
@@ -158,8 +155,7 @@ class APIs {
       file,
       SettableMetadata(contentType: 'image/$ext'),
     )
-        .then((p0) =>
-    {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
+        .then((p0) => {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
     me.image = await ref.getDownloadURL();
     await firestore.collection('users').doc(user.uid).update({
       'image': me.image,
@@ -187,16 +183,14 @@ class APIs {
       ? '${user.uid}_$id'
       : '${id}_${user.uid}';
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
-      ChatUser user) {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(ChatUser user) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
         .snapshots();
   }
 
-  static Future<void> sendMessage(
-      ChatUser chatUser, String msg, Type type) async {
+  static Future<void> sendMessage(ChatUser chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -205,10 +199,9 @@ class APIs {
         type: type,
         fromId: user.uid,
         sent: time);
-    final ref = firestore
-        .collection('chats/${getConversationID(chatUser.id)}/messages/');
-    await ref.doc(time).set(message.toJson()).then((value) =>
-        sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
+    final ref =
+    firestore.collection('chats/${getConversationID(chatUser.id)}/messages/');
+    await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
 
   static Future<void> updateMessageReadStatus(Message message) async {
@@ -218,8 +211,7 @@ class APIs {
         .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
-      ChatUser user) {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(ChatUser user) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
@@ -232,25 +224,21 @@ class APIs {
     final ext = file.path.split('.').last;
 
     //storage file ref with path
-    final ref = storage.ref().child(
-        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    final ref = storage.ref().child('images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
 
     //uploading image
-    await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-        .then((p0) {
+    await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then((p0) {
       log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
-
 
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, Type.image);
   }
 
   _intializedFirebase() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   }
+
   static Future<void> updateMessage(Message message, String updatedMsg) async {
     await firestore
         .collection('chats/${getConversationID(message.toId)}/messages/')
