@@ -38,7 +38,7 @@ dependencies:
 
 
   firebase_auth: ^4.1.3
-
+  share_plus: ^7.2.2
 
   # For accessing cloud firestorm database
   cloud_firestore: ^4.1.0

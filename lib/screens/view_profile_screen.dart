@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../api/apis.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/chat_user_model.dart';
@@ -17,23 +16,6 @@ class ViewProfileScreen extends StatefulWidget {
 }
 
 class _ViewProfileScreenState extends State<ViewProfileScreen> {
-
-  bool _isProfessional = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Fetch user's professional status from Firebase
-    fetchProfessionalStatus();
-  }
-
-  void fetchProfessionalStatus() async {
-    final userData = await APIs.firestore.collection('users').doc(widget.user.id).get();
-    setState(() {
-      _isProfessional = userData['isProfessional'] ?? false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -41,20 +23,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
       child: Scaffold(
           //app bar
           appBar: AppBar(
-            title: Row(
-              children: [
-                Text(widget.user.name),
-                if (_isProfessional)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 3),
-                    child: Icon(
-                      Icons.verified,
-                      size: 16,
-                      color: Colors.blue,
-                    ),
-                  ),
-              ],
-            ),
+            title: Text(widget.user.name),
           ),
           floatingActionButton: //user about
               Row(
