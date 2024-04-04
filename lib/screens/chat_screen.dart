@@ -307,7 +307,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.0),
                         topRight: Radius.circular(20.0),
@@ -480,7 +480,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: () {
                         _showBottomSheet();
                       },
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.attach_file,
                         color: Colors.blueAccent,
                         size: 26,
@@ -580,8 +580,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         height: mq.height * .15 * 0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Gallery',
                       style: TextStyle(fontSize: 12),
                     ),
@@ -597,8 +597,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         height: mq.height * .15 * 0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Audio',
                       style: TextStyle(fontSize: 12),
                     ),
@@ -625,8 +625,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         height: mq.height * .15 * 0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Camera',
                       style: TextStyle(fontSize: 12),
                     ),
@@ -648,8 +648,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         height: mq.height * .15 * 0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Contact',
                       style: TextStyle(fontSize: 12),
                     ),
@@ -665,8 +665,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         height: mq.height * .15 * 0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Location',
                       style: TextStyle(fontSize: 12),
                     ),
