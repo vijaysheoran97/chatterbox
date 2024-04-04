@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -123,7 +124,9 @@ class APIs {
       isOnline: false,
       lastActive: time,
       pushToken: '',
-      isProfessional: false, // Initializing isProfessional
+      isProfessional: false,
+      audioUrl: '',
+      audioDuration: null, // Initializing isProfessional
     );
 
     return await firestore
@@ -204,6 +207,8 @@ class APIs {
     await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
 
+
+
   static Future<void> updateMessageReadStatus(Message message) async {
     firestore
         .collection('chats/${getConversationID(message.fromId)}/messages/')
@@ -246,3 +251,5 @@ class APIs {
         .update({'msg': updatedMsg});
   }
 }
+
+

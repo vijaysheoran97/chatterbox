@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: themeManager.currentTheme,
             darkTheme: darkTheme,
-            title: 'Q',
+            title: 'ChatterBox',
             home: const SplashScreen(),
           );
         },
