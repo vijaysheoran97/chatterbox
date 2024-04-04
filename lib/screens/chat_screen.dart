@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
@@ -9,6 +10,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../api/apis.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
@@ -27,6 +29,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
+  List<Messages> listToken = [];
   final _textController = TextEditingController();
   bool _showEmoji = false, _isUploading = false;
 
@@ -78,7 +81,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding: EdgeInsets.only(top: mq.height * .01),
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
-                                return MessageCard(message: _list[index]);
+                                return MessageCard(
+                                  message: _list[index],
+                                );
                               },
                             );
                           } else {
@@ -124,119 +129,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
-  // Widget _appBar() {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (_) => ViewProfileScreen(user: widget.user),
-  //         ),
-  //       );
-  //     },
-  //     child: StreamBuilder(
-  //       stream: APIs.getUserInfo(widget.user),
-  //       builder: (context, snapshot) {
-  //         final data = snapshot.data?.docs;
-  //         final list =
-  //             data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-  //
-  //         return Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Row(
-  //               children: [
-  //                 IconButton(
-  //                   onPressed: () => Navigator.pop(context),
-  //                   icon: const Icon(Icons.arrow_back),
-  //                 ),
-  //                 ClipRRect(
-  //                   borderRadius: BorderRadius.circular(mq.height * .03),
-  //                   child: CachedNetworkImage(
-  //                     width: mq.height * .05,
-  //                     height: mq.height * .05,
-  //                     imageUrl:
-  //                         list.isNotEmpty ? list[0].image : widget.user.image,
-  //                     errorWidget: (context, url, error) => const CircleAvatar(
-  //                       child: Icon(CupertinoIcons.person),
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 const SizedBox(width: 10),
-  //                 Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       list.isNotEmpty ? list[0].name : widget.user.name,
-  //                       style: const TextStyle(
-  //                         fontSize: 16,
-  //                         fontWeight: FontWeight.w500,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(height: 2),
-  //                     SingleChildScrollView(
-  //                       scrollDirection: Axis.horizontal,
-  //                       child: Text(
-  //                         list.isNotEmpty
-  //                             ? list[0].isOnline
-  //                                 ? 'Online'
-  //                                 : MyDateUtil.getLastActiveTime(
-  //                                     context: context,
-  //                                     lastActive: list[0].lastActive)
-  //                             : MyDateUtil.getLastActiveTime(
-  //                                 context: context,
-  //                                 lastActive: widget.user.lastActive),
-  //                         style: const TextStyle(fontSize: 13),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ],
-  //             ),
-  //             Row(
-  //               children: [
-  //                 IconButton(
-  //                   onPressed: () {
-  //                     // Implement video call functionality
-  //                   },
-  //                   icon: const Icon(Icons.videocam),
-  //                 ),
-  //                 IconButton(
-  //                   onPressed: () {
-  //                     // Implement voice call functionality
-  //                   },
-  //                   icon: const Icon(Icons.call),
-  //                 ),
-  //                 PopupMenuButton<String>(
-  //                   onSelected: (value) {
-  //                     if (value == 'clear_chat') {
-  //                       // Implement clear chat functionality
-  //                     }
-  //                   },
-  //                   itemBuilder: (BuildContext context) =>
-  //                       <PopupMenuEntry<String>>[
-  //                     const PopupMenuItem<String>(
-  //                       value: 'clear_chat',
-  //                       child: ListTile(
-  //                         leading: Icon(Icons.clear),
-  //                         title: Text('Clear Chat'),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                   icon: const Icon(Icons.more_vert),
-  //                 ),
-  //               ],
-  //             ),
-  //           ],
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // bottom chat input field
 
   Widget _appBar() {
     return InkWell(
@@ -303,45 +195,203 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
             actions: [
-              IconButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            onTap: () {
+              // StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              //   stream: APIs.getAllMessages(widget.user),
+              //   builder: (context, snapshot) {
+              //     switch (snapshot.connectionState) {
+              //       case ConnectionState.waiting:
+              //       case ConnectionState.none:
+              //         return const SizedBox();
+              //
+              //       case ConnectionState.active:
+              //       case ConnectionState.done:
+              //         final data = snapshot.data?.docs;
+              //
+              //         listToken = data
+              //             ?.map((e) => Messages.fromJson(e.data()))
+              //             .toList() ?? [];
+              //
+              //         // Ensure listToken is not empty before accessing its first element
+              //         if (listToken.isNotEmpty) {
+              //           print("${listToken[0].token}00000000000000000000000000000000000000000000000");
+              //         } else {
+              //           print("listToken is empty");
+              //         }
+              //
+              //         return IconButton(
+              //           onPressed: () {
+              //             showModalBottomSheet(
+              //               context: context,
+              //               builder: (BuildContext context) {
+              //                 return Column(
+              //                   mainAxisSize: MainAxisSize.min,
+              //                   children: [
+              //                     ListTile(
+              //                       onTap: () {
+              //                         Navigator.push(
+              //                           context,
+              //                           MaterialPageRoute(
+              //                             builder: (context) => VideoCallScreen(
+              //                               calleeName: '',
+              //                               callToken: '',
+              //                             ),
+              //                           ),
+              //                         );
+              //                       },
+              //                       leading: const Icon(Icons.videocam),
+              //                       title: const Text('Video Call'),
+              //                     ),
+              //                     ListTile(
+              //                       onTap: () {
+              //                         Navigator.push(
+              //                           context,
+              //                           MaterialPageRoute(
+              //                             builder: (context) =>
+              //                             const AudioCallScreen(
+              //                               callerName: '',
+              //                             ),
+              //                           ),
+              //                         );
+              //                       },
+              //                       leading: const Icon(Icons.call),
+              //                       title: const Text('Voice Call'),
+              //                     ),
+              //                   ],
+              //                 );
+              //               },
+              //             );
+              //           },
+              //           icon: const Icon(Icons.add_ic_call_outlined),
+              //         );
+              //     }
+              //   },
+              // ),
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: APIs.getToken(widget.user),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const SizedBox();
+
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+
+                      listToken = data
+                          ?.map((e) => Messages.fromJson(e.data()))
+                          .toList() ?? [];
+
+                      if (listToken.isNotEmpty) {
+                        print(
+                            "${listToken[0].token}00000000000000000000000000000000000000000000000");
+                        final firstMessage = listToken.first;
+                        if (firstMessage != null) {
+                          return IconButton(
+                            onPressed: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const VideoCallScreen(
-                                            calleeName: '',
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VideoCallScreen(
+                                    calleeName: '',
+                                    callToken: firstMessage.token,
+                                    messages: firstMessage,
+                                  ),
+                                ),
+                              );
                             },
-                            leading: const Icon(Icons.videocam),
-                            title: const Text('Video Call'),
-                          ),
-                          ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const AudioCallScreen(
-                                        callerName: '',
-                                      )));
-                            },
-                            leading: const Icon(Icons.call),
-                            title: const Text('Voice Call'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                            icon: const Icon(Icons.call),
+                          );
+                        } else {
+                          print("First message is null");
+                          return const SizedBox();
+                        }
+                      } else {
+                        print("listToken is empty");
+                        return const SizedBox();
+                      }
+                  }
                 },
-                icon: const Icon(Icons.add_ic_call_outlined),
               ),
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: APIs.getToken(widget.user), // Use getAllToken stream
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const SizedBox();
+
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+
+                      listToken = data
+                              ?.map((e) => Messages.fromJson(e.data()))
+                              .toList() ??
+                          [];
+
+                      // Ensure listToken is not empty before accessing its first element
+                      if (listToken.isNotEmpty) {
+                        print(
+                            "${listToken[0].token}00000000000000000000000000000000000000000000000");
+                      } else {
+                        print("listToken is empty");
+                      }
+
+                      return IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    onTap: () async {
+                                      await APIs.sendToken(widget.user,
+                                          "007eJxTYJBgstH4oDD72pXlgd8zk07fF5xx49U2OY5t3anqHkJTkiwUGFIsTc0sDNJSjRPNkkzMzJItEo2SzM0tUgwTTVNNEg3MlCz40hoCGRmmpCxlZGSAQBCfm8E5I7GkJLVIwSm/goEBAM8GIA8=");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => VideoCallScreen(
+                                            calleeName: '',
+                                            callToken: listToken.isNotEmpty
+                                                ? listToken[0].token
+                                                : '',
+                                            messages: listToken.first,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    leading: const Icon(Icons.videocam),
+                                    title: const Text('Video Call'),
+                                  ),
+                                  ListTile(
+                                    onTap: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AudioCallScreen(
+                                            callerName: '',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    leading: const Icon(Icons.call),
+                                    title: const Text('Voice Call'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.add_ic_call_outlined),
+                      );
+                  }
+                },
+              ),
+
               PopupMenuButton<String>(
                 onSelected: (value) {
                   if (value == 'view_contact') {
@@ -371,7 +421,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       title: Text('Block User'),
                     ),
                   ),
-
                 ],
                 icon: const Icon(Icons.more_vert),
               ),
