@@ -307,6 +307,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
+
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                      ),
+                    ),
+
                     builder: (BuildContext context) {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
@@ -419,19 +427,30 @@ class _ChatScreenState extends State<ChatScreen> {
                   )),
 
                   IconButton(
-                    onPressed: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final List<XFile> images =
-                          await picker.pickMultiImage(imageQuality: 70);
-                      for (var i in images) {
-                        setState(() => _isUploading = true);
-                        await APIs.sendChatImage(widget.user, File(i.path));
-                        setState(() => _isUploading = false);
-                      }
-                    },
-                    icon: const Icon(Icons.image,
-                        color: Colors.blueAccent, size: 26),
-                  ),
+
+                      onPressed: () {
+                        _showBottomSheet();
+                      },
+                      icon: const Icon(
+                        Icons.attach_file,
+                        color: Colors.blueAccent,
+                        size: 26,
+                      )),
+                  // IconButton(
+                  //   onPressed: () async {
+                  //     final ImagePicker picker = ImagePicker();
+                  //     final List<XFile> images =
+                  //         await picker.pickMultiImage(imageQuality: 70);
+                  //     for (var i in images) {
+                  //       setState(() => _isUploading = true);
+                  //       await APIs.sendChatImage(widget.user, File(i.path));
+                  //       setState(() => _isUploading = false);
+                  //     }
+                  //   },
+                  //   icon: const Icon(Icons.image,
+                  //       color: Colors.blueAccent, size: 26),
+                  // ),
+
 
                   IconButton(
                     onPressed: () async {
@@ -475,4 +494,143 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (_) {
+        return ListView(
+          shrinkWrap: true,
+          padding:
+              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+                        for (var i in images) {
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(widget.user, File(i.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      child: Image.asset(
+                        "assets/images/gallery (1).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Gallery',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Image.asset(
+                        "assets/images/audio-headset (1).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Audio',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (image != null) {
+                          log('Image Path:${image.path}');
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(
+                              widget.user, File(image.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      child: Image.asset(
+                        "assets/images/photo.png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Camera',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: mq.width * .08),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Image.asset(
+                        "assets/images/contact.png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Contact',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Image.asset(
+                        "assets/images/circle (2).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Location',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
 }
