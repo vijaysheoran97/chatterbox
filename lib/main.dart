@@ -19,7 +19,6 @@ import 'chatter_box/theme/theme_manager.dart';
 
 late Size mq;
 
-
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -29,7 +28,7 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main()async {
+void main() async {
   if (foundation.kDebugMode) {
     debugPrint('release mode');
   } else {
@@ -52,13 +51,14 @@ void main()async {
       importance: NotificationImportance.IMPORTANCE_HIGH,
       name: 'Chats');
   log('\nNotification Channel Result: $result');
-  runApp(ChangeNotifierProvider(
-    create: (context) => ThemeManager(selectedTheme),
-    child: const MyApp(),
-  ),);
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => ThemeManager(selectedTheme),
+      child: const MyApp(),
+    ),
+  );
   // }
   // );
-
 }
 
 class MyApp extends StatelessWidget {
@@ -66,14 +66,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     Get.put(AuthService());
     Get.put(StorageHalper());
-    AuthProvider userProvider =AuthProvider();
+    AuthProvider userProvider = AuthProvider();
     userProvider.loadLoginStatus();
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context){
+        ChangeNotifierProvider(create: (context) {
           return userProvider;
         })
       ],
@@ -83,19 +82,15 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: themeManager.currentTheme,
             darkTheme: darkTheme,
-
             title: 'Q',
-
-            home:  SplashScreen(),
-
-
+            home: const SplashScreen(),
           );
         },
       ),
-
     );
   }
 }
+
 
 _initializeFirebase() async {
   await Firebase.initializeApp(

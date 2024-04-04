@@ -1,132 +1,17 @@
-
-// import 'package:flutter/material.dart';
-// import 'package:agora_rtc_engine/rtc_engine.dart';
-//
-// class JoinIncomingCall extends StatefulWidget {
-//   const JoinIncomingCall({Key? key}) : super(key: key);
-//
-//   @override
-//   _JoinIncomingCallState createState() => _JoinIncomingCallState();
-// }
-//
-// class _JoinIncomingCallState extends State<JoinIncomingCall> {
-//   late final RtcEngine _engine;
-//   bool _joined = false;
-//   bool _muted = false;
-//   bool _enableSpeakerphone = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initEngine();
-//   }
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     _engine.destroy();
-//   }
-//
-//   _initEngine() async {
-//     _engine = await RtcEngine.createWithContext(RtcEngineContext('d95680fe3a6b466c8a2b778d1a5e4a06'));
-//     _addListeners();
-//     await _engine.enableAudio();
-//     setState(() {});
-//     await _joinChannel();
-//   }
-//
-//   void _addListeners() {
-//     _engine.setEventHandler(
-//       RtcEngineEventHandler(
-//         joinChannelSuccess: (channel, uid, elapsed) {
-//           setState(() {
-//             _joined = true;
-//           });
-//         },
-//         leaveChannel: (stats) {
-//           setState(() {
-//             _joined = false;
-//           });
-//         },
-//         error: (errorCode) {
-//           print('Error code: $errorCode');
-//         },
-//       ),
-//     );
-//   }
-//
-//   _joinChannel() async {
-//     await _engine.joinChannel('007eJxTYJBSKGJOnmgfnXe8W2J7R0yQ1XFmx2L216YV8d6m0RzP1ykwpFiamlkYpKUaJ5olmZiZJVskGiWZm1ukGCaappokGpidmMuW1hDIyHBH0JCZkQECQXxuBueMxJKS1CIFp/wKBgYA6pgd8g==', 'Chatter Box', null, 0);
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Join Call')),
-//       body: Center(
-//         child: _joined
-//             ? _buildControls()
-//             : const CircularProgressIndicator(),
-//       ),
-//     );
-//   }
-//
-//   Widget _buildControls() {
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         const Text('You are in the call!'),
-//         const SizedBox(height: 20),
-//         ElevatedButton(
-//           onPressed: () {
-//             setState(() {
-//               _muted = !_muted;
-//             });
-//             _engine.muteLocalAudioStream(_muted);
-//           },
-//           child: Text(_muted ? 'Unmute Microphone' : 'Mute Microphone'),
-//         ),
-//         const SizedBox(height: 10),
-//         ElevatedButton(
-//           onPressed: () {
-//             setState(() {
-//               _enableSpeakerphone = !_enableSpeakerphone;
-//             });
-//             _engine.setEnableSpeakerphone(_enableSpeakerphone);
-//           },
-//           child: Text(_enableSpeakerphone ? 'Disable Speakerphone' : 'Enable Speakerphone'),
-//         ),
-//         const SizedBox(height: 10),
-//         ElevatedButton(
-//           onPressed: () async {
-//             await _engine.leaveChannel();
-//           },
-//           child: const Text('Leave Call'),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-
 class AudioCallScreen extends StatefulWidget {
-  final String callerName; // Add this line to accept caller's name
+  final String callerName;
   const AudioCallScreen({Key? key, required this.callerName}) : super(key: key);
-
 
   @override
   _AudioCallScreenState createState() => _AudioCallScreenState();
 }
 
 
-
 class _AudioCallScreenState extends State<AudioCallScreen> {
-
   late final RtcEngine _engine;
   bool _joined = false;
   bool _muted = false;

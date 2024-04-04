@@ -307,93 +307,49 @@ class _ChatScreenState extends State<ChatScreen> {
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
+
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.0),
                         topRight: Radius.circular(20.0),
                       ),
                     ),
+
                     builder: (BuildContext context) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: mq.height * 0.04),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              onTap: () {
-                                Navigator.push(
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const VideoCallScreen(
-                                      calleeName: '',
-                                    ),
-                                  ),
-                                );
-                              },
-                              leading: const Icon(Icons.videocam),
-                              title: const Text('Video Call'),
-                            ),
-                            ListTile(
-                              onTap: () {
-                                Navigator.push(
+                                      builder: (context) => const VideoCallScreen(
+                                            calleeName: '',
+                                          )));
+                            },
+                            leading: const Icon(Icons.videocam),
+                            title: const Text('Video Call'),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const AudioCallScreen(
-                                      callerName: '',
-                                    ),
-                                  ),
-                                );
-                              },
-                              leading: const Icon(Icons.call),
-                              title: const Text('Voice Call'),
-                            ),
-                          ],
-                        ),
+                                      builder: (context) => const AudioCallScreen(
+                                        callerName: '',
+                                      )));
+                            },
+                            leading: const Icon(Icons.call),
+                            title: const Text('Voice Call'),
+                          ),
+                        ],
                       );
                     },
                   );
                 },
                 icon: const Icon(Icons.add_ic_call_outlined),
               ),
-              // IconButton(
-              //   onPressed: () {
-              //     showModalBottomSheet(
-              //       context: context,
-              //       builder: (BuildContext context) {
-              //         return Column(
-              //           mainAxisSize: MainAxisSize.min,
-              //           children: [
-              //             ListTile(
-              //               onTap: () {
-              //                 Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                         builder: (context) => const VideoCallScreen(
-              //                               calleeName: '',
-              //                             )));
-              //               },
-              //               leading: const Icon(Icons.videocam),
-              //               title: const Text('Video Call'),
-              //             ),
-              //             ListTile(
-              //               onTap: () {
-              //                 Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                         builder: (context) => const AudioCallScreen(
-              //                           callerName: '',
-              //                         )));
-              //               },
-              //               leading: const Icon(Icons.call),
-              //               title: const Text('Voice Call'),
-              //             ),
-              //           ],
-              //         );
-              //       },
-              //     );
-              //   },
-              //   icon: const Icon(Icons.add_ic_call_outlined),
-              // ),
               PopupMenuButton<String>(
                 onSelected: (value) {
                   if (value == 'view_contact') {
@@ -421,13 +377,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: ListTile(
                       leading: Icon(Icons.block),
                       title: Text('Block User'),
-                    ),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'delete_user',
-                    child: ListTile(
-                      leading: Icon(Icons.delete),
-                      title: Text('Delete User'),
                     ),
                   ),
                 ],
@@ -472,11 +421,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
                     },
                     decoration: const InputDecoration(
-                        hintText: 'Message',
+                        hintText: 'Type Something...',
                         hintStyle: TextStyle(color: Colors.blueAccent),
                         border: InputBorder.none),
                   )),
+
                   IconButton(
+
                       onPressed: () {
                         _showBottomSheet();
                       },
@@ -499,6 +450,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   //   icon: const Icon(Icons.image,
                   //       color: Colors.blueAccent, size: 26),
                   // ),
+
 
                   IconButton(
                     onPressed: () async {
@@ -542,6 +494,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
 
   void _showBottomSheet() {
     showModalBottomSheet(
@@ -679,4 +632,5 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
   }
+
 }

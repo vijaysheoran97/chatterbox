@@ -35,6 +35,8 @@ class _DrawerPageState extends State<DrawerPage> {
 
   late String _selectedMode = 'light';
   bool _showThemeOptions = false;
+  bool _isProfessional = false;
+
 
   late User _currentUser; // To store the current user data
 
@@ -43,6 +45,15 @@ class _DrawerPageState extends State<DrawerPage> {
     super.initState();
     _loadThemePreference();
     _loadCurrentUser(); // Load current user when the widget initializes
+    // Fetch user's professional status from Firebase
+    fetchProfessionalStatus();
+  }
+
+  void fetchProfessionalStatus() async {
+    final userData = await APIs.firestore.collection('users').doc(widget.user.id).get();
+    setState(() {
+      _isProfessional = userData['isProfessional'] ?? false;
+    });
   }
 
   Future<void> _loadCurrentUser() async {
@@ -100,13 +111,26 @@ class _DrawerPageState extends State<DrawerPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.user.name,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  widget.user.name,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (_isProfessional)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 3),
+                                    child: Icon(
+                                      Icons.verified,
+                                      size: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ],
                         ),
