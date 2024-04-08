@@ -13,6 +13,9 @@ import 'package:http/http.dart';
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
+
+  static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   static FirebaseStorage storage = FirebaseStorage.instance;
   static late ChatUser me;
@@ -29,6 +32,7 @@ class APIs {
           "android_channel_id": "chats"
         },
       };
+
 
       var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
           headers: {
@@ -55,6 +59,16 @@ class APIs {
     }
   }
 
+
+
+  static Future<void> deleteToken(Messages messages) async {
+    await firestore
+        .collection('token/${getConversationID(messages.toId)}/tokens/')
+        .doc(messages.sent)
+        .delete();
+  }
+
+
   static Future<void> getFirebaseMessagingToken() async {
     await fMessaging.requestPermission();
 
@@ -65,6 +79,7 @@ class APIs {
       }
     });
   }
+
 
   static Future<bool> userExists(User user) async {
     if (user == null) return false; // Check if user is null
@@ -190,7 +205,18 @@ class APIs {
         .snapshots();
   }
 
-  static Future<void> sendMessage(ChatUser chatUser, String msg, Type type) async {
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllToken(
+      ChatUser user) {
+    return firestore
+        .collection('token/${getConversationID(user.id)}/tokens/')
+        .orderBy('sent', descending: true)
+        .snapshots();
+  }
+/// send  ************************************************************    Message
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
+
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -202,6 +228,38 @@ class APIs {
     final ref =
     firestore.collection('chats/${getConversationID(chatUser.id)}/messages/');
     await ref.doc(time).set(message.toJson()).then((value) => sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
+  }
+
+  /// send  ************************************************************    Token
+
+  static Future<void> sendToken(
+      ChatUser chatUser, String token,) async {
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+    final Messages messages = Messages(
+        toId: chatUser.id,
+        token: token,
+        read: '',
+        fromId: user.uid,
+        sent: time);
+    final ref = firestore
+        .collection('token/${getConversationID(chatUser.id)}/tokens/');
+    await ref.doc(time).set(messages.toJson()).then((value) =>
+        sendPushNotification(chatUser, token));
+  }
+
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getToken(
+      ChatUser user) {
+    return firestore
+        .collection('token/${getConversationID(user.id)}/tokens/')
+        .orderBy('sent', descending: true)
+        .snapshots();
+  }
+
+  static Future<String?> getFirebaseToken() async {
+    await firebaseMessaging.requestPermission();
+    String? token = await firebaseMessaging.getToken();
+    return token;
   }
 
   static Future<void> updateMessageReadStatus(Message message) async {

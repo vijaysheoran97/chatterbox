@@ -1,6 +1,5 @@
-import 'dart:async';
-import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
-import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
+import 'package:chatterbox/api/apis.dart';
+import 'package:chatterbox/models/message.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
@@ -9,8 +8,12 @@ import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 
 class VideoCallScreen extends StatefulWidget {
   final String calleeName;
+  String callToken;
+  final Messages messages;
 
-  const VideoCallScreen({Key? key, required this.calleeName}) : super(key: key);
+
+  VideoCallScreen({Key? key, required this.calleeName, required this.callToken, required this.messages})
+      : super(key: key);
 
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
@@ -31,19 +34,17 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   Future<void> initAgora() async {
     await [Permission.microphone, Permission.camera].request();
 
-    _engine = await RtcEngine.create(AppStringConstant.appId);
+    _engine = await RtcEngine.create('d95680fe3a6b466c8a2b778d1a5e4a06');
 
     _engine?.setEventHandler(
       RtcEngineEventHandler(
         joinChannelSuccess: (String channel, int uid, int elapsed) {
-          print("local user $uid joined channel$channel elapsed$elapsed");
           setState(() {
             _localUserJoined = true;
           });
         },
         userJoined: (int uid, int elapsed) {
           print("remote user $uid joined");
-          // 1545685673
           setState(() {
             _remoteUid = uid;
           });
@@ -56,21 +57,48 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
             _engine?.disableAudio();
             _engine?.leaveChannel();
           });
-          Navigator.pop(context);
+          // Corrected call to deleteToken method
+          // Assuming `Messages` class is defined elsewhere
+
+
+          // Messages messages =
+          //     Messages(toId: '', token: '', read: '', fromId: '', sent: '');
+          // APIs.deleteToken(messages);
+          // Navigator.pop(context);
         },
       ),
     );
+
     await _engine?.enableVideo();
     await _engine?.enableAudio();
-    await _engine?.joinChannel(
-        AppStringConstant.appToken, AppStringConstant.appChannelName, null, 0);
+    await _engine?.joinChannel(widget.callToken, 'Chatter Box', null, 0);
+  }
+
+  Future<void> handleTokenExpiration() async {
+    String newToken = await getNewToken();
+
+    if (newToken.isNotEmpty) {
+      setState(() {
+        widget.callToken = newToken;
+      });
+
+      await _engine?.joinChannel(widget.callToken, 'Chatter Box', null, 0);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Token expired. Call cannot be continued.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      Navigator.pop(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     image = ModalRoute.of(context)?.settings.arguments;
     double radius = 24;
-    print("_remoteUid:::$_remoteUid");
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -119,7 +147,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 20,
-                                color: AppColorConstant.black,
+                                color: Colors.black,
                               ),
                             ),
                             Card(
@@ -196,7 +224,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                               radius: 36,
                               backgroundColor: Colors.white,
                               child: GestureDetector(
-                                onTap: () {
+                                onTap: () async {
+                                  // await APIs.deleteToken(listToken.first);
+                                  await APIs.deleteToken(widget.messages);
                                   Navigator.pop(context);
                                   _engine?.leaveChannel();
                                 },
@@ -258,17 +288,6 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                               : const CircularProgressIndicator(),
                         ),
                       )),
-                  // Positioned(
-                  //     right: 20,
-                  //     bottom: MediaQuery.of(context).size.width / 2.5 + 80,
-                  //     child: Container(
-                  //       height: MediaQuery.of(context).size.width / 2.5,
-                  //       width: MediaQuery.of(context).size.width / 3,
-                  //       decoration: BoxDecoration(
-                  //           color: Colors.black,
-                  //           border: Border.all(color: Constant.primaryColor)),
-                  //       child: _remoteVideo(),
-                  //     )),
                 ],
               ),
             ),
@@ -279,16 +298,12 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   }
 
   Widget? _remoteVideo() {
-    print("_remoteUid:$_remoteUid");
-
     if (_remoteUid != null) {
-      setState(() {});
       return RtcRemoteView.SurfaceView(
         uid: _remoteUid!,
-        channelId: AppStringConstant.appChannelName,
+        channelId: 'Chatter Box',
       );
     }
-    setState(() {});
     return null;
   }
 
@@ -301,4 +316,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     _engine?.disableVideo();
     super.dispose();
   }
+
+  Future<String> getNewToken() async {
+    return 'Your New Token';
+  }
 }
+
