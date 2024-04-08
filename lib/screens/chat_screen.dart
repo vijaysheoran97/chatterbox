@@ -290,25 +290,22 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (firstMessage != null) {
                           return IconButton(
                             onPressed: () {
-
-              IconButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      ),
-                    ),
-
-                    builder: (BuildContext context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            onTap: () {
+                  // showModalBottomSheet(
+                  //   context: context,
+                  //
+                  //   shape: const RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.only(
+                  //       topLeft: Radius.circular(20.0),
+                  //       topRight: Radius.circular(20.0),
+                  //     ),
+                  //   ),
+                  //
+                  //   builder: (BuildContext context) {
+                  //     return Column(
+                  //       mainAxisSize: MainAxisSize.min,
+                  //       children: [
+                  //         ListTile(
+                  //           onTap: () {
 
                               Navigator.push(
                                 context,
@@ -440,6 +437,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: ListTile(
                       leading: Icon(Icons.block),
                       title: Text('Block User'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'delete_user',
+                    child: ListTile(
+                      leading: Icon(Icons.delete),
+                      title: Text('Delete User'),
                     ),
                   ),
                 ],
