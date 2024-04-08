@@ -257,10 +257,10 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              body: const TabBarView(
+              body: TabBarView(
                 children: [
                   HomeScreen(),
-                  StatusListPage(),
+                  StatusListPage(user: APIs.me), // Pass the user object received from the API
                   CallListPage(),
                 ],
               ),

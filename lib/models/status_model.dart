@@ -1,8 +1,8 @@
 class Status {
   final String id;
   final String text;
-  final String? imageUrl; // Nullable for image URL
-  final String? videoUrl; // Nullable for video URL
+  final String? imageUrl;
+  final String? videoUrl;
   final DateTime timestamp;
 
   Status({

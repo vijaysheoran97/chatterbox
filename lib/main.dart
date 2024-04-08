@@ -93,6 +93,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 _initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
