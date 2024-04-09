@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
@@ -30,8 +30,37 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FirebaseStorage storage = FirebaseStorage.instance;
 
+
+  void _pickAndUploadImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      try {
+        String? imageUrl = await _uploadFile(file);
+        if (imageUrl != null && imageUrl.isNotEmpty) {
+          String recipientId = 'recipient_user_id';
+          // Send the image URL to the recipient
+          // Here you can call your API method to send the image URL
+          print('Image uploaded successfully: $imageUrl');
+        } else {
+          print('Image upload failed or returned empty URL.');
+        }
+      } catch (e) {
+        print('Error uploading image: $e');
+      }
+    } else {
+      // User cancelled image picking
+      print('User cancelled image picking.');
+    }
+  }
+
   void _pickAndUploadAudio() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.audio);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.audio);
     if (result != null) {
       File file = File(result.files.single.path!);
       try {
@@ -49,7 +78,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _pickAndUploadVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.video);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.video);
     if (result != null) {
       File file = File(result.files.single.path!);
       try {
@@ -71,12 +101,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<String?> _uploadFile(File file) async {
     try {
-      String fileName = '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
+      String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
       Reference storageReference = storage.ref().child('uploads/$fileName');
       UploadTask uploadTask = storageReference.putFile(file);
       TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      String fileNameFromUrl = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
+      String fileNameFromUrl =
+          downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
 
       return fileNameFromUrl;
     } catch (e) {
@@ -84,7 +116,6 @@ class _ChatScreenState extends State<ChatScreen> {
       return null;
     }
   }
-
 
   List<Message> _list = [];
   List<Messages> listToken = [];
@@ -128,8 +159,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           final data = snapshot.data?.docs;
 
                           _list = data
-                              ?.map((e) => Message.fromJson(e.data()))
-                              .toList() ??
+                                  ?.map((e) => Message.fromJson(e.data()))
+                                  .toList() ??
                               [];
 
                           if (_list.isNotEmpty) {
@@ -161,7 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                       ),
@@ -220,9 +251,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: mq.height * .05,
                     height: mq.height * .05,
                     imageUrl:
-                    list.isNotEmpty ? list[0].image : widget.user.image,
+                        list.isNotEmpty ? list[0].image : widget.user.image,
                     errorWidget: (context, url, error) =>
-                    const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                        const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -239,13 +270,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     Text(
                       list.isNotEmpty
                           ? list[0].isOnline
-                          ? 'Online'
+                              ? 'Online'
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: list[0].lastActive)
                           : MyDateUtil.getLastActiveTime(
-                          context: context,
-                          lastActive: list[0].lastActive)
-                          : MyDateUtil.getLastActiveTime(
-                          context: context,
-                          lastActive: widget.user.lastActive),
+                              context: context,
+                              lastActive: widget.user.lastActive),
                       style: const TextStyle(fontSize: 13),
                     ),
                   ],
@@ -266,8 +297,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       final data = snapshot.data?.docs;
 
                       listToken = data
-                          ?.map((e) => Messages.fromJson(e.data()))
-                          .toList() ?? [];
+                              ?.map((e) => Messages.fromJson(e.data()))
+                              .toList() ??
+                          [];
 
                       if (listToken.isNotEmpty) {
                         print(
@@ -314,8 +346,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       final data = snapshot.data?.docs;
 
                       listToken = data
-                          ?.map((e) => Messages.fromJson(e.data()))
-                          .toList() ??
+                              ?.map((e) => Messages.fromJson(e.data()))
+                              .toList() ??
                           [];
                       if (listToken.isNotEmpty) {
                         print(
@@ -358,7 +390,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                          const AudioCallScreen(
+                                              const AudioCallScreen(
                                             callerName: '',
                                           ),
                                         ),
@@ -448,57 +480,49 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   Expanded(
                       child: TextField(
-                        controller: _textController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        onTap: () {
-                          if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
-                        },
-                        decoration: const InputDecoration(
-                            hintText: 'Type Something...',
-                            hintStyle: TextStyle(color: Colors.blueAccent),
-                            border: InputBorder.none),
+                    controller: _textController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    onTap: () {
+                      if (_showEmoji) setState(() => _showEmoji = !_showEmoji);
+                    },
+                    decoration: const InputDecoration(
+                        hintText: 'Type Something...',
+                        hintStyle: TextStyle(color: Colors.blueAccent),
+                        border: InputBorder.none),
+                  )),
+
+                  IconButton(
+                      onPressed: () {
+                        _showBottomSheet();
+                      },
+                      icon: const Icon(
+                        Icons.attach_file,
+                        color: Colors.blueAccent,
+                        size: 26,
                       )),
+
+                  // IconButton(
+                  //   onPressed: () async {
+                  //     final ImagePicker picker = ImagePicker();
+                  //     final XFile? image = await picker.pickImage(
+                  //         source: ImageSource.camera, imageQuality: 70);
+                  //     if (image != null) {
+                  //       log('Image Path:${image.path}');
+                  //       setState(() => _isUploading = true);
+                  //       await APIs.sendChatImage(widget.user, File(image.path));
+                  //       setState(() => _isUploading = false);
+                  //     }
+                  //   },
+                  //   icon: const Icon(Icons.camera_alt_rounded,
+                  //       color: Colors.blueAccent, size: 26),
+                  // ),
                   IconButton(
-                    onPressed: _pickAndUploadAudio,
-                    icon: const Icon(Icons.audiotrack,color:Colors.blueAccent,),
-                  ),
-                  IconButton(
-                    onPressed: _pickAndUploadVideo,
-                    icon: const Icon(Icons.video_call,color:Colors.blueAccent,),
+                    onPressed: _pickAndUploadImage,
+                    icon: const Icon(Icons.image, color: Colors.blueAccent, size: 26),
                   ),
 
-                  IconButton(
-                    onPressed: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final List<XFile> images =
-                      await picker.pickMultiImage(imageQuality: 70);
-                      for (var i in images) {
-                        setState(() => _isUploading = true);
-                        await APIs.sendChatImage(widget.user, File(i.path));
-                        setState(() => _isUploading = false);
-                      }
-                    },
-                    icon: const Icon(Icons.image,
-                        color: Colors.blueAccent, size: 26),
-                  ),
-
-                  IconButton(
-                    onPressed: () async {
-                      final ImagePicker picker = ImagePicker();
-                      final XFile? image = await picker.pickImage(
-                          source: ImageSource.camera, imageQuality: 70);
-                      if (image != null) {
-                        print('Image Path:${image.path}');
-                        setState(() => _isUploading = true);
-                        await APIs.sendChatImage(widget.user, File(image.path));
-                        setState(() => _isUploading = false);
-                      }
-                    },
-                    icon: const Icon(Icons.camera_alt_rounded,
-                        color: Colors.blueAccent, size: 26),
-                  ),
-
+                  //adding some space
                   SizedBox(width: mq.width * .02),
                 ],
               ),
@@ -515,7 +539,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
             minWidth: 0,
             padding:
-            const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
             shape: const CircleBorder(),
             color: Colors.green,
             child: const Icon(Icons.send, color: Colors.white, size: 28),
@@ -524,5 +548,143 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-}
 
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      builder: (_) {
+        return ListView(
+          shrinkWrap: true,
+          padding:
+              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+                        for (var i in images) {
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(widget.user, File(i.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      child: Image.asset(
+                        "assets/images/gallery (1).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Gallery',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        _pickAndUploadAudio();
+                      },
+                      child: Image.asset(
+                        "assets/images/audio-headset (1).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Audio',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+                        if (image != null) {
+                          log('Image Path:${image.path}');
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(
+                              widget.user, File(image.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
+                      child: Image.asset(
+                        "assets/images/photo.png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Camera',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: mq.width * .08),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Image.asset(
+                        "assets/images/contact.png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Contact',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Image.asset(
+                        "assets/images/circle (2).png",
+                        width: mq.width * .3 * 0.5,
+                        height: mq.height * .15 * 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Location',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+}

@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 class APIs {
@@ -169,7 +170,7 @@ class APIs {
         createdAt: time,
         isOnline: false,
         lastActive: time,
-        pushToken: '');
+        pushToken: '', isProfessional: false);
 
     return await firestore
         .collection('users')
@@ -415,5 +416,27 @@ class APIs {
     }
   }
 
+
+
+
+  static UploadTask? uploadFiles(String destination, File file) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      return ref.putFile(file);
+    } on FirebaseException catch (e) {
+      return null;
+    }
+  }
+
+  static UploadTask? uploadBytes(String destination, Uint8List data) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      return ref.putData(data);
+    } on FirebaseException catch (e) {
+      return null;
+    }
+  }
 }
 
