@@ -55,6 +55,7 @@ dependencies:
   fluttertoast: ^8.2.4
   get: ^4.6.6
   url_launcher: ^6.2.2
+  file_picker: ^6.1.1
 
 
 
