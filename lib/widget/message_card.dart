@@ -1,3 +1,4 @@
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
@@ -21,7 +22,6 @@ import '../main.dart';
 import '../models/chat_user_model.dart';
 import '../models/message.dart';
 
-
 class MessageCard extends StatefulWidget {
   const MessageCard({Key? key, required this.message}) : super(key: key);
 
@@ -32,6 +32,7 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
+
   late bool isMe;
   late AudioPlayer audioPlayer;
   String audioPath = '';
@@ -54,6 +55,11 @@ class _MessageCardState extends State<MessageCard> {
     audioPlayer.dispose();
     super.dispose();
   }
+
+
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +93,7 @@ class _MessageCardState extends State<MessageCard> {
               ),
             ),
             child: _buildMessageContent(),
+
           ),
         ),
         Padding(
@@ -132,6 +139,7 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30),
               ),
             ),
+
             child: _buildMessageContent(),
           ),
         ),
@@ -162,6 +170,7 @@ class _MessageCardState extends State<MessageCard> {
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(50)
+
               ),
                 child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
           ),
@@ -246,6 +255,7 @@ class _MessageCardState extends State<MessageCard> {
                 vertical: mq.height * .015,
                 horizontal: mq.width * .4,
               ),
+
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(8),
@@ -303,6 +313,7 @@ class _MessageCardState extends State<MessageCard> {
               ),
             if (widget.message.type == Type.text && isMe)
               _OptionItem(
+
                 icon: const Icon(Icons.edit, color: Colors.blue, size: 26),
                 name: 'Edit Message',
                 onTap: () {
@@ -341,6 +352,7 @@ class _MessageCardState extends State<MessageCard> {
         );
       },
     );
+
   }
 
   void _showMessageUpdateDialog() {
@@ -391,6 +403,7 @@ class _MessageCardState extends State<MessageCard> {
       ),
     );
   }
+
 }
 
 class _OptionItem extends StatelessWidget {
@@ -410,6 +423,7 @@ class _OptionItem extends StatelessWidget {
           children: [
             icon,
             Flexible(
+
               child: Text(
                 '    $name',
                 style: const TextStyle(fontSize: 15, letterSpacing: 0.5),
@@ -421,4 +435,5 @@ class _OptionItem extends StatelessWidget {
     );
   }
 }
+
 

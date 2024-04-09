@@ -17,6 +17,7 @@ class Message {
     required this.fromId,
     required this.sent,
     this.audioUrl, // New field for audio URL
+
   });
 
   Message.fromJson(Map<String, dynamic> json)
@@ -52,3 +53,4 @@ class Message {
     }
   }
 }
+
