@@ -498,6 +498,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       },
                       icon: const Icon(
                         Icons.attach_file,
+
                         color: Colors.blueAccent,
                         size: 26,
                       )),
