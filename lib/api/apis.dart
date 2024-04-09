@@ -11,17 +11,55 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
 
-
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   static FirebaseStorage storage = FirebaseStorage.instance;
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
   static late ChatUser me;
 
   static User get user => auth.currentUser!;
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+
+
+
+  Future<File?> downloadFile(String fileUrl, String fileName) async {
+    try {
+      final Directory tempDir = Directory.systemTemp;
+      final File file = File('${tempDir.path}/$fileName');
+      if (await file.exists()) {
+        return file;
+      }
+      await storage.refFromURL(fileUrl).writeToFile(file);
+      return file;
+    } catch (e) {
+      print('Error downloading file: $e');
+      return null;
+    }
+  }
+
+  ///
+  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  Future<void> uplaodFile(String fileName, String filePath) async {
+    File file = File(filePath);
+    try {
+      await firebaseStorage.ref('Files/$fileName').putFile(file).then((p0) {
+        log("Uploaded");
+      });
+    } catch (e) {
+      log("Error: $e");
+    }
+  }
+
+  Future<ListResult> listFiles() async {
+    ListResult listResults = await firebaseStorage.ref("Files").listAll();
+    return listResults;
+  }
+
+  ///
+
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
     try {
@@ -34,12 +72,11 @@ class APIs {
         },
       };
 
-
       var res = await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.authorizationHeader:
-            'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
+                'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
           },
           body: jsonEncode(body));
       log('Response status: ${res.statusCode}');
@@ -48,6 +85,7 @@ class APIs {
       log('\nsendPushNotificationE: $e');
     }
   }
+
   static Future<void> deleteMessage(Message message) async {
     await firestore
         .collection('chats/${getConversationID(message.toId)}/messages/')
@@ -59,15 +97,12 @@ class APIs {
     }
   }
 
-
-
   static Future<void> deleteToken(Messages messages) async {
     await firestore
         .collection('token/${getConversationID(messages.toId)}/tokens/')
         .doc(messages.sent)
         .delete();
   }
-
 
   static Future<void> getFirebaseMessagingToken() async {
     await fMessaging.requestPermission();
@@ -80,10 +115,7 @@ class APIs {
     });
   }
 
-
   static Future<bool> userExists(User user) async {
-    if(user == null) return false; // Check if user is null
-
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
 
@@ -96,7 +128,6 @@ class APIs {
     log('data: ${data.docs}');
 
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
-
       log('user exists: ${data.docs.first.data()}');
 
       firestore
@@ -108,7 +139,6 @@ class APIs {
 
       return true;
     } else {
-
       return false;
     }
   }
@@ -161,17 +191,34 @@ class APIs {
     });
   }
 
+
+  static Future<void> sendMessageWithFileUrl(
+      String recipientId, String fileUrl, Type fileType) async {
+    print('Sending message with file URL to $recipientId: $fileUrl');
+  }
+
+  static Future<String?> uploadFile(File file) async {
+    try {
+      print('Uploading file: ${file.path}');
+      return 'https://example.com/file-url';
+    } catch (e) {
+      print('Error uploading file: $e');
+      return null;
+    }
+  }
+
+
   static Future<void> updateProfilePicture(File file) async {
     final ext = file.path.split('.').last;
     log("Extension: $ext");
     final ref = storage.ref().child("profile_picture/${user.uid}.$ext");
     await ref
         .putFile(
-      file,
-      SettableMetadata(contentType: 'image/$ext'),
-    )
+          file,
+          SettableMetadata(contentType: 'image/$ext'),
+        )
         .then((p0) =>
-    {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
+            {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
     me.image = await ref.getDownloadURL();
     await firestore.collection('users').doc(user.uid).update({
       'image': me.image,
@@ -214,7 +261,8 @@ class APIs {
         .orderBy('sent', descending: true)
         .snapshots();
   }
-/// send  ************************************************************    Message
+
+  /// send  ************************************************************    Message
   static Future<void> sendMessage(
       ChatUser chatUser, String msg, Type type) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -234,7 +282,9 @@ class APIs {
   /// send  ************************************************************    Token
 
   static Future<void> sendToken(
-      ChatUser chatUser, String token,) async {
+    ChatUser chatUser,
+    String token,
+  ) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Messages messages = Messages(
         toId: chatUser.id,
@@ -242,15 +292,15 @@ class APIs {
         read: '',
         fromId: user.uid,
         sent: time);
-    final ref = firestore
-        .collection('token/${getConversationID(chatUser.id)}/tokens/');
-    await ref.doc(time).set(messages.toJson()).then((value) =>
-        sendPushNotification(chatUser, token));
+    final ref =
+        firestore.collection('token/${getConversationID(chatUser.id)}/tokens/');
+    await ref
+        .doc(time)
+        .set(messages.toJson())
+        .then((value) => sendPushNotification(chatUser, token));
   }
 
-
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getToken(
-      ChatUser user) {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getToken(ChatUser user) {
     return firestore
         .collection('token/${getConversationID(user.id)}/tokens/')
         .orderBy('sent', descending: true)
@@ -279,6 +329,7 @@ class APIs {
         .snapshots();
   }
 
+
   static Future<void> sendChatImage(ChatUser chatUser, File file) async {
     //getting image file extension
     final ext = file.path.split('.').last;
@@ -294,7 +345,6 @@ class APIs {
       log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
 
-
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, Type.image);
   }
@@ -303,10 +353,67 @@ class APIs {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
   }
+
   static Future<void> updateMessage(Message message, String updatedMsg) async {
     await firestore
         .collection('chats/${getConversationID(message.toId)}/messages/')
         .doc(message.sent)
         .update({'msg': updatedMsg});
   }
+
+
+  // Send audio call request
+  static Future<void> sendAudioCallRequest(ChatUser chatUser) async {
+    try {
+      log('Sending audio call request to ${chatUser.name}');
+    } catch (e) {
+      log('Error sending audio call request: $e');
+    }
+  }
+
+  // Send video call request
+  static Future<void> sendVideoCallRequest(ChatUser chatUser) async {
+    try {
+      log('Sending video call request to ${chatUser.name}');
+    } catch (e) {
+      log('Error sending video call request: $e');
+    }
+  }
+
+
+
+
+  static Future<void> uploadAudio(File file) async {
+    try {
+      String? uid = _auth.currentUser?.uid;
+      if (uid == null) {
+        throw Exception('User not authenticated');
+      }
+      String fileName = 'audio_${DateTime.now().millisecondsSinceEpoch}.mp3';
+      UploadTask task = storage.ref('audio/$uid/$fileName').putFile(file);
+      await task.whenComplete(() => null);
+      String downloadUrl = await storage.ref('audio/$uid/$fileName').getDownloadURL();
+      print('Audio file uploaded: $downloadUrl');
+    } catch (e) {
+      print('Error uploading audio file: $e');
+    }
+  }
+
+  static Future<void> uploadVideo(File file) async {
+    try {
+      String? uid = _auth.currentUser?.uid;
+      if (uid == null) {
+        throw Exception('User not authenticated');
+      }
+      String fileName = 'video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+      UploadTask task = storage.ref('video/$uid/$fileName').putFile(file);
+      await task.whenComplete(() => null);
+      String downloadUrl = await storage.ref('video/$uid/$fileName').getDownloadURL();
+      print('Video file uploaded: $downloadUrl');
+    } catch (e) {
+      print('Error uploading video file: $e');
+    }
+  }
+
 }
+

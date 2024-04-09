@@ -36,7 +36,7 @@ class Message {
   }
 }
 
-enum Type { text, image, token }
+enum Type { text, image, token, audio, video }
 
 
 
