@@ -3,8 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../api/apis.dart';
+import '../../models/chat_user_model.dart';
+
 class StatusListPage extends StatefulWidget {
-  const StatusListPage({Key? key}) : super(key: key);
+  final ChatUser user;
+  const StatusListPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<StatusListPage> createState() => _StatusListPageState();
@@ -12,6 +16,30 @@ class StatusListPage extends StatefulWidget {
 
 class _StatusListPageState extends State<StatusListPage> {
   final TextEditingController _statusController = TextEditingController();
+
+
+  bool _isProfessional = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch user's professional status from Firebase
+    fetchProfessionalStatus();
+  }
+
+  void fetchProfessionalStatus() async {
+    final userData = await APIs.firestore.collection('users').doc(widget.user.id).get();
+    if (userData.exists) {
+      setState(() {
+        _isProfessional = userData.data()?['isProfessional'] ?? false;
+      });
+    } else {
+      // Handle the case where the document doesn't exist or "isProfessional" field is missing
+      print('User data not found or isProfessional field missing');
+    }
+  }
+
+
 
 
   void uploadStatus(BuildContext context) {
@@ -155,7 +183,7 @@ class _StatusListPageState extends State<StatusListPage> {
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return Center(child: const CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
@@ -227,7 +255,7 @@ class _StatusListPageState extends State<StatusListPage> {
                                     if (userSnapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       return ListTile(
-                                        title: CircularProgressIndicator(),
+                                        title: Center(child: CircularProgressIndicator()),
                                       );
                                     }
                                     if (userSnapshot.hasError) {
@@ -272,13 +300,11 @@ class _StatusListPageState extends State<StatusListPage> {
     );
   }
 
-  Widget _buildStatusTile(DocumentSnapshot status, String userName,
-      String? profileImageUrl) {
+  Widget _buildStatusTile(DocumentSnapshot status, String userName, String? profileImageUrl) {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     // Check if the current user ID matches the user ID of the status
-    final bool isCurrentUserStatus = currentUser != null &&
-        currentUser.uid == status['userId'];
+    final bool isCurrentUserStatus = currentUser != null && currentUser.uid == status['userId'];
 
     return GestureDetector(
       onTap: () {
@@ -290,35 +316,38 @@ class _StatusListPageState extends State<StatusListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Status'),
-                  if (isCurrentUserStatus) // Show delete icon only for current user's status
-                    IconButton(onPressed: () {
-                      _deleteStatus(status);
-                      Navigator.pop(context);
-                    }, icon: Icon(Icons.delete, color: Colors.redAccent,))
+                  if (isCurrentUserStatus) // Show delete icon only for the current user's status
+                    IconButton(
+                      onPressed: () {
+                        _deleteStatus(status);
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.delete, color: Colors.redAccent),
+                    )
                 ],
               ),
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(status['text'], style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 25)),
+                  Text(
+                    status['text'],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                  ),
                   SizedBox(height: 10),
-                  Text('Posted by: $userName', style: TextStyle(color: Theme
-                      .of(context)
-                      .colorScheme
-                      .secondary)),
+                  Text(
+                    'Posted by: $userName',
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
                   SizedBox(height: 5),
-                  Text('Date: ${_formatDate(status['timestamp'])}',
-                      style: TextStyle(color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary)),
-                  Text('Time: ${_formatTime(status['timestamp'])}',
-                      style: TextStyle(color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary)),
+                  Text(
+                    'Date: ${_formatDate(status['timestamp'])}',
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
+                  Text(
+                    'Time: ${_formatTime(status['timestamp'])}',
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ],
               ),
               actions: [
@@ -327,10 +356,14 @@ class _StatusListPageState extends State<StatusListPage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close', style: TextStyle(color: Theme
-                      .of(context)
-                      .colorScheme
-                      .tertiary, fontSize: 16, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    'Close',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -339,23 +372,53 @@ class _StatusListPageState extends State<StatusListPage> {
       },
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: profileImageUrl != null ? NetworkImage(
-              profileImageUrl) : null,
+          backgroundImage: profileImageUrl != null ? NetworkImage(profileImageUrl) : null,
           child: profileImageUrl == null ? Icon(Icons.account_circle) : null,
         ),
-        title: Text(userName),
+        title: Row(
+          children: [
+            Text(userName),
+            FutureBuilder(
+              future: FirebaseFirestore.instance.collection('users').doc(status['userId']).get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(); // Return an empty widget while loading
+                }
+                if (snapshot.hasError || !snapshot.data!.exists) {
+                  return SizedBox(); // Return an empty widget if user document not found
+                }
+                final userData = snapshot.data!.data() as Map<String, dynamic>?; // Cast userData to Map<String, dynamic>?
+                final bool isProfessional = userData?['isProfessional'] ?? false;
+
+                if (isProfessional) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 3),
+                    child: Icon(
+                      Icons.verified,
+                      size: 16,
+                      color: Colors.blue,
+                    ),
+                  );
+                } else {
+                  return SizedBox(); // Return an empty widget if user is not professional
+                }
+              },
+            ),
+          ],
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(status['text'], style: TextStyle(color: Theme
-                .of(context)
-                .colorScheme
-                .secondary)),
+            Text(
+              status['text'],
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ),
           ],
         ),
       ),
     );
   }
+
 
 
   String _formatDate(Timestamp timestamp) {
