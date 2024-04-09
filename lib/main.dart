@@ -93,3 +93,4 @@ _initializeFirebase() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
+

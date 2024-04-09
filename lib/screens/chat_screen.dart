@@ -276,6 +276,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (firstMessage != null) {
                           return IconButton(
                             onPressed: () {
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -403,6 +404,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: ListTile(
                       leading: Icon(Icons.block),
                       title: Text('Block User'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'delete_user',
+                    child: ListTile(
+                      leading: Icon(Icons.delete),
+                      title: Text('Delete User'),
                     ),
                   ),
                 ],
