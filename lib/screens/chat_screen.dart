@@ -1,7 +1,6 @@
+
 import 'dart:developer';
-
 import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
@@ -33,7 +32,66 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
+  void _pickAndUploadAudio() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.audio);
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      try {
+        String? fileUrl = await _uploadFile(file);
+        if (fileUrl != null && fileUrl.isNotEmpty) {
+          String recipientId = 'recipient_user_id';
+          await APIs.sendMessageWithFileUrl(recipientId, fileUrl, Type.audio);
+        } else {
+          print('Audio file upload failed or returned empty URL.');
+        }
+      } catch (e) {
+        print('Error uploading audio file: $e');
+      }
+    }
+  }
+
+  void _pickAndUploadVideo() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.video);
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      try {
+        String? fileUrl = await _uploadFile(file);
+        if (fileUrl != null && fileUrl.isNotEmpty) {
+          String recipientId = 'recipient_user_id';
+          await APIs.sendMessageWithFileUrl(recipientId, fileUrl, Type.video);
+          print('Video file sent successfully!');
+        } else {
+          print('Video file upload failed or returned empty URL.');
+        }
+      } catch (e) {
+        print('Error uploading video file: $e');
+      }
+    } else {
+      print('User cancelled video picking.');
+    }
+  }
+
+  Future<String?> _uploadFile(File file) async {
+    try {
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
+      Reference storageReference = storage.ref().child('uploads/$fileName');
+      UploadTask uploadTask = storageReference.putFile(file);
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      String fileNameFromUrl = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
+
+      return fileNameFromUrl;
+    } catch (e) {
+      print('Error uploading file: $e');
+      return null;
+    }
+  }
+
+
   List<Message> _list = [];
+  List<Messages> listToken = [];
   final _textController = TextEditingController();
   bool _showEmoji = false, _isUploading = false;
   bool _isRecording = false;
@@ -240,6 +298,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
+
                       ),
                     ),
                   _chatInput(),
@@ -286,9 +345,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
-  // bottom chat input field
-
   Widget _appBar() {
     return InkWell(
       onTap: () {
@@ -321,9 +377,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: mq.height * .05,
                     height: mq.height * .05,
                     imageUrl:
-                        list.isNotEmpty ? list[0].image : widget.user.image,
+                    list.isNotEmpty ? list[0].image : widget.user.image,
                     errorWidget: (context, url, error) =>
-                        const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                    const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -340,13 +396,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     Text(
                       list.isNotEmpty
                           ? list[0].isOnline
-                              ? 'Online'
-                              : MyDateUtil.getLastActiveTime(
-                                  context: context,
-                                  lastActive: list[0].lastActive)
+                          ? 'Online'
                           : MyDateUtil.getLastActiveTime(
-                              context: context,
-                              lastActive: widget.user.lastActive),
+                          context: context,
+                          lastActive: list[0].lastActive)
+                          : MyDateUtil.getLastActiveTime(
+                          context: context,
+                          lastActive: widget.user.lastActive),
                       style: const TextStyle(fontSize: 13),
                     ),
                   ],
@@ -354,6 +410,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
             actions: [
+
               IconButton(
                 onPressed: () {
                   showModalBottomSheet(
@@ -390,16 +447,131 @@ class _ChatScreenState extends State<ChatScreen> {
                                           const AudioCallScreen(
                                             callerName: '',
                                           )));
+
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: APIs.getToken(widget.user),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const SizedBox();
+
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+
+                      listToken = data
+                          ?.map((e) => Messages.fromJson(e.data()))
+                          .toList() ?? [];
+
+                      if (listToken.isNotEmpty) {
+                        print(
+                            "${listToken[0].token}00000000000000000000000000000000000000000000000");
+                        final firstMessage = listToken.first;
+                        if (firstMessage != null) {
+                          return IconButton(
+                            onPressed: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VideoCallScreen(
+                                    calleeName: '',
+                                    callToken: firstMessage.token,
+                                    messages: firstMessage,
+                                  ),
+                                ),
+                              );
                             },
-                            leading: const Icon(Icons.call),
-                            title: const Text('Voice Call'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                            icon: const Icon(Icons.call),
+                          );
+                        } else {
+                          print("First message is null");
+                          return const SizedBox();
+                        }
+                      } else {
+                        print("listToken is empty");
+                        return const SizedBox();
+                      }
+                  }
                 },
-                icon: const Icon(Icons.add_ic_call_outlined),
+              ),
+              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: APIs.getToken(widget.user), // Use getAllToken stream
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const SizedBox();
+
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+
+                      listToken = data
+                          ?.map((e) => Messages.fromJson(e.data()))
+                          .toList() ??
+                          [];
+                      if (listToken.isNotEmpty) {
+                        print(
+                            "${listToken[0].token}00000000000000000000000000000000000000000000000");
+                      } else {
+                        print("listToken is empty");
+                      }
+
+                      return IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    onTap: () async {
+                                      await APIs.sendToken(widget.user,
+                                          "007eJxTYJBgstH4oDD72pXlgd8zk07fF5xx49U2OY5t3anqHkJTkiwUGFIsTc0sDNJSjRPNkkzMzJItEo2SzM0tUgwTTVNNEg3MlCz40hoCGRmmpCxlZGSAQBCfm8E5I7GkJLVIwSm/goEBAM8GIA8=");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => VideoCallScreen(
+                                            calleeName: '',
+                                            callToken: listToken.isNotEmpty
+                                                ? listToken[0].token
+                                                : '',
+                                            messages: listToken.first,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    leading: const Icon(Icons.videocam),
+                                    title: const Text('Video Call'),
+                                  ),
+                                  ListTile(
+                                    onTap: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                          const AudioCallScreen(
+                                            callerName: '',
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    leading: const Icon(Icons.call),
+                                    title: const Text('Voice Call'),
+                                  ),
+                                ],
+                              );
+
+                            },
+                          );
+                        },
+                        icon: const Icon(Icons.add_ic_call_outlined),
+                      );
+                  }
+                },
               ),
               PopupMenuButton<String>(
                 onSelected: (value) {
@@ -428,6 +600,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: ListTile(
                       leading: Icon(Icons.block),
                       title: Text('Block User'),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'delete_user',
+                    child: ListTile(
+                      leading: Icon(Icons.delete),
+                      title: Text('Delete User'),
                     ),
                   ),
                 ],
@@ -464,6 +643,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
 
                   Expanded(
+
                     child: TextField(
                       controller: _textController,
                       keyboardType: TextInputType.multiline,
@@ -490,6 +670,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       color: Colors.blueAccent,
                       size: 26,
                     ),
+
                   ),
 
                   IconButton(
@@ -498,7 +679,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       final XFile? image = await picker.pickImage(
                           source: ImageSource.camera, imageQuality: 70);
                       if (image != null) {
-                        log('Image Path:${image.path}');
+                        print('Image Path:${image.path}');
                         setState(() => _isUploading = true);
                         await APIs.sendChatImage(widget.user, File(image.path));
                         setState(() => _isUploading = false);
@@ -507,16 +688,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     icon: const Icon(Icons.camera_alt_rounded,
                         color: Colors.blueAccent, size: 26),
                   ),
-
-                  // Adding some space
                   SizedBox(width: mq.width * .02),
                 ],
               ),
             ),
-          ),
-
-
-          // Send message button
           _textController.text.isEmpty
               ? GestureDetector(
             onLongPressStart: (_) {
@@ -527,6 +702,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 startRecording();
               });
             },
+
             onLongPressEnd: (_) {
               setState(() {
                 _isRecording = false;
@@ -574,6 +750,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
+
           )
               : Container(
             decoration: BoxDecoration(
@@ -595,6 +772,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
 
 
   void _showBottomSheet() {
@@ -769,4 +947,6 @@ class _ChatScreenState extends State<ChatScreen> {
   //     print('Error sending message: $e');
   //   }
   // }
+
 }
+
