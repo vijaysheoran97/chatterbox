@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -161,15 +162,21 @@ class APIs {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final chatUser = ChatUser(
-        id: user.uid,
-        name: user.displayName.toString(),
-        email: user.email.toString(),
-        about: "Hey, I'm using Chatter Box!",
-        image: user.photoURL.toString(),
-        createdAt: time,
-        isOnline: false,
-        lastActive: time,
-        pushToken: '');
+
+      id: user.uid,
+      name: user.displayName.toString(),
+      email: user.email.toString(),
+      about: "Hey, I'm using Chatter Box!",
+      image: user.photoURL.toString(),
+      createdAt: time,
+      isOnline: false,
+      lastActive: time,
+      pushToken: '',
+      isProfessional: false,
+      audioUrl: '',
+      audioDuration: null, // Initializing isProfessional
+    );
+
 
     return await firestore
         .collection('users')
@@ -312,6 +319,8 @@ class APIs {
     String? token = await firebaseMessaging.getToken();
     return token;
   }
+
+
 
   static Future<void> updateMessageReadStatus(Message message) async {
     firestore
