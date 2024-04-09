@@ -1,6 +1,8 @@
 
 import 'dart:developer';
+
 import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
@@ -345,6 +347,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+
   Widget _appBar() {
     return InkWell(
       onTap: () {
@@ -448,6 +451,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                             callerName: '',
                                           )));
 
+
               StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: APIs.getToken(widget.user),
                 builder: (context, snapshot) {
@@ -482,6 +486,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                 ),
                               );
+
                             },
                             icon: const Icon(Icons.call),
                           );
@@ -661,6 +666,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
 
+
                   IconButton(
                     onPressed: () {
                       _showBottomSheet();
@@ -688,6 +694,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     icon: const Icon(Icons.camera_alt_rounded,
                         color: Colors.blueAccent, size: 26),
                   ),
+
                   SizedBox(width: mq.width * .02),
                 ],
               ),
@@ -703,6 +710,17 @@ class _ChatScreenState extends State<ChatScreen> {
               });
             },
 
+
+          _textController.text.isEmpty
+              ? GestureDetector(
+            onLongPressStart: (_) {
+              setState(() {
+                _isRecording = true;
+                // Start recording audio
+                // Start your recording logic here
+                startRecording();
+              });
+            },
             onLongPressEnd: (_) {
               setState(() {
                 _isRecording = false;
@@ -713,6 +731,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 // Send your recorded audio here
               });
             },
+
             child: _isRecording
                 ? Container(
               height: 60,

@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/tau.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
@@ -55,7 +56,9 @@ class _MessageCardState extends State<MessageCard> {
     super.dispose();
   }
 
+
   FirebaseStorage storage = FirebaseStorage.instance;
+
 
 
   @override
@@ -202,7 +205,6 @@ class _MessageCardState extends State<MessageCard> {
   }
 
 
-
   void playRecording(String audioPath) async {
     try {
       final audioplayers.UrlSource urlSource = audioplayers.UrlSource(audioPath);
@@ -234,7 +236,6 @@ class _MessageCardState extends State<MessageCard> {
     }
   }
 
-
   void _showBottomSheet(bool isMe) {
     showModalBottomSheet(
       context: context,
@@ -254,6 +255,7 @@ class _MessageCardState extends State<MessageCard> {
                 vertical: mq.height * .015,
                 horizontal: mq.width * .4,
               ),
+
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(8),
