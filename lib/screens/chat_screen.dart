@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
@@ -30,92 +31,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   FirebaseStorage storage = FirebaseStorage.instance;
 
-
-  void _pickAndUploadImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
-
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      try {
-        String? imageUrl = await _uploadFile(file);
-        if (imageUrl != null && imageUrl.isNotEmpty) {
-          String recipientId = 'recipient_user_id';
-          // Send the image URL to the recipient
-          // Here you can call your API method to send the image URL
-          print('Image uploaded successfully: $imageUrl');
-        } else {
-          print('Image upload failed or returned empty URL.');
-        }
-      } catch (e) {
-        print('Error uploading image: $e');
-      }
-    } else {
-      // User cancelled image picking
-      print('User cancelled image picking.');
-    }
-  }
-
-  void _pickAndUploadAudio() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.audio);
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      try {
-        String? fileUrl = await _uploadFile(file);
-        if (fileUrl != null && fileUrl.isNotEmpty) {
-          String recipientId = 'recipient_user_id';
-          await APIs.sendMessageWithFileUrl(recipientId, fileUrl, Type.audio);
-        } else {
-          print('Audio file upload failed or returned empty URL.');
-        }
-      } catch (e) {
-        print('Error uploading audio file: $e');
-      }
-    }
-  }
-
-  void _pickAndUploadVideo() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.video);
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      try {
-        String? fileUrl = await _uploadFile(file);
-        if (fileUrl != null && fileUrl.isNotEmpty) {
-          String recipientId = 'recipient_user_id';
-          await APIs.sendMessageWithFileUrl(recipientId, fileUrl, Type.video);
-          print('Video file sent successfully!');
-        } else {
-          print('Video file upload failed or returned empty URL.');
-        }
-      } catch (e) {
-        print('Error uploading video file: $e');
-      }
-    } else {
-      print('User cancelled video picking.');
-    }
-  }
-
-  Future<String?> _uploadFile(File file) async {
-    try {
-      String fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
-      Reference storageReference = storage.ref().child('uploads/$fileName');
-      UploadTask uploadTask = storageReference.putFile(file);
-      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      String fileNameFromUrl =
-          downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
-
-      return fileNameFromUrl;
-    } catch (e) {
-      print('Error uploading file: $e');
-      return null;
-    }
-  }
 
   List<Message> _list = [];
   List<Messages> listToken = [];
@@ -498,7 +413,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       },
                       icon: const Icon(
                         Icons.attach_file,
-
                         color: Colors.blueAccent,
                         size: 26,
                       )),
@@ -518,10 +432,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   //   icon: const Icon(Icons.camera_alt_rounded,
                   //       color: Colors.blueAccent, size: 26),
                   // ),
-                  IconButton(
-                    onPressed: _pickAndUploadImage,
-                    icon: const Icon(Icons.image, color: Colors.blueAccent, size: 26),
-                  ),
+                  // IconButton(
+                  //   onPressed: _pickAndUploadImage,
+                  //   icon: const Icon(Icons.image,
+                  //       color: Colors.blueAccent, size: 26),
+                  // ),
 
                   //adding some space
                   SizedBox(width: mq.width * .02),
@@ -562,8 +477,7 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (_) {
         return ListView(
           shrinkWrap: true,
-          padding:
-              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+          padding: EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -573,12 +487,24 @@ class _ChatScreenState extends State<ChatScreen> {
                     GestureDetector(
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
-                        final List<XFile> images =
-                            await picker.pickMultiImage(imageQuality: 70);
-                        for (var i in images) {
-                          setState(() => _isUploading = true);
-                          await APIs.sendChatImage(widget.user, File(i.path));
-                          setState(() => _isUploading = false);
+                        final List<XFile> mediaFiles = await picker.pickMultiImage(
+                          imageQuality: 70,
+                          maxWidth: 800,
+                        );
+
+                        for (var mediaFile in mediaFiles) {
+                          if (mediaFile.path.contains('.mp4')) {
+                            setState(() => _isUploading = true);
+                            await APIs.sendChatVideo(widget.user, File(mediaFile.path));
+                            setState(() => _isUploading = false);
+
+
+
+                          } else {
+                            setState(() => _isUploading = true);
+                            await APIs.sendChatImage(widget.user, File(mediaFile.path));
+                            setState(() => _isUploading = false);
+                          }
                         }
                       },
                       child: Image.asset(
@@ -598,7 +524,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        _pickAndUploadAudio();
+                        FilePickerResult? result =
+                        await FilePicker.platform.pickFiles(type: FileType.audio);
+                        if (result != null){
+                        File file = File(result.files.single.path!);
+                          log('Video Path: ${file.path}');
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatAudio(
+                              widget.user, File(file.path));
+                          setState(() => _isUploading = false);
+                        }
                       },
                       child: Image.asset(
                         "assets/images/audio-headset (1).png",
@@ -621,11 +556,24 @@ class _ChatScreenState extends State<ChatScreen> {
                         final XFile? image = await picker.pickImage(
                             source: ImageSource.camera, imageQuality: 70);
                         if (image != null) {
-                          log('Image Path:${image.path}');
+                          log('Image Path: ${image.path}');
                           setState(() => _isUploading = true);
                           await APIs.sendChatImage(
                               widget.user, File(image.path));
                           setState(() => _isUploading = false);
+
+                          final XFile? video = await picker.pickVideo(
+                              source: ImageSource.camera,
+                              maxDuration: const Duration(
+                                  minutes: 1)
+                              );
+                          if (video != null) {
+                            log('Video Path: ${video.path}');
+                            setState(() => _isUploading = true);
+                            await APIs.sendChatVideo(
+                                widget.user, File(video.path));
+                            setState(() => _isUploading = false);
+                          }
                         }
                       },
                       child: Image.asset(
@@ -650,7 +598,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {},
                       child: Image.asset(
                         "assets/images/contact.png",
                         width: mq.width * .3 * 0.5,

@@ -5,7 +5,7 @@ class Message {
     required this.read,
     required this.type,
     required this.fromId,
-    required this.sent
+    required this.sent,
   });
 
   late final String toId;
@@ -15,28 +15,45 @@ class Message {
   late final String sent;
   late final Type type;
 
-  Message.fromJson(Map<String, dynamic> json) {
-    toId = json['toId'].toString();
-    msg = json['msg'].toString();
-    read = json['read'].toString();
-    type = json['type'].toString() == Type.image.name ? Type.image : Type.text;
-    fromId = json['fromId'].toString();
-    sent = json['sent'].toString();
-  }
+  Message.fromJson(Map<String, dynamic> json)
+      : toId = json['toId'].toString(),
+        msg = json['msg'].toString(),
+        read = json['read'].toString(),
+        type = _getTypeFromString(json['type'].toString()),
+        fromId = json['fromId'].toString(),
+        sent = json['sent'].toString();
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['toId'] = toId;
-    data['msg'] = msg;
-    data['read'] = read;
-    data['type'] = type.name;
-    data['fromId'] = fromId;
-    data['sent'] = sent;
-    return data;
+    return {
+      'toId': toId,
+      'msg': msg,
+      'read': read,
+      'type': type.name,
+      'fromId': fromId,
+      'sent': sent,
+    };
+  }
+
+  static Type _getTypeFromString(String typeString) {
+    switch (typeString) {
+      case 'text':
+        return Type.text;
+      case 'image':
+        return Type.image;
+      case 'token':
+        return Type.token;
+      case 'audio':
+        return Type.audio;
+      case 'video':
+        return Type.video;
+      default:
+        throw ArgumentError('Invalid message type: $typeString');
+    }
   }
 }
 
 enum Type { text, image, token, audio, video }
+
 
 
 
