@@ -260,7 +260,7 @@ class _HomePageState extends State<HomePage> {
               body: TabBarView(
                 children: [
                   HomeScreen(),
-                  StatusListPage(user: APIs.me), // Pass the user object received from the API
+                  StatusListPage(user: APIs.me),
                   CallListPage(),
                 ],
               ),
