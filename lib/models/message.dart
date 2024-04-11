@@ -1,4 +1,3 @@
-enum Type { text, image, audio }
 
 class Message {
   late final String toId;
@@ -52,3 +51,43 @@ class Message {
     }
   }
 }
+
+
+enum Type { text, image, token, audio, video }
+
+
+
+class Messages {
+  Messages({
+    required this.toId,
+    required this.token,
+    required this.read,
+    required this.fromId,
+    required this.sent
+  });
+
+  late final String toId;
+  late final String token;
+  late final String read;
+  late final String fromId;
+  late final String sent;
+
+  Messages.fromJson(Map<String, dynamic> json) {
+    toId = json['toId'].toString();
+    token = json['token'].toString();
+    read = json['read'].toString();
+    fromId = json['fromId'].toString();
+    sent = json['sent'].toString();
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['toId'] = toId;
+    data['token'] = token;
+    data['read'] = read;
+    data['fromId'] = fromId;
+    data['sent'] = sent;
+    return data;
+  }
+}
+

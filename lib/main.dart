@@ -14,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chatter_box/theme/dark_theme.dart';
-import 'package:flutter/foundation.dart' as foundation;
 import 'chatter_box/theme/theme_manager.dart';
 
 late Size mq;
@@ -29,20 +28,19 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
-  if (foundation.kDebugMode) {
-    debugPrint('release mode');
-  } else {
-    debugPrint('debug mode');
-  }
-
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((value) {
+    _initializeFirebase();
+    runApp(const MyApp());
+  });
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? selectedTheme = prefs.getString('selectedTheme');
   var result = await FlutterNotificationChannel.registerNotificationChannel(
@@ -57,8 +55,6 @@ void main() async {
       child: const MyApp(),
     ),
   );
-  // }
-  // );
 }
 
 class MyApp extends StatelessWidget {
@@ -97,3 +93,4 @@ _initializeFirebase() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
+
