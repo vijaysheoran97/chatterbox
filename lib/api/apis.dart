@@ -358,9 +358,33 @@ class APIs {
     await sendMessage(chatUser, imageUrl, Type.image);
   }
 
-  _intializedFirebase() async {
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+  static Future<void> sendChatVideo(ChatUser chatUser, File videoFile) async {
+    final ext = videoFile.path.split('.').last;
+    final ref = storage.ref().child(
+        'videos/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(videoFile, SettableMetadata(contentType: 'video/$ext'))
+        .then((taskSnapshot) {
+      log('Data Transferred: ${taskSnapshot.bytesTransferred / 1} mb');
+    });
+
+    final videoUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, videoUrl, Type.video);
+  }
+
+  ///********************  Send audio
+  static Future<void> sendChatAudio(ChatUser chatUser, File videoFile) async {
+    final ext = videoFile.path.split('.').last;
+    final ref = storage.ref().child(
+        'audio/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(videoFile, SettableMetadata(contentType: 'audio/$ext'))
+        .then((taskSnapshot) {
+      log('Data Transferred: ${taskSnapshot.bytesTransferred / 1} mb');
+    });
+
+    final audioUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, audioUrl, Type.audio);
   }
 
   static Future<void> updateMessage(Message message, String updatedMsg) async {
