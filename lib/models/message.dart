@@ -1,4 +1,4 @@
-enum Type { text, image, audio }
+enum Type { text, image, audio, video }
 
 class Message {
   late final String toId;

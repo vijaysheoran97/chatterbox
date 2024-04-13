@@ -250,6 +250,36 @@ class APIs {
         .doc(message.sent)
         .update({'msg': updatedMsg});
   }
+
+  ///********************  Send video
+  static Future<void> sendChatVideo(ChatUser chatUser, File videoFile) async {
+    final ext = videoFile.path.split('.').last;
+    final ref = storage.ref().child(
+        'videos/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(videoFile, SettableMetadata(contentType: 'video/$ext'))
+        .then((taskSnapshot) {
+      log('Data Transferred: ${taskSnapshot.bytesTransferred / 1} mb');
+    });
+
+    final videoUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, videoUrl, Type.video);
+  }
+
+  ///********************  Send audio
+  static Future<void> sendChatAudio(ChatUser chatUser, File videoFile) async {
+    final ext = videoFile.path.split('.').last;
+    final ref = storage.ref().child(
+        'audio/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+    await ref
+        .putFile(videoFile, SettableMetadata(contentType: 'audio/$ext'))
+        .then((taskSnapshot) {
+      log('Data Transferred: ${taskSnapshot.bytesTransferred / 1} mb');
+    });
+
+    final audioUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, audioUrl, Type.audio);
+  }
 }
 
 

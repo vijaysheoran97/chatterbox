@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/tau.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
 
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
@@ -75,8 +77,12 @@ class _MessageCardState extends State<MessageCard> {
       children: [
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .03 : mq.width * .04),
-            margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: mq.height * .01),
+            padding: EdgeInsets.all(widget.message.type == Type.image ||
+                widget.message.type == Type.video || widget.message.type == Type.audio
+                ? mq.width * .03
+                : mq.width * .04),
+            margin: EdgeInsets.symmetric(
+                horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
               color: const Color.fromARGB(225, 221, 245, 255),
               border: Border.all(color: Colors.lightBlue),
@@ -86,19 +92,112 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30),
               ),
             ),
-            child: _buildMessageContent(),
+            child: widget.message.type == Type.text
+                ? Text(
+              widget.message.msg,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
+                : _buildMediaWidget(widget.message.msg),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(right: mq.width * .04),
           child: Text(
-            MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
+            MyDateUtil.getFormattedTime(
+              context: context,
+              time: widget.message.sent,
+            ),
             style: const TextStyle(fontSize: 13, color: Colors.black54),
           ),
         ),
       ],
     );
   }
+
+  Widget _buildMediaWidget(String mediaUrl) {
+    if (widget.message.type == Type.image ) {
+      return CachedNetworkImage(
+        imageUrl: mediaUrl,
+        placeholder: (context, url) => const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        ),
+        errorWidget: (context, url, error) => const Icon(
+          Icons.error,
+          size: 70,
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetVideo(String mediaUrl) {
+    if (widget.message.type == Type.video) {
+      return AspectRatio(
+        aspectRatio: 16 / 9, // Adjust aspect ratio as needed
+        child: Chewie(
+          controller: ChewieController(
+            videoPlayerController: VideoPlayerController.network(
+              mediaUrl,
+            ),
+            autoPlay: false,
+            looping: false,
+            placeholder: const Center(child: CircularProgressIndicator()),
+            errorBuilder: (context, errorMessage) {
+              return Center(
+                child: Text(
+                  'Error loading video: $errorMessage',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetAudio(String mediaUrl) {
+    if (widget.message.type == Type.audio) {
+      return Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              if (isPlaying) {
+                audioPlayer.pause(); // Pause the audio
+              } else {
+                playRecording(widget.message.msg); // Start playing the audio
+              }
+            },
+            icon: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(50)
+                ),
+                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
+          ),
+          SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              'Audio Message',
+              // ': ${widget.message.msg ?? 'Audio URL not available'}',
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
 
   Widget _greenMessage() {
     return Row(
@@ -119,10 +218,15 @@ class _MessageCardState extends State<MessageCard> {
             ),
           ],
         ),
+
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .03 : mq.width * .04),
-            margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: mq.height * .01),
+            padding: EdgeInsets.all(widget.message.type == Type.image ||
+                widget.message.type == Type.video || widget.message.type == Type.audio
+                ? mq.width * .03
+                : mq.width * .04),
+            margin: EdgeInsets.symmetric(
+                horizontal: mq.width * .04, vertical: mq.height * .01),
             decoration: BoxDecoration(
               color: const Color.fromARGB(225, 218, 255, 176),
               border: Border.all(color: Colors.lightGreen),
@@ -132,68 +236,93 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30),
               ),
             ),
-            child: _buildMessageContent(),
+            child: widget.message.type == Type.text
+                ? Text(
+              widget.message.msg,
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
+                : widget.message.type == Type.image
+                ? _buildMediaWidget(widget.message.msg) : widget.message.type == Type.video ?
+            _buildMediaWidgetVideo(widget.message.msg) : widget.message.type == Type.audio ?
+            _buildMediaWidgetAudio(widget.message.msg)
+                : Container(),
           ),
         ),
+        // Flexible(
+        //   child: Container(
+        //     padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .03 : mq.width * .04),
+        //     margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: mq.height * .01),
+        //     decoration: BoxDecoration(
+        //       color: const Color.fromARGB(225, 218, 255, 176),
+        //       border: Border.all(color: Colors.lightGreen),
+        //       borderRadius: const BorderRadius.only(
+        //         topLeft: Radius.circular(30),
+        //         topRight: Radius.circular(30),
+        //         bottomLeft: Radius.circular(30),
+        //       ),
+        //     ),
+        //     child: _buildMessageContent(),
+        //   ),
+        // ),
       ],
     );
   }
 
-  Widget _buildMessageContent() {
-    if (widget.message.type == Type.text) {
-      return Text(
-        widget.message.msg,
-        style: const TextStyle(fontSize: 15, color: Colors.black87),
-      );
-    }  else if (widget.message.type == Type.audio) {
-      return Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              if (isPlaying) {
-                audioPlayer.pause(); // Pause the audio
-              } else {
-                playRecording(widget.message.msg); // Start playing the audio
-              }
-            },
-            icon: Container(
-              height: 45,
-              width: 45,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(50)
-              ),
-                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
-          ),
-          SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              'Audio Message',
-                  // ': ${widget.message.msg ?? 'Audio URL not available'}',
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: CachedNetworkImage(
-          imageUrl: widget.message.msg,
-          placeholder: (context, url) => Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          ),
-          errorWidget: (context, url, error) => const Icon(
-            Icons.image,
-            size: 70,
-          ),
-        ),
-      );
-    }
-  }
+  // Widget _buildMessageContent() {
+  //   if (widget.message.type == Type.text) {
+  //     return Text(
+  //       widget.message.msg,
+  //       style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //     );
+  //   }  else if (widget.message.type == Type.audio) {
+  //     return Row(
+  //       children: [
+  //         IconButton(
+  //           onPressed: () {
+  //             if (isPlaying) {
+  //               audioPlayer.pause(); // Pause the audio
+  //             } else {
+  //               playRecording(widget.message.msg); // Start playing the audio
+  //             }
+  //           },
+  //           icon: Container(
+  //             height: 45,
+  //             width: 45,
+  //             decoration: BoxDecoration(
+  //               color: Colors.black,
+  //               borderRadius: BorderRadius.circular(50)
+  //             ),
+  //               child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
+  //         ),
+  //         SizedBox(width: 8),
+  //         Flexible(
+  //           child: Text(
+  //             'Audio Message',
+  //                 // ': ${widget.message.msg ?? 'Audio URL not available'}',
+  //             style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     return ClipRRect(
+  //       borderRadius: BorderRadius.circular(15),
+  //       child: CachedNetworkImage(
+  //         imageUrl: widget.message.msg,
+  //         placeholder: (context, url) => Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: CircularProgressIndicator(
+  //             strokeWidth: 2,
+  //           ),
+  //         ),
+  //         errorWidget: (context, url, error) => const Icon(
+  //           Icons.image,
+  //           size: 70,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // }
 
 
   void playRecording(String audioPath) async {
