@@ -1,17 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:path/path.dart' as path;
+import 'package:agora_uikit/agora_uikit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
 import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../api/apis.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
@@ -417,28 +419,21 @@ class _ChatScreenState extends State<ChatScreen> {
                         size: 26,
                       )),
 
-                  // IconButton(
-                  //   onPressed: () async {
-                  //     final ImagePicker picker = ImagePicker();
-                  //     final XFile? image = await picker.pickImage(
-                  //         source: ImageSource.camera, imageQuality: 70);
-                  //     if (image != null) {
-                  //       log('Image Path:${image.path}');
-                  //       setState(() => _isUploading = true);
-                  //       await APIs.sendChatImage(widget.user, File(image.path));
-                  //       setState(() => _isUploading = false);
-                  //     }
-                  //   },
-                  //   icon: const Icon(Icons.camera_alt_rounded,
-                  //       color: Colors.blueAccent, size: 26),
-                  // ),
-                  // IconButton(
-                  //   onPressed: _pickAndUploadImage,
-                  //   icon: const Icon(Icons.image,
-                  //       color: Colors.blueAccent, size: 26),
-                  // ),
-
-                  //adding some space
+                  IconButton(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      final XFile? image = await picker.pickImage(
+                          source: ImageSource.camera, imageQuality: 70);
+                      if (image != null) {
+                        log('Image Path:${image.path}');
+                        setState(() => _isUploading = true);
+                        await APIs.sendChatImage(widget.user, File(image.path));
+                        setState(() => _isUploading = false);
+                      }
+                    },
+                    icon: const Icon(Icons.camera_alt_rounded,
+                        color: Colors.blueAccent, size: 26),
+                  ),
                   SizedBox(width: mq.width * .02),
                 ],
               ),
@@ -598,6 +593,39 @@ class _ChatScreenState extends State<ChatScreen> {
                 Column(
                   children: [
                     GestureDetector(
+                      onTap: () async {
+                        try {
+                          var status = await Permission.contacts.request();
+                          if (status.isGranted) {
+                            final Contact? contact =
+                                await ContactsService.openDeviceContactPicker();
+                            if (contact != null) {
+                              String? contactName = contact.displayName
+                                  ?.replaceAll(RegExp(r'[^\x00-\x7F]+'), '');
+                              String? contactPhone =
+                                  contact.phones?.isNotEmpty ?? false
+                                      ? contact.phones!.first.value
+                                      : null;
+
+                              Directory tempDir = await getTemporaryDirectory();
+                              File tempFile =
+                                  File('${tempDir.path}/contact.txt');
+                              await tempFile.writeAsString(
+                                  'Name: $contactName, Phone: $contactPhone');
+
+                              setState(() => _isUploading = true);
+                              APIs apiInstance = APIs();
+                              await apiInstance.shareContact(widget.user,
+                                  tempFile, contactName!, contactPhone!);
+                              setState(() => _isUploading = false);
+                            }
+                          } else {
+                            print('Permission denied to access contacts');
+                          }
+                        } catch (e) {
+                          print('Error sharing contact: $e');
+                        }
+                      },
                       child: Image.asset(
                         "assets/images/contact.png",
                         width: mq.width * .3 * 0.5,

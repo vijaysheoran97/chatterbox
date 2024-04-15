@@ -45,7 +45,9 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                    widget.message.type == Type.video || widget.message.type == Type.audio
+                    widget.message.type == Type.video ||
+                    widget.message.type == Type.audio ||
+                    widget.message.type == Type.contact
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -122,7 +124,9 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                    widget.message.type == Type.video || widget.message.type == Type.audio
+                    widget.message.type == Type.video ||
+                    widget.message.type == Type.audio ||
+                    widget.message.type == Type.contact
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -142,10 +146,14 @@ class _MessageCardState extends State<MessageCard> {
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : widget.message.type == Type.image
-                    ? _buildMediaWidget(widget.message.msg) : widget.message.type == Type.video ?
-            _buildMediaWidgetVideo(widget.message.msg) : widget.message.type == Type.audio ?
-            _buildMediaWidgetAudio(widget.message.msg)
-                    : Container(),
+                    ? _buildMediaWidget(widget.message.msg)
+                    : widget.message.type == Type.video
+                        ? _buildMediaWidgetVideo(widget.message.msg)
+                        : widget.message.type == Type.audio
+                            ? _buildMediaWidgetAudio(widget.message.msg)
+                            : widget.message.type == Type.contact
+                                ? _buildMediaWidgetContact(widget.message.msg)
+                                : Container(),
           ),
         ),
       ],
@@ -153,7 +161,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Widget _buildMediaWidget(String mediaUrl) {
-    if (widget.message.type == Type.image ) {
+    if (widget.message.type == Type.image) {
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         placeholder: (context, url) => const Padding(
@@ -221,6 +229,22 @@ class _MessageCardState extends State<MessageCard> {
               );
             },
           ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetContact(String msg) {
+    if (widget.message.type == Type.contact) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Name: ${widget.message.contactName ?? ""}', style: const TextStyle(fontSize: 16)),
+            Text('Phone: ${widget.message.contactPhone ?? ""}', style: const TextStyle(fontSize: 16)),
+          ],
         ),
       );
     } else {
@@ -315,7 +339,6 @@ class _MessageCardState extends State<MessageCard> {
                 name: 'Delete Message',
                 onTap: () async {
                   await APIs.deleteMessage(widget.message).then((value) {
-                    //for hiding bottom sheet
                     Navigator.pop(context);
                   });
                 },
@@ -372,7 +395,6 @@ class _MessageCardState extends State<MessageCard> {
             Text(' Update Message')
           ],
         ),
-
         //content
         content: TextFormField(
           initialValue: updatedMsg,
@@ -462,20 +484,20 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: const Color.fromRGBO(29, 194, 95, 1),
-          minimumSize: Size.fromHeight(50),
+          minimumSize: const Size.fromHeight(50),
         ),
-        child: buildContent(),
         onPressed: onClicked,
+        child: buildContent(),
       );
 
   Widget buildContent() => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 28),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Text(
             text,
-            style: TextStyle(fontSize: 22, color: Colors.white),
+            style: const TextStyle(fontSize: 22, color: Colors.white),
           ),
         ],
       );
