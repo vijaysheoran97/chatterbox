@@ -249,26 +249,11 @@ class _MessageCardState extends State<MessageCard> {
           children: [
             Text('Name: ${widget.message.contactName ?? ""}', style: const TextStyle(fontSize: 16)),
             Text('Phone: ${widget.message.contactPhone ?? ""}', style: const TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                _addContact(widget.message.contactName, widget.message.contactPhone);
-              },
-              child: Text('Add Contact'),
-            ),
           ],
         ),
       );
     } else {
       return Container();
-    }
-  }
-
-  void _addContact(String? name, String? phone) {
-    if (name != null && name.isNotEmpty && phone != null && phone.isNotEmpty) {
-      print('Contact added: Name - $name, Phone - $phone');
-    } else {
-      print('Name or phone number is empty');
     }
   }
 
