@@ -8,6 +8,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 class APIs {
@@ -37,7 +38,6 @@ class APIs {
     }
   }
 
-  ///
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   Future<void> uplaodFile(String fileName, String filePath) async {
@@ -55,8 +55,6 @@ class APIs {
     ListResult listResults = await firebaseStorage.ref("Files").listAll();
     return listResults;
   }
-
-  ///
 
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
@@ -230,7 +228,6 @@ class APIs {
         .snapshots();
   }
 
-  // update online or last active status of user
   static Future<void> updateActiveStatus(bool isOnline) async {
     firestore.collection('users').doc(user.uid).update({
       'is_online': isOnline,
@@ -266,6 +263,8 @@ class APIs {
       Type type, {
         String contactName = '',
         String contactPhone = '',
+        double? latitude,
+        double? longitude,
       }) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
@@ -276,6 +275,8 @@ class APIs {
         fromId: user.uid,
         contactName: contactName,
         contactPhone: contactPhone,
+        latitude: latitude,
+        longitude: longitude,
         sent: time
     );
     final ref = firestore.collection('chats/${getConversationID(chatUser.id)}/messages/');
@@ -283,6 +284,8 @@ class APIs {
         sendPushNotification(chatUser, type == Type.text ? msg : 'image')
     );
   }
+
+
 
 
   /// send  ************************************************************    Token
@@ -406,6 +409,38 @@ class APIs {
       print('Error sharing contact: $e');
     }
   }
+
+
+  ///******************************/// Contact Location///
+
+  Future<void> shareLocation(ChatUser chatUser, double latitude, double longitude) async {
+    try {
+      if (latitude != null && longitude != null) {
+        final locationData = {'latitude': latitude, 'longitude': longitude};
+        final locationJson = json.encode(locationData);
+
+        final ref = FirebaseStorage.instance.ref().child(
+            'locations/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.json');
+        final uploadTask = ref.putData(
+          Uint8List.fromList(utf8.encode(locationJson)),
+          SettableMetadata(contentType: 'application/json'),
+        );
+
+        await uploadTask.whenComplete(() {
+          print('Data Transferred: ${uploadTask.snapshot.totalBytes / (1024 * 1024)} MB');
+        });
+
+        final downloadURL = await ref.getDownloadURL();
+        await sendMessage(chatUser, downloadURL.toString(), Type.location,
+            latitude: latitude, longitude: longitude);
+      } else {
+        print('Latitude or longitude is null');
+      }
+    } catch (e) {
+      print('Error sharing location: $e');
+    }
+  }
+
   ///********************************************************  updatedMsg
   static Future<void> updateMessage(Message message, String updatedMsg) async {
     await firestore

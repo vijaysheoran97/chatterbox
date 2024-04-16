@@ -8,6 +8,8 @@ class Message {
     required this.sent,
     this.contactName,
     this.contactPhone,
+    this.latitude,
+    this.longitude,
   });
 
   final String toId;
@@ -18,6 +20,8 @@ class Message {
   final Type type;
   final String? contactName;
   final String? contactPhone;
+  final double? latitude;
+  final double? longitude;
 
   Message.fromJson(Map<String, dynamic> json)
       : toId = json['toId'].toString(),
@@ -27,7 +31,10 @@ class Message {
         fromId = json['fromId'].toString(),
         sent = json['sent'].toString(),
         contactName = json['contactName'],
-        contactPhone = json['contactPhone'];
+        contactPhone = json['contactPhone'],
+        latitude = json['latitude'] != null ? double.parse(json['latitude'].toString()) : null,
+        longitude = json['longitude'] != null ? double.parse(json['longitude'].toString()) : null;
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -39,6 +46,8 @@ class Message {
       'sent': sent,
       'contactName': contactName,
       'contactPhone': contactPhone,
+      'latitude': latitude, // Include latitude
+      'longitude': longitude, // Include longitude
     };
   }
 
@@ -56,27 +65,23 @@ class Message {
         return Type.video;
       case 'contact':
         return Type.contact;
+      case 'location':
+        return Type.location;
       default:
         throw ArgumentError('Invalid message type: $typeString');
     }
   }
 }
 
-
-enum Type { text, image, token, audio, video, contact }
-
-
-
-
+enum Type { text, image, token, audio, video, contact, location }
 
 class Messages {
-  Messages({
-    required this.toId,
-    required this.token,
-    required this.read,
-    required this.fromId,
-    required this.sent
-  });
+  Messages(
+      {required this.toId,
+      required this.token,
+      required this.read,
+      required this.fromId,
+      required this.sent});
 
   late final String toId;
   late final String token;

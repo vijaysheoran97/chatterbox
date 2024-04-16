@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
@@ -47,7 +48,8 @@ class _MessageCardState extends State<MessageCard> {
             padding: EdgeInsets.all(widget.message.type == Type.image ||
                     widget.message.type == Type.video ||
                     widget.message.type == Type.audio ||
-                    widget.message.type == Type.contact
+                    widget.message.type == Type.contact||
+                widget.message.type == Type.location
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -126,7 +128,8 @@ class _MessageCardState extends State<MessageCard> {
             padding: EdgeInsets.all(widget.message.type == Type.image ||
                     widget.message.type == Type.video ||
                     widget.message.type == Type.audio ||
-                    widget.message.type == Type.contact
+                    widget.message.type == Type.contact||
+                widget.message.type == Type.location
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -153,7 +156,9 @@ class _MessageCardState extends State<MessageCard> {
                             ? _buildMediaWidgetAudio(widget.message.msg)
                             : widget.message.type == Type.contact
                                 ? _buildMediaWidgetContact(widget.message.msg)
-                                : Container(),
+                : widget.message.type == Type.location
+                ?_buildMediaWidgetLocation(widget.message.msg)
+                : Container(),
           ),
         ),
       ],
@@ -244,11 +249,71 @@ class _MessageCardState extends State<MessageCard> {
           children: [
             Text('Name: ${widget.message.contactName ?? ""}', style: const TextStyle(fontSize: 16)),
             Text('Phone: ${widget.message.contactPhone ?? ""}', style: const TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _addContact(widget.message.contactName, widget.message.contactPhone);
+              },
+              child: Text('Add Contact'),
+            ),
           ],
         ),
       );
     } else {
       return Container();
+    }
+  }
+
+  void _addContact(String? name, String? phone) {
+    if (name != null && name.isNotEmpty && phone != null && phone.isNotEmpty) {
+      print('Contact added: Name - $name, Phone - $phone');
+    } else {
+      print('Name or phone number is empty');
+    }
+  }
+
+  Widget _buildMediaWidgetLocation(String msg) {
+    if (widget.message.type == Type.location) {
+      return FutureBuilder<String>(
+        future: getAddress(widget.message.latitude, widget.message.longitude),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Address: ${snapshot.data ?? ""}', style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+            );
+          }
+        },
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<String> getAddress(double? latitude, double? longitude) async {
+    try {
+      if (latitude != null && longitude != null) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+        if (placemarks != null && placemarks.isNotEmpty) {
+          Placemark address = placemarks.first;
+          String formattedAddress = "${address.name}, ${address.locality}, ${address.administrativeArea}, ${address.country}";
+          return formattedAddress;
+        } else {
+          return "Address not found";
+        }
+      } else {
+        return "Latitude or longitude is null";
+      }
+    } catch (e) {
+      return "Error: $e";
     }
   }
 
@@ -344,7 +409,7 @@ class _MessageCardState extends State<MessageCard> {
                 },
               ),
 
-            //separator or divider
+
             Divider(
               color: Colors.black54,
               endIndent: mq.width * .04,

@@ -12,6 +12,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../api/apis.dart';
@@ -32,7 +33,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   FirebaseStorage storage = FirebaseStorage.instance;
-
 
   List<Message> _list = [];
   List<Messages> listToken = [];
@@ -225,17 +225,16 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (firstMessage != null) {
                           return IconButton(
                             onPressed: () {
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VideoCallScreen(
-                                    calleeName: '',
-                                    callToken: firstMessage.token,
-                                    messages: firstMessage,
-                                  ),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => VideoCallScreen(
+                              //       calleeName: '',
+                              //       callToken: firstMessage.token,
+                              //       messages: firstMessage,
+                              //     ),
+                              //   ),
+                              // );
                             },
                             icon: const Icon(Icons.call),
                           );
@@ -285,33 +284,33 @@ class _ChatScreenState extends State<ChatScreen> {
                                     onTap: () async {
                                       await APIs.sendToken(widget.user,
                                           "007eJxTYJBgstH4oDD72pXlgd8zk07fF5xx49U2OY5t3anqHkJTkiwUGFIsTc0sDNJSjRPNkkzMzJItEo2SzM0tUgwTTVNNEg3MlCz40hoCGRmmpCxlZGSAQBCfm8E5I7GkJLVIwSm/goEBAM8GIA8=");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => VideoCallScreen(
-                                            calleeName: '',
-                                            callToken: listToken.isNotEmpty
-                                                ? listToken[0].token
-                                                : '',
-                                            messages: listToken.first,
-                                          ),
-                                        ),
-                                      );
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => VideoCallScreen(
+                                      //       calleeName: '',
+                                      //       callToken: listToken.isNotEmpty
+                                      //           ? listToken[0].token
+                                      //           : '',
+                                      //       messages: listToken.first,
+                                      //     ),
+                                      //   ),
+                                      // );
                                     },
                                     leading: const Icon(Icons.videocam),
                                     title: const Text('Video Call'),
                                   ),
                                   ListTile(
                                     onTap: () async {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AudioCallScreen(
-                                            callerName: '',
-                                          ),
-                                        ),
-                                      );
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) =>
+                                      //         const AudioCallScreen(
+                                      //       callerName: '',
+                                      //     ),
+                                      //   ),
+                                      // );
                                     },
                                     leading: const Icon(Icons.call),
                                     title: const Text('Voice Call'),
@@ -472,7 +471,8 @@ class _ChatScreenState extends State<ChatScreen> {
       builder: (_) {
         return ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+          padding:
+              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -482,7 +482,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     GestureDetector(
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
-                        final List<XFile> mediaFiles = await picker.pickMultiImage(
+                        final List<XFile> mediaFiles =
+                            await picker.pickMultiImage(
                           imageQuality: 70,
                           maxWidth: 800,
                         );
@@ -490,14 +491,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         for (var mediaFile in mediaFiles) {
                           if (mediaFile.path.contains('.mp4')) {
                             setState(() => _isUploading = true);
-                            await APIs.sendChatVideo(widget.user, File(mediaFile.path));
+                            await APIs.sendChatVideo(
+                                widget.user, File(mediaFile.path));
                             setState(() => _isUploading = false);
-
-
-
                           } else {
                             setState(() => _isUploading = true);
-                            await APIs.sendChatImage(widget.user, File(mediaFile.path));
+                            await APIs.sendChatImage(
+                                widget.user, File(mediaFile.path));
                             setState(() => _isUploading = false);
                           }
                         }
@@ -519,10 +519,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        FilePickerResult? result =
-                        await FilePicker.platform.pickFiles(type: FileType.audio);
-                        if (result != null){
-                        File file = File(result.files.single.path!);
+                        FilePickerResult? result = await FilePicker.platform
+                            .pickFiles(type: FileType.audio);
+                        if (result != null) {
+                          File file = File(result.files.single.path!);
                           log('Video Path: ${file.path}');
                           setState(() => _isUploading = true);
                           await APIs.sendChatAudio(
@@ -559,9 +559,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           final XFile? video = await picker.pickVideo(
                               source: ImageSource.camera,
-                              maxDuration: const Duration(
-                                  minutes: 1)
-                              );
+                              maxDuration: const Duration(minutes: 1));
                           if (video != null) {
                             log('Video Path: ${video.path}');
                             setState(() => _isUploading = true);
@@ -642,7 +640,32 @@ class _ChatScreenState extends State<ChatScreen> {
                 Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        try {
+                          var status = await Permission.location.request();
+                          if (status.isGranted) {
+                            Position position = await Geolocator.getCurrentPosition(
+                              desiredAccuracy: LocationAccuracy.high,
+                            );
+
+                            if (position != null && position.latitude != null && position.longitude != null) {
+                              double latitude = position.latitude;
+                              double longitude = position.longitude;
+
+                              setState(() => _isUploading = true);
+                              APIs apiInstance = APIs();
+                              await apiInstance.shareLocation(widget.user, latitude, longitude);
+                              setState(() => _isUploading = false);
+                            } else {
+                              print('Failed to retrieve location');
+                            }
+                          } else {
+                            print('Permission denied to access location');
+                          }
+                        } catch (e) {
+                          print('Error sharing location: $e');
+                        }
+                      },
                       child: Image.asset(
                         "assets/images/circle (2).png",
                         width: mq.width * .3 * 0.5,
