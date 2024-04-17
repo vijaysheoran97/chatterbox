@@ -8,6 +8,7 @@ import 'package:chatterbox/helper/dialogs.dart';
 import 'package:chatterbox/helper/my_date_util.dart';
 import 'package:chatterbox/main.dart';
 import 'package:chatterbox/models/chat_user_model.dart';
+import 'package:chatterbox/screens/create_group.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +23,8 @@ import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
 import 'newMessage.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DrawerPage extends StatefulWidget {
   final ChatUser user;
@@ -156,14 +159,20 @@ class _DrawerPageState extends State<DrawerPage> {
 
           ListTile(
             leading: Icon(Icons.group_outlined),
-            title: Text('New Group'),
+            title: Text(AppLocalizations.of(context)!.newgroup),
             onTap: () {
-              // Add onTap handler for Item 1
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const CreateGroupPage(),
+                ),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.person_outline_rounded),
-            title: Text('Contacts'),
+            title: Text(AppLocalizations.of(context)!.contacts),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -176,14 +185,14 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           ListTile(
             leading: Icon(Icons.bookmark_border_outlined),
-            title: Text('Saved'),
+            title: Text(AppLocalizations.of(context)!.saved),
             onTap: () {
               // Add onTap handler for Item 2
             },
           ),
           ListTile(
             leading: Icon(Icons.settings_outlined),
-            title: Text('Settings'),
+            title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -194,7 +203,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           ListTile(
             leading: Icon(Icons.monetization_on_outlined),
-            title: Text('Monetisation'),
+            title: Text(AppLocalizations.of(context)!.monetisation),
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -204,7 +213,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           ListTile(
             leading: Icon(Icons.change_circle_outlined),
-            title: Text('Themes'),
+            title: Text(AppLocalizations.of(context)!.theme),
             trailing: Icon(_showThemeOptions
                 ? Icons.keyboard_arrow_up_outlined
                 : Icons.keyboard_arrow_down_outlined),
@@ -216,7 +225,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           if (_showThemeOptions) ...[
             RadioListTile(
-              title: const Text('Light Theme'),
+              title: Text(AppLocalizations.of(context)!.lighttheme),
               value: 'light',
               groupValue: _selectedMode,
               onChanged: (value) {
@@ -230,7 +239,7 @@ class _DrawerPageState extends State<DrawerPage> {
               activeColor: Colors.blue,
             ),
             RadioListTile(
-              title: const Text('Dark Theme'),
+              title: Text(AppLocalizations.of(context)!.darktheme),
               value: 'dark',
               groupValue: _selectedMode,
               onChanged: (value) {
@@ -246,7 +255,7 @@ class _DrawerPageState extends State<DrawerPage> {
           ],
           ListTile(
             leading: Icon(Icons.help_outline_outlined),
-            title: Text('Help center'),
+            title: Text(AppLocalizations.of(context)!.helpcenter),
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -255,7 +264,7 @@ class _DrawerPageState extends State<DrawerPage> {
 
 
             leading: Icon(Icons.logout_outlined, color: Colors.red,),
-            title: Text('Logout', style: TextStyle(color: Colors.red),),
+            title: Text(AppLocalizations.of(context)!.logout, style: TextStyle(color: Colors.red),),
 
             onTap: () async {
               Dialogs.showProgressBar(context);
@@ -276,7 +285,7 @@ class _DrawerPageState extends State<DrawerPage> {
             title: Row(mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Joined On: ',
+                  '${AppLocalizations.of(context)!.joinedOn} : ',
                   style: TextStyle(
                     //color: Colors.black87,
                       fontWeight: FontWeight.w500,

@@ -33,7 +33,7 @@ class Message {
       'toId': toId,
       'msg': msg,
       'read': read,
-      'type': type.name, // Serialize Type enum to string
+      'type': _getTypeString(type), // Serialize Type enum to string
       'fromId': fromId,
       'sent': sent,
       'audioUrl': audioUrl, // Serialize audio URL if present
@@ -47,8 +47,24 @@ class Message {
         return Type.image;
       case 'audio':
         return Type.audio;
+      case 'video':
+        return Type.video;
       default:
         return Type.text;
+    }
+  }
+
+  // Helper method to get string representation of Type enum
+  static String _getTypeString(Type type) {
+    switch (type) {
+      case Type.image:
+        return 'image';
+      case Type.audio:
+        return 'audio';
+      case Type.video:
+        return 'video';
+      default:
+        return 'text';
     }
   }
 }
