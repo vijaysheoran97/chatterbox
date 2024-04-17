@@ -168,21 +168,18 @@ class _HomePageState extends State<HomePage> {
       future: APIs.getSelfInfo(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Display a loading indicator while waiting for APIs.getSelfInfo() to complete
-          return Scaffold(
+          return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
             ),
           );
         } else if (snapshot.hasError) {
-          // Display an error message if APIs.getSelfInfo() encounters an error
           return Scaffold(
             body: Center(
               child: Text('Error: ${snapshot.error}'),
             ),
           );
         } else {
-          // APIs.getSelfInfo() completed successfully, build the HomePage widget
           return DefaultTabController(
             length: 3,
             child: Scaffold(
@@ -207,11 +204,9 @@ class _HomePageState extends State<HomePage> {
                     hintText: "Search...",
                   ),
                   onChanged: (query) {
-                    // Handle search query
-                    // Pass the query to HomeScreen for search functionality
                   },
                 )
-                    : const Text('ChatterBox'),
+                    : const Text('CINLINE'),
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -259,9 +254,9 @@ class _HomePageState extends State<HomePage> {
               ),
               body: TabBarView(
                 children: [
-                  HomeScreen(),
+                  const HomeScreen(),
                   StatusListPage(user: APIs.me),
-                  CallListPage(),
+                  const CallListPage(),
                 ],
               ),
               drawer: DrawerPage(user: APIs.me),

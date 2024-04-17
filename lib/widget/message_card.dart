@@ -1144,7 +1144,7 @@ class _MessageCardState extends State<MessageCard> {
   late bool isMe;
   late AudioPlayer audioPlayer;
   String audioPath = '';
-  late bool isPlaying = false; // Track whether audio is playing
+  late bool isPlaying = false;
 
   @override
   void initState() {
@@ -1288,7 +1288,7 @@ class _MessageCardState extends State<MessageCard> {
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(50)
                 ),
-                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
+                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)),
           ),
           SizedBox(width: 8),
           Flexible(
@@ -1516,7 +1516,7 @@ class _MessageCardState extends State<MessageCard> {
                   log('Image Url: ${widget.message.msg}');
                   await GallerySaver.saveImage(
                     widget.message.msg,
-                    albumName: 'Chatter Box',
+                    albumName: 'CINLINE',
                   ).then((success) {
                     Navigator.pop(context);
                     if (success != null && success) {

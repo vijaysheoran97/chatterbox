@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../api/apis.dart';
-import '../auth/login_screen.dart';
 import '../chatter_box/auth/login_screen.dart';
 import '../main.dart';
 import 'home_screen.dart';
@@ -55,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Welcome to ChatterBox'),
+        title: const Text('Welcome to CINLINE'),
       ),
       body: Stack(
         children: [

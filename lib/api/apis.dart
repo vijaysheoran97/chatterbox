@@ -570,7 +570,7 @@ class APIs {
       id: user.uid,
       name: user.displayName.toString(),
       email: user.email.toString(),
-      about: "Hey, I'm using Chatter Box!",
+      about: "Hey, I'm using CINLINE!",
       image: user.photoURL.toString(),
       createdAt: time,
       isOnline: false,
@@ -578,7 +578,8 @@ class APIs {
       pushToken: '',
       isProfessional: false,
       audioUrl: '',
-      audioDuration: null, // Initializing isProfessional
+      audioDuration: null,
+      isMuted: false,
     );
 
     return await firestore

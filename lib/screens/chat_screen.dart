@@ -1528,7 +1528,6 @@
 //   }
 // }
 
-
 import 'dart:developer';
 
 import 'dart:io';
@@ -1537,6 +1536,7 @@ import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
 import 'package:chatterbox/call/video_call/video_call_screen.dart';
+import 'package:chatterbox/chatter_box/settings/user_setting_screen.dart';
 import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -1566,8 +1566,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
   final _textController = TextEditingController();
-  bool _showEmoji = false,
-      _isUploading = false;
+  bool _showEmoji = false, _isUploading = false;
   bool _isRecording = false;
   late Record audioRecord;
   late AudioPlayer audioPlayer;
@@ -1595,12 +1594,10 @@ class _ChatScreenState extends State<ChatScreen> {
           _isRecording = true;
         });
       }
-    }
-    catch (e) {
+    } catch (e) {
       print('Error Start Recording : $e');
     }
   }
-
 
   Future<void> stopRecording(ChatUser chatUser) async {
     try {
@@ -1610,40 +1607,26 @@ class _ChatScreenState extends State<ChatScreen> {
         audioPath = path!;
       });
 
-      // Upload the recorded audio to Firebase Storage
       if (audioPath.isNotEmpty) {
-        // Generate a unique file name based on the current timestamp
-        String fileName = '${DateTime
-            .now()
-            .millisecondsSinceEpoch}.mp3';
+        String fileName = '${DateTime.now().millisecondsSinceEpoch}.mp3';
 
-        // Reference to the audio file in Firebase Storage
         Reference ref = FirebaseStorage.instance.ref().child('audio/$fileName');
 
-        // Upload the audio file
         await ref.putFile(File(audioPath));
 
-        // Get the download URL of the uploaded audio
         String audioUrl = await ref.getDownloadURL();
 
-        // Create a message containing the audio URL and the current user's ID
         String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
         Message audioMessage = Message(
           toId: chatUser.id,
           audioUrl: audioUrl,
           type: Type.audio,
           msg: '',
-          // Not used for audio messages
           read: '',
-          // Not used for audio messages
           fromId: userId,
-          sent: DateTime
-              .now()
-              .millisecondsSinceEpoch
-              .toString(),
+          sent: DateTime.now().millisecondsSinceEpoch.toString(),
         );
 
-        // Save the message to Firebase Firestore or wherever you store your messages
         await APIs.sendMessage(chatUser, audioUrl, Type.audio);
       }
     } catch (e) {
@@ -1651,61 +1634,53 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-
   Future<void> playRecording() async {
     try {
-      final audioplayers.UrlSource urlSource = audioplayers.UrlSource(
-          audioPath);
+      final audioplayers.UrlSource urlSource =
+          audioplayers.UrlSource(audioPath);
       await audioPlayer.play(urlSource);
     } catch (e) {
       print('Error playing recording : $e');
     }
   }
 
-
   void showTemporaryMessage(BuildContext context) {
-    // Calculate the position of the message
     final RenderBox buttonBox = context.findRenderObject() as RenderBox;
     final buttonPosition = buttonBox.localToGlobal(Offset.zero);
 
     OverlayEntry overlayEntry;
     overlayEntry = OverlayEntry(
-      builder: (context) =>
-          Positioned(
-            bottom:
-            MediaQuery
-                .of(context)
-                .viewInsets
-                .bottom + 60, // Adjust as needed
-            left: 60, // Adjust as needed
-            right: 0, // Adjust as needed
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                alignment: Alignment.bottomRight,
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  elevation: 0,
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                    child: Text(
-                      'Hold to record, release to send',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
+      builder: (context) => Positioned(
+        bottom:
+            MediaQuery.of(context).viewInsets.bottom + 60,
+        left: 60,
+        right: 0,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            alignment: Alignment.bottomRight,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              elevation: 0,
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: Text(
+                  'Hold to record, release to send',
+                  style: TextStyle(fontSize: 14),
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
 
     Overlay.of(context)?.insert(overlayEntry);
 
-    // Remove the temporary message after a delay
-    Future.delayed(Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       overlayEntry.remove();
     });
   }
@@ -1748,8 +1723,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             final data = snapshot.data?.docs;
 
                             _list = data
-                                ?.map((e) => Message.fromJson(e.data()))
-                                .toList() ??
+                                    ?.map((e) => Message.fromJson(e.data()))
+                                    .toList() ??
                                 [];
 
                             if (_list.isNotEmpty) {
@@ -1779,7 +1754,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       alignment: Alignment.centerRight,
                       child: Padding(
                         padding:
-                        EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                         ),
@@ -1800,25 +1775,29 @@ class _ChatScreenState extends State<ChatScreen> {
                     )
                 ],
               ),
-              if (_isRecording) // Overlay for showing when recording is on
+              if (_isRecording)
                 Container(
                   color: Colors.black
-                      .withOpacity(0.5), // Semi-transparent black overlay
-                  child: Center(
+                      .withOpacity(0.5),
+                  child: const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.record_voice_over, size: 80,
-                          color: Colors.white,),
-                        SizedBox(height: 10,),
+                        Icon(
+                          Icons.record_voice_over,
+                          size: 80,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           'Recording...',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.0
-                          ),
+                              letterSpacing: 1.0),
                         ),
                       ],
                     ),
@@ -1831,7 +1810,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  // bottom chat input field
 
   Widget _appBar() {
     return InkWell(
@@ -1865,9 +1843,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: mq.height * .05,
                     height: mq.height * .05,
                     imageUrl:
-                    list.isNotEmpty ? list[0].image : widget.user.image,
+                        list.isNotEmpty ? list[0].image : widget.user.image,
                     errorWidget: (context, url, error) =>
-                    const CircleAvatar(child: Icon(CupertinoIcons.person)),
+                        const CircleAvatar(child: Icon(CupertinoIcons.person)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -1884,13 +1862,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     Text(
                       list.isNotEmpty
                           ? list[0].isOnline
-                          ? 'Online'
+                              ? 'Online'
+                              : MyDateUtil.getLastActiveTime(
+                                  context: context,
+                                  lastActive: list[0].lastActive)
                           : MyDateUtil.getLastActiveTime(
-                          context: context,
-                          lastActive: list[0].lastActive)
-                          : MyDateUtil.getLastActiveTime(
-                          context: context,
-                          lastActive: widget.user.lastActive),
+                              context: context,
+                              lastActive: widget.user.lastActive),
                       style: const TextStyle(fontSize: 13),
                     ),
                   ],
@@ -1918,9 +1896,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const VideoCallScreen(
-                                        calleeName: '',
-                                      )));
+                                          const VideoCallScreen(
+                                            calleeName: '',
+                                          )));
                             },
                             leading: const Icon(Icons.videocam),
                             title: const Text('Video Call'),
@@ -1931,9 +1909,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const AudioCallScreen(
-                                        callerName: '',
-                                      )));
+                                          const AudioCallScreen(
+                                            callerName: '',
+                                          )));
                             },
                             leading: const Icon(Icons.call),
                             title: const Text('Voice Call'),
@@ -1946,93 +1924,41 @@ class _ChatScreenState extends State<ChatScreen> {
                 icon: const Icon(Icons.add_ic_call_outlined),
               ),
 
-
-// PopupMenuButton
               PopupMenuButton<String>(
                 onSelected: (value) {
                   if (value == 'view_contact') {
                     viewContact(context);
-                  } else if (value == 'clear_chat') {
-                    clearChat();
-                  } else if (value == 'block_user') {
-                    blockUser();
-                  } else if (value == 'delete_user') {
-                    deleteUser();
+                  } else if (value == 'setting') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserSettingsScreen(user: widget.user),
+                      ),
+                    );
                   }
+                  // else if (value == 'block_user') {
+                  //   blockUser();
+                  // }
                 },
-                itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
                     value: 'view_contact',
                     child: ListTile(
                       leading: Icon(Icons.person),
                       title: Text('View Contact'),
                     ),
                   ),
-                  PopupMenuItem<String>(
-                    value: 'clear_chat',
+                  const PopupMenuItem<String>(
+                    value: 'setting',
                     child: ListTile(
-                      leading: Icon(Icons.clear),
-                      title: Text('Clear Chat'),
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'block_user',
-                    child: ListTile(
-                      leading: Icon(Icons.block),
-                      title: Text('Block User'),
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'delete_user',
-                    child: ListTile(
-                      leading: Icon(Icons.delete),
-                      title: Text('Delete User'),
+                      leading: Icon(Icons.settings),
+                      title: Text('Setting'),
                     ),
                   ),
                 ],
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
               ),
 
-              // PopupMenuButton<String>(
-              //   onSelected: (value) {
-              //     if (value == 'view_contact') {
-              //     } else if (value == 'clear_chat') {
-              //     } else if (value == 'block_user') {
-              //     } else if (value == 'delete_user') {}
-              //   },
-              //   itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              //     const PopupMenuItem<String>(
-              //       value: 'view_contact',
-              //       child: ListTile(
-              //         leading: Icon(Icons.person),
-              //         title: Text('View Contact'),
-              //       ),
-              //     ),
-              //     const PopupMenuItem<String>(
-              //       value: 'clear_chat',
-              //       child: ListTile(
-              //         leading: Icon(Icons.clear),
-              //         title: Text('Clear Chat'),
-              //       ),
-              //     ),
-              //     const PopupMenuItem<String>(
-              //       value: 'block_user',
-              //       child: ListTile(
-              //         leading: Icon(Icons.block),
-              //         title: Text('Block User'),
-              //       ),
-              //     ),
-              //     const PopupMenuItem<String>(
-              //       value: 'delete_user',
-              //       child: ListTile(
-              //         leading: Icon(Icons.delete),
-              //         title: Text('Delete User'),
-              //       ),
-              //     ),
-              //   ],
-              //   icon: const Icon(Icons.more_vert),
-              // ),
             ],
           );
         },
@@ -2077,7 +2003,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           hintStyle: TextStyle(color: Colors.blueAccent),
                           border: InputBorder.none),
                       onChanged: (_) =>
-                          setState(() {}), // Trigger rebuild on text change
+                          setState(() {}),
                     ),
                   ),
 
@@ -2115,87 +2041,74 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
 
-
-          // Send message button
           _textController.text.isEmpty
               ? GestureDetector(
-            onLongPressStart: (_) {
-              setState(() {
-                _isRecording = true;
-                // Start recording audio
-                // Start your recording logic here
-                startRecording();
-              });
-            },
-            onLongPressEnd: (_) {
-              setState(() {
-                _isRecording = false;
-                // Stop recording audio and send it
-                // Stop your recording logic here
-                stopRecording(widget.user);
-
-                // Send your recorded audio here
-              });
-            },
-            child: _isRecording
-                ? Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors
-                    .redAccent, // Background color for the send button
-              ),
-              child: IconButton(
-                onPressed: () {
-                  // This onPressed is for handling tap events during recording if needed
-                },
-                icon: Icon(
-                  Icons.square,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-            )
-                : Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors
-                    .blueAccent, // Background color for the send button
-              ),
-              child: IconButton(
-                onPressed: () {
-                  showTemporaryMessage(context);
-                },
-                icon: Icon(
-                  Icons.mic,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-            ),
-          )
+                  onLongPressStart: (_) {
+                    setState(() {
+                      _isRecording = true;
+                      startRecording();
+                    });
+                  },
+                  onLongPressEnd: (_) {
+                    setState(() {
+                      _isRecording = false;
+                      stopRecording(widget.user);
+                    });
+                  },
+                  child: _isRecording
+                      ? Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.redAccent,
+                          ),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.square,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.blueAccent,
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              showTemporaryMessage(context);
+                            },
+                            icon: const Icon(
+                              Icons.mic,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                        ),
+                )
               : Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: Colors.green, // Background color for the send button
-            ),
-            child: IconButton(
-              onPressed: () {
-                if (_textController.text.isNotEmpty) {
-                  APIs.sendMessage(
-                      widget.user, _textController.text, Type.text);
-                  _textController.text = '';
-                }
-              },
-              icon: const Icon(Icons.send, color: Colors.white, size: 28),
-            ),
-          ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.green, // Background color for the send button
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      if (_textController.text.isNotEmpty) {
+                        APIs.sendMessage(
+                            widget.user, _textController.text, Type.text);
+                        _textController.text = '';
+                      }
+                    },
+                    icon: const Icon(Icons.send, color: Colors.white, size: 28),
+                  ),
+                ),
         ],
       ),
     );
   }
-
 
   void _showBottomSheet() {
     showModalBottomSheet(
@@ -2210,7 +2123,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return ListView(
           shrinkWrap: true,
           padding:
-          EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2221,7 +2134,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
                         final List<XFile> images =
-                        await picker.pickMultiImage(imageQuality: 70);
+                            await picker.pickMultiImage(imageQuality: 70);
                         for (var i in images) {
                           setState(() => _isUploading = true);
                           await APIs.sendChatImage(widget.user, File(i.path));
@@ -2339,33 +2252,24 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       showDialog(
         context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text("User's Email"),
-              content: Text(userEmail),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Close'),
-                ),
-              ],
+        builder: (context) => AlertDialog(
+          title: const Text("User's Email"),
+          content: Text(userEmail),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
             ),
+          ],
+        ),
       );
     } catch (e) {
       print('Error showing dialog: $e');
     }
   }
 
-  void clearChat() {
-  }
-
-  void blockUser() {
-  }
-
-  void deleteUser() {
-  }
 
 // static String getConversationID(String userId) {
 //   String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
@@ -2373,7 +2277,6 @@ class _ChatScreenState extends State<ChatScreen> {
 //       ? '${currentUserId}_$userId'
 //       : '${userId}_$currentUserId';
 // }
-
 
 // Future<void> sendMessage(Message message) async {
 //   try {
@@ -2399,6 +2302,6 @@ class _ChatScreenState extends State<ChatScreen> {
 //     await ref.doc(time).set(messageData);
 //   } catch (e) {
 //     print('Error sending message: $e');
-//   }
+//   }}
 // }
 }

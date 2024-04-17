@@ -25,7 +25,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
           appBar: AppBar(
             title: Text(widget.user.name),
           ),
-          floatingActionButton: //user about
+          floatingActionButton:
               Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

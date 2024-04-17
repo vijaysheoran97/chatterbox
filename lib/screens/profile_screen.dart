@@ -9,7 +9,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../api/apis.dart';
-import '../auth/login_screen.dart';
 import '../chatter_box/auth/login_screen.dart';
 import '../helper/dialogs.dart';
 import '../main.dart';
