@@ -7,6 +7,7 @@ import 'package:chatterbox/helper/dialogs.dart';
 import 'package:chatterbox/helper/my_date_util.dart';
 import 'package:chatterbox/main.dart';
 import 'package:chatterbox/models/chat_user_model.dart';
+import 'package:chatterbox/screens/create_group.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -151,7 +152,13 @@ class _DrawerPageState extends State<DrawerPage> {
             leading: const Icon(Icons.group_outlined),
             title: const Text('New Group'),
             onTap: () {
-              // Add onTap handler for Item 1
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const CreateGroupPage(),
+                ),
+              );
             },
           ),
           ListTile(

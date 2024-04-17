@@ -133,17 +133,16 @@
 //
 //
 
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:chatterbox/api/apis.dart';
-import 'package:chatterbox/chatter_box/auth/login_screen.dart';
-import 'package:chatterbox/chatter_box/screens/drawer.dart';
-import 'package:chatterbox/model/user_info_model.dart';
-import 'package:chatterbox/screens/home_screen.dart';
-import 'package:chatterbox/screens/profile_screen.dart';
+
+import '../../api/apis.dart';
+import '../../screens/GroupList.dart';
+import '../../screens/home_screen.dart';
+import '../../screens/profile_screen.dart';
 import '../tabs/callList.dart';
-import '../tabs/chatlist.dart';
 import '../tabs/statusList.dart';
+import 'drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -181,7 +180,7 @@ class _HomePageState extends State<HomePage> {
           );
         } else {
           return DefaultTabController(
-            length: 3,
+            length: 4, // Increase the length to accommodate the new tab
             child: Scaffold(
               backgroundColor: Theme.of(context).colorScheme.background,
               appBar: AppBar(
@@ -198,6 +197,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 title: _isSearching
                     ? TextField(
+
                   controller: _searchController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -207,6 +207,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 )
                     : const Text('CINLINE'),
+
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -235,11 +236,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
-                bottom: const TabBar(
+                bottom: TabBar(
                   isScrollable: false,
                   labelPadding: EdgeInsets.zero,
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: [
+                    Tab(
+                      // New tab with icon only
+                      icon: Icon(Icons.group),
+                    ),
                     Tab(
                       text: 'Chats',
                     ),
@@ -254,9 +259,12 @@ class _HomePageState extends State<HomePage> {
               ),
               body: TabBarView(
                 children: [
-                  const HomeScreen(),
+
+                  GroupListPage(currentUserID: APIs.me.id,),
+                  HomeScreen(),
                   StatusListPage(user: APIs.me),
-                  const CallListPage(),
+                  CallListPage(),
+
                 ],
               ),
               drawer: DrawerPage(user: APIs.me),

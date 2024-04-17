@@ -1,7 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../api/apis.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
@@ -22,6 +22,7 @@ class ChatUserCard extends StatefulWidget {
 class _ChatUserCardState extends State<ChatUserCard> {
   Message? _message;
   bool _isProfessional = false;
+  String? _groupName;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
       _isProfessional = userData['isProfessional'] ?? false;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +87,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
           ),
           title: Row(
             children: [
-              Text(widget.user.name),
+              Text(widget.user.name), // Show group name if available
               if (_isProfessional)
                 Padding(
                   padding: const EdgeInsets.only(left: 3),

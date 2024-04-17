@@ -1565,9 +1565,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
-  final _textController = TextEditingController();
-  bool _showEmoji = false, _isUploading = false;
-  bool _isRecording = false;
+    final _textController = TextEditingController();
+    bool _showEmoji = false, _isUploading = false;
+    bool _isRecording = false;
   late Record audioRecord;
   late AudioPlayer audioPlayer;
   String audioPath = '';
@@ -2123,7 +2123,7 @@ class _ChatScreenState extends State<ChatScreen> {
         return ListView(
           shrinkWrap: true,
           padding:
-              EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
+          EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .03),
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -2134,7 +2134,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
                         final List<XFile> images =
-                            await picker.pickMultiImage(imageQuality: 70);
+                        await picker.pickMultiImage(imageQuality: 70);
                         for (var i in images) {
                           setState(() => _isUploading = true);
                           await APIs.sendChatImage(widget.user, File(i.path));

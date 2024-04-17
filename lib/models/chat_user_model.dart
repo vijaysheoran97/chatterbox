@@ -70,10 +70,14 @@ class ChatUser {
   late String lastActive;
   late String pushToken;
   late bool isProfessional;
-  String audioUrl;
+  late String audioUrl;
   int? audioDuration;
+  late String groupId; // Add groupId field
+
+ 
   late bool isMuted;
   late bool isBlocked;
+
 
   ChatUser({
     required this.id,
@@ -88,8 +92,12 @@ class ChatUser {
     required this.isProfessional,
     required this.audioUrl,
     required this.audioDuration,
+
+    required this.groupId, // Initialize groupId field
+
     required this.isMuted,
     this.isBlocked = false,
+
   });
 
   ChatUser.fromJson(Map<String, dynamic>? json)
@@ -105,8 +113,12 @@ class ChatUser {
         isProfessional = json?['isProfessional'] ?? false,
         audioUrl = json?['audioUrl'] ?? '',
         audioDuration = json?['audioDuration'],
+
+        groupId = json?['groupId'] ?? ''; // Initialize groupId field
+
         isMuted = json?['isMuted'] ?? false,
         isBlocked = json?['isBlocked'] ?? false;
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -122,6 +134,7 @@ class ChatUser {
       'isProfessional': isProfessional,
       'audioUrl': audioUrl,
       'audioDuration': audioDuration,
+      'groupId': groupId,
       'isMuted' : isMuted,
       'isBlocked': isBlocked,
     };

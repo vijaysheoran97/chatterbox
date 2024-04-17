@@ -1288,7 +1288,9 @@ class _MessageCardState extends State<MessageCard> {
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(50)
                 ),
+
                 child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)),
+
           ),
           SizedBox(width: 8),
           Flexible(
