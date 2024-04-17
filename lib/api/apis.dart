@@ -126,7 +126,7 @@ class APIs {
       pushToken: '',
       isProfessional: false,
       audioUrl: '',
-      audioDuration: null, // Initializing isProfessional
+      audioDuration: null, groupId: 'groupId', // Initializing isProfessional
     );
 
     return await firestore
