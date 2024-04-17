@@ -16,12 +16,12 @@ class _NewMessagePageState extends State<NewMessagePage> {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: BackButton(),
+        leading: const BackButton(),
         title: widget.title,
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.search_outlined),
+            icon: const Icon(Icons.search_outlined),
           )
         ],
       ),
@@ -29,13 +29,13 @@ class _NewMessagePageState extends State<NewMessagePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ListTile(
+            const ListTile(
               leading: CircleAvatar(
                 child: Icon(Icons.group_outlined),
               ),
               title: Text('New group'),
             ),
-            ListTile(
+            const ListTile(
               leading: CircleAvatar(
                 child: Icon(Icons.person_add_alt),
               ),
@@ -45,11 +45,11 @@ class _NewMessagePageState extends State<NewMessagePage> {
               height: 200, // Set a fixed height or use constraints accordingly
               child: ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: 20,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       child: Icon(Icons.person),
                     ),
                     title: Text('New Item ${index + 1}'),

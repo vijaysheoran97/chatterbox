@@ -2,8 +2,10 @@ import 'package:chatterbox/api/apis.dart';
 import 'package:chatterbox/main.dart';
 import 'package:chatterbox/screens/profile_screen.dart';
 import 'package:chatterbox/widget/chat_user_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../helper/dialogs.dart';
 import '../models/chat_user_model.dart';
@@ -21,9 +23,101 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<ChatUser> _searchList = [];
   bool _isSearching = false;
 
+  // late BannerAd _bannerAd;
+  // bool bannerReady = false;
+  // RewardedAd? rewardedAd;
+  //
+  //
+  //
+  // void loadRewardAd() {
+  //   RewardedAd.load(
+  //     adUnitId: "ca-app-pub-3940256099942544/5224354917",
+  //     request: const AdRequest(),
+  //     rewardedAdLoadCallback: RewardedAdLoadCallback(
+  //       onAdLoaded: (RewardedAd ad) {
+  //         rewardedAd = ad;
+  //         setState(() {});
+  //       },
+  //       onAdFailedToLoad: (LoadAdError error) {
+  //         rewardedAd = null;
+  //
+  //         setState(() {});
+  //
+  //         if (kDebugMode) {
+  //           print('Rewarded ad failed to load: $error');
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
+  //
+  // void showRewardAd() {
+  //   loadRewardAd();
+  //   if (rewardedAd != null) {
+  //     rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+  //       onAdClicked: (RewardedAd ad) {},
+  //       onAdWillDismissFullScreenContent: (RewardedAd ad) {},
+  //       onAdShowedFullScreenContent: (RewardedAd ad) {},
+  //       onAdImpression: (RewardedAd ad) {},
+  //       onAdDismissedFullScreenContent: (RewardedAd ad) {
+  //         ad.dispose();
+  //         loadRewardAd();
+  //       },
+  //       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+  //         if (kDebugMode) {
+  //           print('Failed to show RewardedAd ad: $error');
+  //         }
+  //         ad.dispose();
+  //         loadRewardAd();
+  //       },
+  //     );
+  //     rewardedAd?.setImmersiveMode(true);
+  //     rewardedAd?.show(
+  //       onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
+  //         if (kDebugMode) {
+  //           print('User earned reward: ${reward.amount} ${reward.type}');
+  //         }
+  //       },
+  //     );
+  //   } else {
+  //     if (kDebugMode) {
+  //       print('Reward ad not loaded yet.');
+  //     }
+  //   }
+  // }
+  //
+  // BannerAd createBannerAd() {
+  //   return BannerAd(
+  //     adUnitId: "ca-app-pub-3940256099942544/6300978111",
+  //     size: AdSize.banner,
+  //     request: const AdRequest(),
+  //     listener: BannerAdListener(
+  //       onAdLoaded: (Ad ad) {
+  //         if (kDebugMode) {
+  //           print('Banner Ad loaded.');
+  //         }
+  //         setState(() {
+  //           bannerReady = true;
+  //         });
+  //       },
+  //       onAdFailedToLoad: (Ad ad, LoadAdError error) {
+  //         if (kDebugMode) {
+  //           print('Banner Ad failed to load: $error');
+  //         }
+  //         setState(() {
+  //           bannerReady = false;
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
+
   @override
   void initState() {
     APIs.getSelfInfo();
+    // _bannerAd = createBannerAd();
+    // _bannerAd.load();
+    // loadRewardAd();
     super.initState();
     SystemChannels.lifecycle.setMessageHandler((message){
       if (APIs.auth.currentUser != null) {

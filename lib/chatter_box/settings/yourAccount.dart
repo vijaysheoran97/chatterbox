@@ -9,16 +9,14 @@ class YourAccountPage extends StatefulWidget {
 }
 
 class _YourAccountPageState extends State<YourAccountPage> {
-  late bool switchValue = false; // Initialize switchValue to false
+  late bool switchValue = false;
 
   @override
   void initState() {
     super.initState();
-    // Fetch professional status from Firebase
     fetchProfessionalStatus();
   }
 
-  // Function to fetch professional status from Firebase
   void fetchProfessionalStatus() async {
     final userData = await APIs.firestore.collection('users').doc(APIs.user.uid).get();
     final isProfessional = userData['isProfessional'] ?? false;
@@ -58,7 +56,6 @@ class _YourAccountPageState extends State<YourAccountPage> {
     );
   }
 
-  // Function to save the professional status to Firebase
   void saveProfessionalStatus(bool isProfessional) async {
     APIs.me.isProfessional = isProfessional;
     await APIs.firestore.collection('users').doc(APIs.user.uid).update({

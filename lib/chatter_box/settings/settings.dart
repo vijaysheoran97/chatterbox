@@ -1,3 +1,4 @@
+import 'package:chatterbox/chatter_box/settings/notification.dart';
 import 'package:chatterbox/chatter_box/settings/themes.dart';
 import 'package:chatterbox/chatter_box/settings/yourAccount.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,6 +78,9 @@ class SettingPage extends StatelessWidget {
               height: 10,
             ),
             ListTile(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Nitifications()));
+              },
               leading: const Icon(Icons.notifications_active_outlined),
               title: const Text('Notifications'),
               subtitle: Text(

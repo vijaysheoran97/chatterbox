@@ -10,7 +10,6 @@ class AudioCallScreen extends StatefulWidget {
   _AudioCallScreenState createState() => _AudioCallScreenState();
 }
 
-
 class _AudioCallScreenState extends State<AudioCallScreen> {
   late final RtcEngine _engine;
   bool _joined = false;
