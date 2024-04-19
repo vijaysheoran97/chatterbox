@@ -1532,6 +1532,7 @@ import 'dart:developer';
 
 import 'dart:io';
 
+import 'package:agora_uikit/agora_uikit.dart';
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatterbox/call/audio_call/audio_call_screen.dart';
@@ -1539,12 +1540,15 @@ import 'package:chatterbox/call/video_call/video_call_screen.dart';
 import 'package:chatterbox/chatter_box/settings/user_setting_screen.dart';
 import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import '../api/apis.dart';
 import '../helper/my_date_util.dart';
@@ -2208,7 +2212,39 @@ class _ChatScreenState extends State<ChatScreen> {
                 Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        try {
+                          var status = await Permission.contacts.request();
+                          if (status.isGranted) {
+                            final Contact? contact =
+                            await ContactsService.openDeviceContactPicker();
+                            if (contact != null) {
+                              String? contactName = contact.displayName
+                                  ?.replaceAll(RegExp(r'[^\x00-\x7F]+'), '');
+                              String? contactPhone =
+                              contact.phones?.isNotEmpty ?? false
+                                  ? contact.phones!.first.value
+                                  : null;
+
+                              Directory tempDir = await getTemporaryDirectory();
+                              File tempFile =
+                              File('${tempDir.path}/contact.txt');
+                              await tempFile.writeAsString(
+                                  'Name: $contactName, Phone: $contactPhone');
+
+                              setState(() => _isUploading = true);
+                              APIs apiInstance = APIs();
+                              await apiInstance.shareContact(widget.user,
+                                  tempFile, contactName!, contactPhone!);
+                              setState(() => _isUploading = false);
+                            }
+                          } else {
+                            print('Permission denied to access contacts');
+                          }
+                        } catch (e) {
+                          print('Error sharing contact: $e');
+                        }
+                      },
                       child: Image.asset(
                         "assets/images/contact.png",
                         width: mq.width * .3 * 0.5,
@@ -2225,7 +2261,32 @@ class _ChatScreenState extends State<ChatScreen> {
                 Column(
                   children: [
                     GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        try {
+                          var status = await Permission.location.request();
+                          if (status.isGranted) {
+                            Position position = await Geolocator.getCurrentPosition(
+                              desiredAccuracy: LocationAccuracy.high,
+                            );
+
+                            if (position != null && position.latitude != null && position.longitude != null) {
+                              double latitude = position.latitude;
+                              double longitude = position.longitude;
+
+                              setState(() => _isUploading = true);
+                              APIs apiInstance = APIs();
+                              await apiInstance.shareLocation(widget.user, latitude, longitude);
+                              setState(() => _isUploading = false);
+                            } else {
+                              print('Failed to retrieve location');
+                            }
+                          } else {
+                            print('Permission denied to access location');
+                          }
+                        } catch (e) {
+                          print('Error sharing location: $e');
+                        }
+                      },
                       child: Image.asset(
                         "assets/images/circle (2).png",
                         width: mq.width * .3 * 0.5,

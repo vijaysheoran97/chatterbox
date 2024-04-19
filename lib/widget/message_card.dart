@@ -1103,8 +1103,6 @@
 //   );
 // }
 
-
-
 import 'dart:developer';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
@@ -1120,6 +1118,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sound/public/tau.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -1129,7 +1128,6 @@ import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/chat_user_model.dart';
 import '../models/message.dart';
-
 
 class MessageCard extends StatefulWidget {
   const MessageCard({Key? key, required this.message}) : super(key: key);
@@ -1141,6 +1139,8 @@ class MessageCard extends StatefulWidget {
 }
 
 class _MessageCardState extends State<MessageCard> {
+  FirebaseStorage storage = FirebaseStorage.instance;
+
   late bool isMe;
   late AudioPlayer audioPlayer;
   String audioPath = '';
@@ -1156,7 +1156,6 @@ class _MessageCardState extends State<MessageCard> {
       });
     });
   }
-
 
   @override
   void dispose() {
@@ -1185,7 +1184,10 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                widget.message.type == Type.video || widget.message.type == Type.audio
+                    widget.message.type == Type.video ||
+                    widget.message.type == Type.audio ||
+                    widget.message.type == Type.contact ||
+                    widget.message.type == Type.location
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -1201,9 +1203,9 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
+                    widget.message.msg,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  )
                 : _buildMediaWidget(widget.message.msg),
           ),
         ),
@@ -1222,7 +1224,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Widget _buildMediaWidget(String mediaUrl) {
-    if (widget.message.type == Type.image ) {
+    if (widget.message.type == Type.image) {
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         placeholder: (context, url) => const Padding(
@@ -1286,11 +1288,12 @@ class _MessageCardState extends State<MessageCard> {
                 width: 45,
                 decoration: BoxDecoration(
                     color: Colors.black,
-                    borderRadius: BorderRadius.circular(50)
-                ),
-
-                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)),
-
+                    borderRadius: BorderRadius.circular(50)),
+                child: Icon(
+                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white,
+                  size: 30,
+                )),
           ),
           SizedBox(width: 8),
           Flexible(
@@ -1304,6 +1307,67 @@ class _MessageCardState extends State<MessageCard> {
       );
     } else {
       return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetContact(String msg) {
+    if (widget.message.type == Type.contact) {
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Name: ${widget.message.contactName ?? ""}', style: const TextStyle(fontSize: 16)),
+            Text('Phone: ${widget.message.contactPhone ?? ""}', style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetLocation(String msg) {
+    if (widget.message.type == Type.location) {
+      return FutureBuilder<String>(
+        future: getAddress(widget.message.latitude, widget.message.longitude),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Address: ${snapshot.data ?? ""}', style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+            );
+          }
+        },
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<String> getAddress(double? latitude, double? longitude) async {
+    try {
+      if (latitude != null && longitude != null) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+        if (placemarks != null && placemarks.isNotEmpty) {
+          Placemark address = placemarks.first;
+          String formattedAddress = "${address.name}, ${address.locality}, ${address.administrativeArea}, ${address.country}";
+          return formattedAddress;
+        } else {
+          return "Address not found";
+        }
+      } else {
+        return "Latitude or longitude is null";
+      }
+    } catch (e) {
+      return "Error: $e";
     }
   }
 
@@ -1322,7 +1386,8 @@ class _MessageCardState extends State<MessageCard> {
               width: 2,
             ),
             Text(
-              MyDateUtil.getFormattedTime(context: context, time: widget.message.sent),
+              MyDateUtil.getFormattedTime(
+                  context: context, time: widget.message.sent),
               style: const TextStyle(fontSize: 13, color: Colors.black54),
             ),
           ],
@@ -1331,7 +1396,10 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                widget.message.type == Type.video || widget.message.type == Type.audio
+                    widget.message.type == Type.video ||
+                    widget.message.type == Type.audio||
+                widget.message.type == Type.contact||
+                widget.message.type == Type.location
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -1347,14 +1415,19 @@ class _MessageCardState extends State<MessageCard> {
             ),
             child: widget.message.type == Type.text
                 ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
+                    widget.message.msg,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  )
                 : widget.message.type == Type.image
-                ? _buildMediaWidget(widget.message.msg) : widget.message.type == Type.video ?
-            _buildMediaWidgetVideo(widget.message.msg) : widget.message.type == Type.audio ?
-            _buildMediaWidgetAudio(widget.message.msg)
-                : Container(),
+                    ? _buildMediaWidget(widget.message.msg)
+                    : widget.message.type == Type.video
+                        ? _buildMediaWidgetVideo(widget.message.msg)
+                        : widget.message.type == Type.audio
+                            ? _buildMediaWidgetAudio(widget.message.msg): widget.message.type == Type.contact
+                ? _buildMediaWidgetContact(widget.message.msg)
+                : widget.message.type == Type.location
+                ?_buildMediaWidgetLocation(widget.message.msg)
+                            : Container(),
           ),
         ),
         // Flexible(
@@ -1433,10 +1506,10 @@ class _MessageCardState extends State<MessageCard> {
   //   }
   // }
 
-
   void playRecording(String audioPath) async {
     try {
-      final audioplayers.UrlSource urlSource = audioplayers.UrlSource(audioPath);
+      final audioplayers.UrlSource urlSource =
+          audioplayers.UrlSource(audioPath);
       await audioPlayer.play(urlSource);
     } catch (e) {
       print('Error playing recording : $e');
@@ -1491,48 +1564,48 @@ class _MessageCardState extends State<MessageCard> {
             ),
             widget.message.type == Type.text
                 ? _OptionItem(
-              icon: const Icon(
-                Icons.copy_all_rounded,
-                color: Colors.blue,
-                size: 26,
-              ),
-              name: 'Copy Text',
-              onTap: () async {
-                await Clipboard.setData(
-                  ClipboardData(text: widget.message.msg),
-                ).then((value) {
-                  Navigator.pop(context);
-                  Dialogs.showSnackbar(context, 'Text Copied!');
-                });
-              },
-            )
+                    icon: const Icon(
+                      Icons.copy_all_rounded,
+                      color: Colors.blue,
+                      size: 26,
+                    ),
+                    name: 'Copy Text',
+                    onTap: () async {
+                      await Clipboard.setData(
+                        ClipboardData(text: widget.message.msg),
+                      ).then((value) {
+                        Navigator.pop(context);
+                        Dialogs.showSnackbar(context, 'Text Copied!');
+                      });
+                    },
+                  )
                 : _OptionItem(
-              icon: const Icon(
-                Icons.download_rounded,
-                color: Colors.blue,
-                size: 26,
-              ),
-              name: 'Save Image',
-              onTap: () async {
-                try {
-                  log('Image Url: ${widget.message.msg}');
-                  await GallerySaver.saveImage(
-                    widget.message.msg,
-                    albumName: 'CINLINE',
-                  ).then((success) {
-                    Navigator.pop(context);
-                    if (success != null && success) {
-                      Dialogs.showSnackbar(
-                        context,
-                        'Image Successfully Saved!',
-                      );
-                    }
-                  });
-                } catch (e) {
-                  log('ErrorWhileSavingImg: $e');
-                }
-              },
-            ),
+                    icon: const Icon(
+                      Icons.download_rounded,
+                      color: Colors.blue,
+                      size: 26,
+                    ),
+                    name: 'Save Image',
+                    onTap: () async {
+                      try {
+                        log('Image Url: ${widget.message.msg}');
+                        await GallerySaver.saveImage(
+                          widget.message.msg,
+                          albumName: 'CINLINE',
+                        ).then((success) {
+                          Navigator.pop(context);
+                          if (success != null && success) {
+                            Dialogs.showSnackbar(
+                              context,
+                              'Image Successfully Saved!',
+                            );
+                          }
+                        });
+                      } catch (e) {
+                        log('ErrorWhileSavingImg: $e');
+                      }
+                    },
+                  ),
             if (isMe)
               Divider(
                 color: Colors.black54,
@@ -1550,7 +1623,8 @@ class _MessageCardState extends State<MessageCard> {
               ),
             if (isMe)
               _OptionItem(
-                icon: const Icon(Icons.delete_forever, color: Colors.red, size: 26),
+                icon: const Icon(Icons.delete_forever,
+                    color: Colors.red, size: 26),
                 name: 'Delete Message',
                 onTap: () async {
                   await APIs.deleteMessage(widget.message).then((value) {
@@ -1565,7 +1639,8 @@ class _MessageCardState extends State<MessageCard> {
             ),
             _OptionItem(
               icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-              name: 'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+              name:
+                  'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
               onTap: () {},
             ),
             _OptionItem(
@@ -1587,7 +1662,8 @@ class _MessageCardState extends State<MessageCard> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        contentPadding: const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+        contentPadding:
+            const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Row(
           children: [
@@ -1603,7 +1679,9 @@ class _MessageCardState extends State<MessageCard> {
           initialValue: updatedMsg,
           maxLines: null,
           onChanged: (value) => updatedMsg = value,
-          decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+          decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
         ),
         actions: [
           MaterialButton(
@@ -1636,14 +1714,18 @@ class _OptionItem extends StatelessWidget {
   final String name;
   final VoidCallback onTap;
 
-  const _OptionItem({required this.icon, required this.name, required this.onTap});
+  const _OptionItem(
+      {required this.icon, required this.name, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onTap(),
       child: Padding(
-        padding: EdgeInsets.only(left: mq.width * .05, top: mq.height * .015, bottom: mq.height * .015),
+        padding: EdgeInsets.only(
+            left: mq.width * .05,
+            top: mq.height * .015,
+            bottom: mq.height * .015),
         child: Row(
           children: [
             icon,

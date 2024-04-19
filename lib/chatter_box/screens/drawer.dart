@@ -20,6 +20,7 @@ import '../theme/theme_manager.dart';
 
 class DrawerPage extends StatefulWidget {
   final ChatUser user;
+
   const DrawerPage({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -27,11 +28,9 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-
   late String _selectedMode = 'light';
   bool _showThemeOptions = false;
   bool _isProfessional = false;
-
 
   late User _currentUser;
 
@@ -44,7 +43,8 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   void fetchProfessionalStatus() async {
-    final userData = await APIs.firestore.collection('users').doc(widget.user.id).get();
+    final userData =
+        await APIs.firestore.collection('users').doc(widget.user.id).get();
     setState(() {
       _isProfessional = userData['isProfessional'] ?? false;
     });
@@ -92,7 +92,8 @@ class _DrawerPageState extends State<DrawerPage> {
                               // height:  mq.height * .14,
                               fit: BoxFit.cover,
                               imageUrl: widget.user.image,
-                              errorWidget: (context, url, error) => const CircleAvatar(
+                              errorWidget: (context, url, error) =>
+                                  const CircleAvatar(
                                 child: Icon(CupertinoIcons.person),
                               ),
                             ),
@@ -145,9 +146,6 @@ class _DrawerPageState extends State<DrawerPage> {
               ],
             ),
           ),
-
-
-
           ListTile(
             leading: const Icon(Icons.group_outlined),
             title: const Text('New Group'),
@@ -169,7 +167,9 @@ class _DrawerPageState extends State<DrawerPage> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => const NewMessagePage(title: Text('Contacts')),
+                  builder: (context) => const NewMessagePage(
+                    title: Text('Contacts'),
+                  ),
                 ),
               );
             },
@@ -252,17 +252,19 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-
-
-            leading: const Icon(Icons.logout_outlined, color: Colors.red,),
-            title: const Text('Logout', style: TextStyle(color: Colors.red),),
-
+            leading: const Icon(
+              Icons.logout_outlined,
+              color: Colors.red,
+            ),
+            title: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
             onTap: () async {
               Dialogs.showProgressBar(context);
               await APIs.updateActiveStatus(false);
               await APIs.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
-
                   Navigator.pop(context);
                   APIs.auth = FirebaseAuth.instance;
                   Navigator.pushReplacement(context,
@@ -273,12 +275,13 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           SizedBox(height: mq.height * .02),
           ListTile(
-            title: Row(mainAxisAlignment: MainAxisAlignment.center,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   'Joined On: ',
                   style: TextStyle(
-                    //color: Colors.black87,
+                      //color: Colors.black87,
                       fontWeight: FontWeight.w500,
                       fontSize: 15),
                 ),
@@ -288,11 +291,10 @@ class _DrawerPageState extends State<DrawerPage> {
                         time: widget.user.createdAt,
                         showYear: true),
                     style: const TextStyle(
-                      // color: Colors.black54,
+                        // color: Colors.black54,
                         fontSize: 15)),
               ],
             ),
-
           )
         ],
       ),
@@ -308,4 +310,3 @@ class _DrawerPageState extends State<DrawerPage> {
     }
   }
 }
-

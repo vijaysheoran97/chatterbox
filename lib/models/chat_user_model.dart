@@ -114,7 +114,7 @@ class ChatUser {
         audioUrl = json?['audioUrl'] ?? '',
         audioDuration = json?['audioDuration'],
 
-        groupId = json?['groupId'] ?? ''; // Initialize groupId field
+        groupId = json?['groupId'] ?? '', // Initialize groupId field
 
         isMuted = json?['isMuted'] ?? false,
         isBlocked = json?['isBlocked'] ?? false;

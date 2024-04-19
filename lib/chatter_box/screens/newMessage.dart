@@ -42,7 +42,7 @@ class _NewMessagePageState extends State<NewMessagePage> {
               title: Text('New contact'),
             ),
             Container(
-              height: 200, // Set a fixed height or use constraints accordingly
+              height: 200,
               child: ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

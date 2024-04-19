@@ -1,6 +1,6 @@
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:chatterbox/chatter_box/utils/app_color_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
 
 class AudioCallScreen extends StatefulWidget {
   final String callerName;
@@ -30,7 +30,7 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
 
   _initEngine() async {
     _engine = await RtcEngine.createWithContext(
-        RtcEngineContext('d95680fe3a6b466c8a2b778d1a5e4a06'));
+         RtcEngineContext('d95680fe3a6b466c8a2b778d1a5e4a06'));
     _addListeners();
     await _engine.enableAudio();
     setState(() {});

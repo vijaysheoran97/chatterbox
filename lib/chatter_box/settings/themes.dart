@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
@@ -14,12 +13,12 @@ class ThemesPage extends StatefulWidget {
 }
 
 class _ThemesPageState extends State<ThemesPage> {
-  late String _selectedMode = 'light'; // Initialize with default value
+  late String _selectedMode = 'light';
 
   @override
   void initState() {
     super.initState();
-    _loadThemePreference(); // Load theme preference when the widget initializes
+    _loadThemePreference();
   }
 
   Future<void> _loadThemePreference() async {
@@ -51,7 +50,7 @@ class _ThemesPageState extends State<ThemesPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Themes',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
@@ -60,13 +59,20 @@ class _ThemesPageState extends State<ThemesPage> {
                 _showThemeSelector(context);
               },
               child: ListTile(
-                title: Text('Choose theme'),
-                subtitle: Text('Select any theme as your preference'),
+                title: const Text('Choose theme'),
+                subtitle: const Text('Select any theme as your preference'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(_selectedMode, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),),
-                    Icon(Icons.keyboard_arrow_down, color: Theme.of(context).colorScheme.tertiary,),
+                    Text(
+                      _selectedMode,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
                   ],
                 ),
               ),
@@ -84,12 +90,12 @@ class _ThemesPageState extends State<ThemesPage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Select Theme',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -121,7 +127,6 @@ class _ThemesPageState extends State<ThemesPage> {
                 },
                 activeColor: Colors.blue,
               ),
-
             ],
           ),
         );

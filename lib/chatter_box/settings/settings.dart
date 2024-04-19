@@ -28,8 +28,10 @@ class SettingPage extends StatelessWidget {
           children: [
             ListTile(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => YourAccountPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const YourAccountPage()));
               },
               leading: const Icon(Icons.person_outline),
               title: const Text('Your account'),
@@ -78,8 +80,11 @@ class SettingPage extends StatelessWidget {
               height: 10,
             ),
             ListTile(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Nitifications()));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Nitifications()));
               },
               leading: const Icon(Icons.notifications_active_outlined),
               title: const Text('Notifications'),
