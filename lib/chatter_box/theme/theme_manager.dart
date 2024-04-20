@@ -7,7 +7,6 @@ class ThemeManager with ChangeNotifier {
   ThemeData _currentTheme = lightTheme;
 
   ThemeManager(String? selectedTheme) {
-    // Set the initial theme based on the selectedTheme preference
     if (selectedTheme != null) {
       switch (selectedTheme) {
         case 'light':
@@ -16,7 +15,6 @@ class ThemeManager with ChangeNotifier {
         case 'dark':
           _currentTheme = darkTheme;
           break;
-      // Add more cases for additional themes if needed
       }
     }
   }

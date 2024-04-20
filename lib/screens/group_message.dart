@@ -1,11 +1,5 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
-
-import '../api/apis.dart';
 import '../main.dart';
 import 'groupdetails.dart';
 
@@ -23,32 +17,28 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
   final _textController = TextEditingController();
   bool _showEmoji = false,
       _isUploading = false;
-  bool _isRecording = false;// Store the group name
+  bool _isRecording = false;
 
   @override
   void initState() {
     super.initState();
-    fetchGroupData(); // Fetch group data when the widget initializes
+    fetchGroupData();
   }
 
   Future<void> fetchGroupData() async {
     try {
-      // Retrieve the group document from Firestore using the groupId
       DocumentSnapshot groupSnapshot =
       await FirebaseFirestore.instance.collection('groups').doc(widget.groupId).get();
 
       if (groupSnapshot.exists) {
-        // If the document exists, extract the group name
-        Map<String, dynamic>? data = groupSnapshot.data() as Map<String, dynamic>?; // Cast to Map<String, dynamic>
+        Map<String, dynamic>? data = groupSnapshot.data() as Map<String, dynamic>?;
         setState(() {
-          groupName = data?['name'] ?? ''; // Update the groupName
+          groupName = data?['name'] ?? '';
         });
       } else {
-        // Handle case where the group document doesn't exist
         print('Group document does not exist');
       }
     } catch (error) {
-      // Handle any errors that occur during the process
       print('Error retrieving group document: $error');
     }
   }
@@ -60,7 +50,6 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
         leadingWidth: 35,
         title: InkWell(
           onTap: () {
-            // Navigate to the GroupDetailPage when tapped on the title
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -126,7 +115,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
                           hintStyle: TextStyle(color: Colors.blueAccent),
                           border: InputBorder.none),
                       onChanged: (_) =>
-                          setState(() {}), // Trigger rebuild on text change
+                          setState(() {}),
                     ),
                   ),
 
@@ -193,11 +182,10 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: Colors
-                    .redAccent, // Background color for the send button
+                    .redAccent,
               ),
               child: IconButton(
                 onPressed: () {
-                  // This onPressed is for handling tap events during recording if needed
                 },
                 icon: Icon(
                   Icons.square,
@@ -210,7 +198,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: Colors
-                    .blueAccent, // Background color for the send button
+                    .blueAccent,
               ),
               child: IconButton(
                 onPressed: () {
@@ -227,7 +215,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
               : Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: Colors.green, // Background color for the send button
+              color: Colors.green,
             ),
             child: IconButton(
               onPressed: () {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'group_message.dart';
 
 class GroupListPage extends StatelessWidget {
   final String currentUserID;
 
-  const GroupListPage({Key? key, required this.currentUserID}) : super(key: key);
+  const GroupListPage({Key? key, required this.currentUserID})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class GroupListPage extends StatelessWidget {
         stream: FirebaseFirestore.instance.collection('groups').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -24,7 +24,6 @@ class GroupListPage extends StatelessWidget {
 
           final List<DocumentSnapshot> groupDocs = snapshot.data!.docs;
 
-          // Filter groups where the currentUserID is in the 'members' array
           final List<DocumentSnapshot> userGroups = groupDocs.where((groupDoc) {
             final List<dynamic> members = groupDoc['members'] ?? [];
             return members.contains(currentUserID);
@@ -35,7 +34,8 @@ class GroupListPage extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               final DocumentSnapshot groupDoc = userGroups[index];
               final String groupId = groupDoc.id;
-              final Map<String, dynamic> data = groupDoc.data() as Map<String, dynamic>;
+              final Map<String, dynamic> data =
+                  groupDoc.data() as Map<String, dynamic>;
               final Timestamp createdAt = data['createdAt'] as Timestamp;
 
               return ListTile(
@@ -47,8 +47,9 @@ class GroupListPage extends StatelessWidget {
                     ),
                   );
                 },
-                leading: CircleAvatar(child: Icon(Icons.group_outlined)),
-                title: Text('${data['name']}', style: TextStyle(fontWeight: FontWeight.bold)),
+                leading: const CircleAvatar(child: Icon(Icons.group_outlined)),
+                title: Text('${data['name']}',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Text('Created at - ${_formatDateTime(createdAt)}'),
               );
             },
@@ -60,8 +61,8 @@ class GroupListPage extends StatelessWidget {
 
   String _formatDateTime(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
-    String formattedDateTime = '${dateTime.day}/${dateTime.month}/${dateTime.year}  ${dateTime.hour}:${dateTime.minute}';
+    String formattedDateTime =
+        '${dateTime.day}/${dateTime.month}/${dateTime.year}  ${dateTime.hour}:${dateTime.minute}';
     return formattedDateTime;
   }
 }
-

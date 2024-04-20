@@ -72,7 +72,7 @@ class ChatUser {
   late bool isProfessional;
   late String audioUrl;
   int? audioDuration;
-  late String groupId; // Add groupId field
+  late String groupId;
 
  
   late bool isMuted;
@@ -93,7 +93,7 @@ class ChatUser {
     required this.audioUrl,
     required this.audioDuration,
 
-    required this.groupId, // Initialize groupId field
+    required this.groupId,
 
     required this.isMuted,
     this.isBlocked = false,

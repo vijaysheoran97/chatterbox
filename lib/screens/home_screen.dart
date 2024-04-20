@@ -1,15 +1,10 @@
 import 'package:chatterbox/api/apis.dart';
 import 'package:chatterbox/main.dart';
-import 'package:chatterbox/screens/profile_screen.dart';
 import 'package:chatterbox/widget/chat_user_card.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import '../helper/dialogs.dart';
 import '../models/chat_user_model.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
