@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../api/apis.dart';
-import '../auth/login_screen.dart';
 import '../chatter_box/auth/login_screen.dart';
 import '../main.dart';
 import 'home_screen.dart';
