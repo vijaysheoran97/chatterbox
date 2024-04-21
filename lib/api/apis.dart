@@ -1340,12 +1340,12 @@ class APIs {
   }
 
   ///*********************************************  Send audio
-  static Future<void> sendChatAudio(ChatUser chatUser, File videoFile) async {
-    final ext = videoFile.path.split('.').last;
+  static Future<void> sendChatAudio(ChatUser chatUser, File audioFile) async {
+    final ext = audioFile.path.split('.').last;
     final ref = storage.ref().child(
         'audio/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
     await ref
-        .putFile(videoFile, SettableMetadata(contentType: 'audio/$ext'))
+        .putFile(audioFile, SettableMetadata(contentType: 'audio/$ext'))
         .then((taskSnapshot) {
       log('Data Transferred: ${taskSnapshot.bytesTransferred / 1} mb');
     });

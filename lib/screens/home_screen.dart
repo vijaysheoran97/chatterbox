@@ -230,9 +230,12 @@
 
 import 'package:chatterbox/api/apis.dart';
 import 'package:chatterbox/main.dart';
+import 'package:chatterbox/services/notification_service.dart';
 import 'package:chatterbox/widget/chat_user_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../helper/dialogs.dart';
 import '../models/chat_user_model.dart';
@@ -253,6 +256,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     APIs.getSelfInfo();
+    _requestNotificationPermissions();
+    // shownoti();
     super.initState();
     SystemChannels.lifecycle.setMessageHandler((message){
       if (APIs.auth.currentUser != null) {
@@ -265,6 +270,13 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       return Future.value(message);
     });
+  }
+  shownoti()async{
+    await LocalNotification.showNotification(
+        id: 0,
+        title: "floating button press Successfully",
+        body: "CINLINE",
+        payload: 'payload');
   }
 
   @override
@@ -338,7 +350,8 @@ class _HomeScreenState extends State<HomeScreen> {
           floatingActionButton: Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: FloatingActionButton(
-              onPressed: () {
+              onPressed: () async{
+
                 _addChatUserDialog();
               },
               child: const Icon(
@@ -454,5 +467,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 ))
           ],
         ));
+  }
+
+  _requestNotificationPermissions() async {
+    PermissionStatus status = await Permission.notification.request();
+    if (status.isGranted) {
+      if (kDebugMode) {
+        print('Notification permissions granted');
+      }
+    } else {
+      if (kDebugMode) {
+        print('Notification permissions denied');
+      }
+    }
   }
 }

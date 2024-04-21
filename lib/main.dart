@@ -95,6 +95,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:chatterbox/screens/splash_screen.dart';
+import 'package:chatterbox/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/provider/auth_provider.dart';
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
@@ -109,6 +110,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'chatter_box/theme/dark_theme.dart';
 import 'chatter_box/theme/theme_manager.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 late Size mq;
 
@@ -130,6 +132,8 @@ void main() async {
     //  _initializeFirebase();
     //  runApp(const MyApp());
   });
+  tz.initializeTimeZones();
+  await LocalNotification.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -186,3 +190,9 @@ _initializeFirebase() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
+
+// await LocalNotification.showNotification(
+// id: 0,
+// title: "floating button press Successfully",
+// body: "CINLINE Chatterbox",
+// payload: 'payload');
