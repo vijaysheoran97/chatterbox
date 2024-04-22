@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Welcome to ChatterBox'),
+        title: const Text('Welcome to CINLINE'),
       ),
       body: Stack(
         children: [

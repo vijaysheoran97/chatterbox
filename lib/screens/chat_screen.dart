@@ -5499,11 +5499,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
                         final List<XFile> mediaFiles =
-                        await picker.pickMultiImage(
+                        await picker.pickMultipleMedia(
                           imageQuality: 70,
                           maxWidth: 800,
                         );
-
                         for (var mediaFile in mediaFiles) {
                           if (mediaFile.path.contains('.mp4')) {
                             setState(() => _isUploading = true);
@@ -5620,7 +5619,6 @@ class _ChatScreenState extends State<ChatScreen> {
                               contact.phones?.isNotEmpty ?? false
                                   ? contact.phones!.first.value
                                   : null;
-
                               Directory tempDir = await getTemporaryDirectory();
                               File tempFile =
                               File('${tempDir.path}/contact.txt');

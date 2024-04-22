@@ -37,6 +37,7 @@ dependencies:
   contacts_service: ^0.6.2
   geolocator: ^10.1.0
   geocoding: ^2.1.1
+  flutter_webrtc: ^0.9.26
 
 
   firebase_auth: ^4.1.3

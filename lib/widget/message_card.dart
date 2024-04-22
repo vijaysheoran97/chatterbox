@@ -1560,6 +1560,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
 
 import '../api/apis.dart';
+import '../chatter_box/screens/noti_screen.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
@@ -1639,7 +1640,7 @@ class _MessageCardState extends State<MessageCard> {
               widget.message.msg,
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             )
-                : _buildMediaWidget(widget.message.msg),
+                : _buildMediaAll(widget.message.msg, widget.message.type),
           ),
         ),
         Padding(
@@ -1656,8 +1657,27 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
+  /// get all media function
+
+  Widget _buildMediaAll(String mediaUrl, Type mediaType) {
+    if (mediaType == Type.image) {
+      return _buildMediaWidget(mediaUrl);
+    } else if (mediaType == Type.video) {
+      return _buildMediaWidgetVideo(mediaUrl);
+    } else if (mediaType == Type.audio) {
+      return _buildMediaWidgetAudio(mediaUrl);
+    } else if (mediaType == Type.contact) {
+      return _buildMediaWidgetContact(mediaUrl);
+    } else if (mediaType == Type.location) {
+      return _buildMediaWidgetLocation(mediaUrl);
+    } else {
+      return const SizedBox();
+    }
+  }
+
   Widget _buildMediaWidget(String mediaUrl) {
     if (widget.message.type == Type.image ) {
+      Noti.imageNotification();
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         placeholder: (context, url) => const Padding(
@@ -1675,11 +1695,11 @@ class _MessageCardState extends State<MessageCard> {
       return Container();
     }
   }
-
   Widget _buildMediaWidgetVideo(String mediaUrl) {
     if (widget.message.type == Type.video) {
+      Noti.videoNotification();
       return AspectRatio(
-        aspectRatio: 16 / 9, // Adjust aspect ratio as needed
+        aspectRatio: 16 / 9,
         child: Chewie(
           controller: ChewieController(
             videoPlayerController: VideoPlayerController.network(
@@ -1703,9 +1723,9 @@ class _MessageCardState extends State<MessageCard> {
       return Container();
     }
   }
-
   Widget _buildMediaWidgetAudio(String mediaUrl) {
     if (widget.message.type == Type.audio) {
+      Noti.audioNotification();
       return Row(
         children: [
           IconButton(
@@ -1741,7 +1761,6 @@ class _MessageCardState extends State<MessageCard> {
       return Container();
     }
   }
-
 
   Widget _greenMessage() {
     return Row(
@@ -1875,6 +1894,8 @@ class _MessageCardState extends State<MessageCard> {
 
   Widget _buildMediaWidgetContact(String msg) {
     if (widget.message.type == Type.contact) {
+      Noti.contactNotification();
+
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1891,6 +1912,7 @@ class _MessageCardState extends State<MessageCard> {
 
   Widget _buildMediaWidgetLocation(String msg) {
     if (widget.message.type == Type.location) {
+      Noti.imageNotification();
       return FutureBuilder<String>(
         future: getAddress(widget.message.latitude, widget.message.longitude),
         builder: (context, snapshot) {

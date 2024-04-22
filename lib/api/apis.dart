@@ -941,14 +941,18 @@ import 'dart:typed_data';
 import 'package:chatterbox/firebase_options.dart';
 import 'package:chatterbox/models/chat_user_model.dart';
 import 'package:chatterbox/models/message.dart';
+import 'package:chatterbox/services/notification_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../chatter_box/screens/noti_screen.dart';
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -961,6 +965,7 @@ class APIs {
 
   static User get user => auth.currentUser!;
   static FirebaseMessaging fMessaging = FirebaseMessaging.instance;
+
 //*********************************************
   Future<File?> downloadFile(String fileUrl, String fileName) async {
     try {
@@ -994,9 +999,11 @@ class APIs {
     ListResult listResults = await firebaseStorage.ref("Files").listAll();
     return listResults;
   }
+
   //*******************************************
 
-  static Future<void> sendPushNotification(ChatUser chatUser, String msg) async {
+  static Future<void> sendPushNotification(
+      ChatUser chatUser, String msg) async {
     try {
       final body = {
         "to": chatUser.pushToken,
@@ -1011,7 +1018,7 @@ class APIs {
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.authorizationHeader:
-            'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
+                'key=AAAAQ0Bf7ZA:APA91bGd5IN5v43yedFDo86WiSuyTERjmlr4tyekbw_YW6JrdLFblZcbHdgjDmogWLJ7VD65KGgVbETS0Px7LnKk8NdAz4Z-AsHRp9WoVfArA5cNpfMKcjh_MQI-z96XQk5oIDUwx8D1'
           },
           body: jsonEncode(body));
       log('Response status: ${res.statusCode}');
@@ -1039,6 +1046,7 @@ class APIs {
         .doc(messages.sent)
         .delete();
   }
+
   //*******************************************
 
   static Future<void> getFirebaseMessagingToken() async {
@@ -1112,11 +1120,12 @@ class APIs {
       isProfessional: false,
       audioUrl: '',
 
-      audioDuration: null, groupId: 'groupId', // Initializing isProfessional
+      audioDuration: null,
+      groupId: 'groupId',
+      // Initializing isProfessional
 
       // audioDuration: null,
       isMuted: false,
-
     );
 
     return await firestore
@@ -1154,6 +1163,7 @@ class APIs {
       return null;
     }
   }
+
   //**************************************
 
   static Future<void> updateProfilePicture(File file) async {
@@ -1162,10 +1172,11 @@ class APIs {
     final ref = storage.ref().child("profile_picture/${user.uid}.$ext");
     await ref
         .putFile(
-      file,
-      SettableMetadata(contentType: 'image/$ext'),
-    )
-        .then((p0) => {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
+          file,
+          SettableMetadata(contentType: 'image/$ext'),
+        )
+        .then((p0) =>
+            {log('Data Transferred; ${p0.bytesTransferred / 1000} kb')});
     me.image = await ref.getDownloadURL();
     await firestore.collection('users').doc(user.uid).update({
       'image': me.image,
@@ -1193,7 +1204,8 @@ class APIs {
       ? '${user.uid}_$id'
       : '${id}_${user.uid}';
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(ChatUser user) {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
@@ -1208,19 +1220,20 @@ class APIs {
         .orderBy('sent', descending: true)
         .snapshots();
   }
+
   //***********************************
 
   /// send ***************************************** Message
 
   static Future<void> sendMessage(
-      ChatUser chatUser,
-      String msg,
-      Type type, {
-        String contactName = '',
-        String contactPhone = '',
-        double? latitude,
-        double? longitude,
-      }) async {
+    ChatUser chatUser,
+    String msg,
+    Type type, {
+    String contactName = '',
+    String contactPhone = '',
+    double? latitude,
+    double? longitude,
+  }) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -1233,13 +1246,13 @@ class APIs {
         contactPhone: contactPhone,
         latitude: latitude,
         longitude: longitude,
-        senderName: ''
-    );
+        senderName: '');
     final ref = firestore
         .collection('chats/${getConversationID(chatUser.id)}/messages/');
     await ref.doc(time).set(message.toJson()).then((value) =>
         sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
+
   // static Future<void> sendMessage(
   //     ChatUser chatUser,
   //     String msg,
@@ -1260,9 +1273,9 @@ class APIs {
   /// send *************************************** token
 
   static Future<void> sendToken(
-      ChatUser chatUser,
-      String token,
-      ) async {
+    ChatUser chatUser,
+    String token,
+  ) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Messages messages = Messages(
         toId: chatUser.id,
@@ -1271,7 +1284,7 @@ class APIs {
         fromId: user.uid,
         sent: time);
     final ref =
-    firestore.collection('token/${getConversationID(chatUser.id)}/tokens/');
+        firestore.collection('token/${getConversationID(chatUser.id)}/tokens/');
     await ref
         .doc(time)
         .set(messages.toJson())
@@ -1290,16 +1303,19 @@ class APIs {
     String? token = await firebaseMessaging.getToken();
     return token;
   }
-  //************************************************
+
+  ///************************************************
 
   static Future<void> updateMessageReadStatus(Message message) async {
-    firestore
+    await firestore
         .collection('chats/${getConversationID(message.fromId)}/messages/')
         .doc(message.sent)
         .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+    // await Noti.shownoti();
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(ChatUser user) {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      ChatUser user) {
     return firestore
         .collection('chats/${getConversationID(user.id)}/messages/')
         .orderBy('sent', descending: true)
@@ -1318,7 +1334,6 @@ class APIs {
         .then((p0) {
       log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
     });
-
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, Type.image);
   }
@@ -1352,6 +1367,13 @@ class APIs {
 
     final audioUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, audioUrl, Type.audio);
+    await FirebaseFirestore.instance.collection('chats').doc(getConversationID(chatUser.id))
+        .collection('messages').add({
+      'audioUrl': audioUrl,
+      'type': 'audio',
+      'timestamp': Timestamp.now(),
+      // Add other necessary fields
+    });
   }
 
   ///*********************************************  Contact share
@@ -1414,7 +1436,7 @@ class APIs {
     try {
       if (latitude != null && longitude != null) {
         List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
+            await placemarkFromCoordinates(latitude, longitude);
         if (placemarks != null && placemarks.isNotEmpty) {
           Placemark address = placemarks.first;
           String formattedAddress =
@@ -1512,5 +1534,4 @@ class APIs {
       print('Error sending message to group: $e');
     }
   }
-
 }

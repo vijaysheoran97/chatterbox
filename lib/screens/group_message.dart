@@ -241,7 +241,7 @@
 // }
 
 
-import 'dart:async';
+/*import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -351,6 +351,210 @@ class _GroupChatPageState extends State<GroupChatPage> {
     }
   }
 
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: source);
+    if (pickedFile != null) {
+      _sendMessage('', image: File(pickedFile.path));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Group Chat'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<List<GroupMessage>>(
+              stream: _messagesStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text('No messages yet'),
+                  );
+                }
+                return ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final message = snapshot.data![index];
+                    return ListTile(
+                      title: Text(message.message),
+                      subtitle: message.imageUrl != null
+                          ? Image.network(message.imageUrl!)
+                          : null,
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textController,
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.camera_alt),
+                  onPressed: () => _pickImage(ImageSource.camera),
+                ),
+                IconButton(
+                  icon: Icon(Icons.image),
+                  onPressed: () => _pickImage(ImageSource.gallery),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    final message = _textController.text.trim();
+                    if (message.isNotEmpty) {
+                      _sendMessage(message);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}*/
+
+
+
+
+
+
+
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../api/apis.dart';
+
+class GroupMessage {
+  final String senderId;
+  final String message;
+  final String? imageUrl;
+  final Timestamp timestamp;
+
+  GroupMessage({
+    required this.senderId,
+    required this.message,
+    this.imageUrl,
+    required this.timestamp,
+  });
+
+  factory GroupMessage.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return GroupMessage(
+      senderId: data['senderId'],
+      message: data['message'],
+      imageUrl: data['imageUrl'],
+      timestamp: data['timestamp'] ?? Timestamp.now(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'senderId': senderId,
+      'message': message,
+      'imageUrl': imageUrl, // Include imageUrl in the map
+      'timestamp': timestamp,
+    };
+  }
+}
+
+class GroupChatPage extends StatefulWidget {
+  final String groupId;
+
+  const GroupChatPage({Key? key, required this.groupId}) : super(key: key);
+
+  @override
+  _GroupChatPageState createState() => _GroupChatPageState();
+}
+
+class _GroupChatPageState extends State<GroupChatPage> {
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late Stream<List<GroupMessage>> _messagesStream;
+  bool _isUploading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _messagesStream = _firestore
+        .collection('group_chats')
+        .doc(widget.groupId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => GroupMessage.fromFirestore(doc))
+        .toList());
+  }
+
+  Future<void> _sendMessage(String message, {File? image}) async {
+    try {
+      String currentUserId = APIs.user.uid;
+      if (image != null) {
+        setState(() {
+          _isUploading = true;
+        });
+        String? imageUrl =
+        await APIs.uploadFile(image); // Upload image to Firebase Storage
+        setState(() {
+          _isUploading = false;
+        });
+        await _firestore
+            .collection('group_chats')
+            .doc(widget.groupId)
+            .collection('messages')
+            .add({
+          'senderId': currentUserId,
+          'message': message.isEmpty ? null : message,
+          'imageUrl': imageUrl, // Save imageUrl in Firestore
+          'timestamp': Timestamp.now(),
+        });
+      } else if (message.trim().isNotEmpty) {
+        await _firestore
+            .collection('group_chats')
+            .doc(widget.groupId)
+            .collection('messages')
+            .add({
+          'senderId': currentUserId,
+          'message': message,
+          'timestamp': Timestamp.now(),
+        });
+      }
+      _textController.clear();
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0.0,
+          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      }
+    } catch (e) {
+      print('Error sending message: $e');
+    }
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();

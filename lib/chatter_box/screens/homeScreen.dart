@@ -510,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
-                bottom: TabBar(
+                bottom: const TabBar(
                   isScrollable: false,
                   labelPadding: EdgeInsets.zero,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -535,9 +535,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
 
                   GroupListPage(currentUserID: APIs.me.id,),
-                  HomeScreen(),
+                  const HomeScreen(),
                   StatusListPage(user: APIs.me),
-                  CallListPage(),
+                  const CallListPage(),
 
                 ],
               ),

@@ -94,6 +94,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+import 'package:chatterbox/provider/user_chat_provider.dart';
 import 'package:chatterbox/screens/splash_screen.dart';
 import 'package:chatterbox/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -127,7 +128,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
       .then((value) {
     //  _initializeFirebase();
     //  runApp(const MyApp());
@@ -167,7 +168,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) {
           return userProvider;
-        })
+        }),
+        ChangeNotifierProvider(
+          create: (context) => UserChatProvider(),
+        ),
       ],
       child: Consumer<ThemeManager>(
         builder: (context, themeManager, child) {
@@ -183,7 +187,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 _initializeFirebase() async {
   await Firebase.initializeApp(
