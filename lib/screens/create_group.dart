@@ -10,14 +10,14 @@ class CreateGroupPage extends StatefulWidget {
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
-  late String currentUserID = '';
-  List<String> selectedUserIDs = [];
+  late String currentUserID = ''; // Initialize with an empty string
+  List<String> selectedUserIDs = []; // List to store selected user IDs
   final TextEditingController _groupNameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    getCurrentUser(); // Retrieve current user's ID when the widget initializes
   }
 
   void getCurrentUser() {
@@ -33,7 +33,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create group'),
+        title: Text('Create group'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -42,33 +42,32 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             return Text('Error: ${snapshot.error}');
           }
 
-          if (snapshot.data == null) {
-            return const Center(child: CircularProgressIndicator());
+          if(snapshot.data == null){
+            return Center(child: const CircularProgressIndicator());
           }
 
+          // Filter out documents without a 'name' field
           final filteredDocs = snapshot.data!.docs.where((doc) =>
-              (doc.data() as Map<String, dynamic>).containsKey('name') &&
-              doc.id != currentUserID);
+          (doc.data() as Map<String, dynamic>).containsKey('name') && doc.id != currentUserID);
 
           return ListView(
             children: filteredDocs.map((DocumentSnapshot document) {
-              Map<String, dynamic>? data =
-                  document.data() as Map<String, dynamic>?;
+              Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
 
+              // If the username field is null or missing, provide a default value
               String username = data?['name'] ?? 'No Username';
 
               return ListTile(
                 leading: CircleAvatar(
                   backgroundImage: data?['image'] != null
                       ? NetworkImage(data?['image'] as String)
-                      : null,
-                  child: data?['image'] == null
-                      ? const Icon(Icons.account_circle)
-                      : null,
+                      : null, // Set to null if profile image URL is null
+                  child: data?['image'] == null ? Icon(Icons.account_circle) : null,
                 ),
                 title: Text(username),
-                subtitle: Text(data?['email'] as String? ?? 'No Email'),
+                subtitle: Text(data?['email'] as String? ?? 'No Email'), // Display email address or a default value if it's null
                 onTap: () {
+                  // Add or remove user from the selected list
                   setState(() {
                     final userID = document.id;
                     if (selectedUserIDs.contains(userID)) {
@@ -78,21 +77,18 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     }
                   });
                 },
-                tileColor: selectedUserIDs.contains(document.id)
-                    ? Colors.blue.withOpacity(0.2)
-                    : null,
-                trailing: selectedUserIDs.contains(document.id)
-                    ? const Icon(Icons.check)
-                    : null,
+                // Set a different background color for selected users
+                tileColor: selectedUserIDs.contains(document.id) ? Colors.blue.withOpacity(0.2) : null,
+                // Show select icon in the trailing when a user is selected
+                trailing: selectedUserIDs.contains(document.id) ? Icon(Icons.check) : null,
               );
             }).toList(),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed:
-            selectedUserIDs.isNotEmpty ? () => _createGroup(context) : null,
-        child: const Icon(Icons.check),
+        onPressed: selectedUserIDs.isNotEmpty ? () => _createGroup(context) : null,
+        child: Icon(Icons.check),
       ),
     );
   }
@@ -102,10 +98,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Create Group'),
+          title: Text('Create Group'),
           content: TextField(
             controller: _groupNameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Enter group name',
             ),
           ),
@@ -114,7 +110,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -122,7 +118,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: const Text('Create'),
+              child: Text('Create'),
             ),
           ],
         );
@@ -131,21 +127,22 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   void _addGroupToFirestore() {
-    final CollectionReference groupsCollection =
-        FirebaseFirestore.instance.collection('groups');
+    final CollectionReference groupsCollection = FirebaseFirestore.instance.collection('groups');
 
+    // Include the current user's ID in the selectedUserIDs list
     selectedUserIDs.add(currentUserID);
 
     groupsCollection.add({
       'name': _groupNameController.text.trim(),
       'members': selectedUserIDs,
-      'admin': currentUserID,
+      'admin': currentUserID, // Make the current user the admin
       'createdAt': Timestamp.now(),
     }).then((DocumentReference groupDoc) {
-      String groupId = groupDoc.id;
+      String groupId = groupDoc.id; // Extract the group ID from the DocumentReference
 
+      // Update the current user's document with the group ID
       FirebaseFirestore.instance.collection('users').doc(currentUserID).update({
-        'groupIds': FieldValue.arrayUnion([groupId]),
+        'groupIds': FieldValue.arrayUnion([groupId]), // Add the group ID to the user's list of group IDs
       }).then((_) {
         print('Group created successfully! Group ID: $groupId');
       }).catchError((error) {

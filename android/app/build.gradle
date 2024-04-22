@@ -45,7 +45,7 @@ android {
         applicationId "com.example.chatterbox"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -67,5 +67,7 @@ flutter {
 
 dependencies {
     implementation 'com.google.firebase:firebase-appcheck-debug:16.0.0-beta01'
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
+    implementation("com.google.android.ump:user-messaging-platform:2.2.0")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 }
