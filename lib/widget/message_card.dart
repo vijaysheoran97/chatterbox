@@ -273,7 +273,7 @@ class _MessageCardState extends State<MessageCard> {
           shrinkWrap: true,
           children: [
             Container(
-              height: 4,
+              height: 5,
               margin: EdgeInsets.symmetric(
                 vertical: mq.height * .015,
                 horizontal: mq.width * .4,
