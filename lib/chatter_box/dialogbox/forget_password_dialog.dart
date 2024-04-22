@@ -1,4 +1,3 @@
-
 import 'package:chatterbox/chatter_box/service/auth_service.dart';
 import 'package:chatterbox/chatter_box/utils/app_string_constant.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +19,14 @@ class ForgetPasswordDialog extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
           },
           child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             resetPassword(userEmail.text);
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
           },
           child: const Text('Reset Password'),
         ),

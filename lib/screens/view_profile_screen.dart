@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/chat_user_model.dart';
@@ -25,7 +24,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
           appBar: AppBar(
             title: Text(widget.user.name),
           ),
-          floatingActionButton: //user about
+          floatingActionButton:
               Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -6,6 +6,7 @@ import 'GroupList.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({Key? key}) : super(key: key);
 
@@ -38,6 +39,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.createGroup),
+
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -107,6 +109,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             controller: _groupNameController,
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.enterGroupName,
+
             ),
           ),
           actions: <Widget>[
@@ -115,6 +118,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Navigator.of(context).pop();
               },
               child: Text(AppLocalizations.of(context)!.cancel),
+
             ),
             TextButton(
               onPressed: () {
@@ -123,6 +127,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Navigator.of(context).pop();
               },
               child: Text(AppLocalizations.of(context)!.add),
+
             ),
           ],
         );
@@ -157,3 +162,4 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     });
   }
 }
+

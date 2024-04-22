@@ -23,6 +23,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> {
         builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
+
           }
 
           if (snapshot.hasError) {
@@ -36,6 +37,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
 
           // Extract the list of member IDs and admin ID from the group data
+
           List<dynamic> memberIds = data['members'];
           String adminId = data['admin'];
 
@@ -74,6 +76,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> {
                     leading: CircleAvatar(
                       backgroundImage: memberData['image'] != null ? NetworkImage(memberData['image'] as String) : null,
                       child: memberData['image'] == null ? Icon(Icons.account_circle) : null,
+
                     ),
                     title: Text(titleText),
                     subtitle: Text(memberData['email'] as String),
@@ -84,6 +87,7 @@ class _GroupDetailsPageState extends State<GroupDetailsPage> {
               );
             },
           );
+
 
         },
       ),
