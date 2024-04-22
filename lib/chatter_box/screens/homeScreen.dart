@@ -185,6 +185,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           // APIs.getSelfInfo() completed successfully, build the HomePage widget
           return DefaultTabController(
+            initialIndex: 1,
             length: 4, // Increase the length to accommodate the new tab
             child: Scaffold(
               backgroundColor: Theme.of(context).colorScheme.background,
