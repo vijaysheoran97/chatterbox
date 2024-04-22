@@ -94,8 +94,14 @@ class _MessageCardState extends State<MessageCard> {
               ),
             ),
             child: widget.message.type == Type.text
-                ? _buildTextWithLinks(widget.message.msg) // Modified this line
-                : _buildMediaWidget(widget.message.msg),
+                ? _buildTextWithLinks(widget.message.msg)
+                : widget.message.type == Type.image
+                ? _buildMediaWidget(widget.message.msg)
+                : widget.message.type == Type.video
+                ? _buildMediaWidgetVideo(widget.message.msg)
+                : widget.message.type == Type.audio
+                ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+                : Container(),
           ),
         ),
         Padding(
@@ -111,6 +117,47 @@ class _MessageCardState extends State<MessageCard> {
       ],
     );
   }
+
+  Widget _buildMediaWidgetAudio(String mediaUrl) {
+    if (widget.message.type == Type.audio) {
+      return Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              if (isPlaying) {
+                audioPlayer.pause(); // Pause the audio
+              } else {
+                playRecording(mediaUrl); // Start playing the audio
+              }
+            },
+            icon: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                isPlaying ? Icons.pause : Icons.play_arrow,
+                color: Colors.white,
+                size: 30,
+              ),
+            ), // Toggle icon based on playback state
+          ),
+          SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              'Audio Message',
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
 
   Widget _buildTextWithLinks(String text) {
     final RegExp emailRegExp =
@@ -273,7 +320,7 @@ class _MessageCardState extends State<MessageCard> {
           shrinkWrap: true,
           children: [
             Container(
-              height: 5,
+              height: 4,
               margin: EdgeInsets.symmetric(
                 vertical: mq.height * .015,
                 horizontal: mq.width * .4,
@@ -473,44 +520,44 @@ class _MessageCardState extends State<MessageCard> {
     }
   }
 
-  Widget _buildMediaWidgetAudio(String mediaUrl) {
-    if (widget.message.type == Type.audio) {
-      return Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              if (isPlaying) {
-                audioPlayer.pause(); // Pause the audio
-              } else {
-                playRecording(widget.message.msg); // Start playing the audio
-              }
-            },
-            icon: Container(
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(50)),
-                child: Icon(
-                  isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 30,
-                )), // Toggle icon based on playback state
-          ),
-          SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              'Audio Message',
-              // ': ${widget.message.msg ?? 'Audio URL not available'}',
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Container();
-    }
-  }
+  // Widget _buildMediaWidgetAudio(String mediaUrl) {
+  //   if (widget.message.type == Type.audio) {
+  //     return Row(
+  //       children: [
+  //         IconButton(
+  //           onPressed: () {
+  //             if (isPlaying) {
+  //               audioPlayer.pause(); // Pause the audio
+  //             } else {
+  //               playRecording(widget.message.msg); // Start playing the audio
+  //             }
+  //           },
+  //           icon: Container(
+  //               height: 45,
+  //               width: 45,
+  //               decoration: BoxDecoration(
+  //                   color: Colors.black,
+  //                   borderRadius: BorderRadius.circular(50)),
+  //               child: Icon(
+  //                 isPlaying ? Icons.pause : Icons.play_arrow,
+  //                 color: Colors.white,
+  //                 size: 30,
+  //               )), // Toggle icon based on playback state
+  //         ),
+  //         SizedBox(width: 8),
+  //         Flexible(
+  //           child: Text(
+  //             'Audio Message',
+  //             // ': ${widget.message.msg ?? 'Audio URL not available'}',
+  //             style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
 
   void playRecording(String audioPath) async {
     try {
