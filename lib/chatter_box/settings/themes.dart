@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ThemesPage extends StatefulWidget {
   const ThemesPage({Key? key}) : super(key: key);
@@ -37,7 +39,7 @@ class _ThemesPageState extends State<ThemesPage> {
         elevation: 0,
         leading: const BackButton(),
         title: Text(
-          'Themes',
+          AppLocalizations.of(context)!.theme,
           style: TextStyle(
             letterSpacing: 0.5,
             fontWeight: FontWeight.w500,
@@ -50,8 +52,10 @@ class _ThemesPageState extends State<ThemesPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Themes',
+
+            Text(
+              AppLocalizations.of(context)!.theme,
+
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
             GestureDetector(
@@ -59,8 +63,10 @@ class _ThemesPageState extends State<ThemesPage> {
                 _showThemeSelector(context);
               },
               child: ListTile(
-                title: const Text('Choose theme'),
-                subtitle: const Text('Select any theme as your preference'),
+
+                title: Text(AppLocalizations.of(context)!.chooseTheme),
+                subtitle: Text(AppLocalizations.of(context)!.chooseThemeSubtitle),
+
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -95,12 +101,14 @@ class _ThemesPageState extends State<ThemesPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Select Theme',
+
+              Text(
+                AppLocalizations.of(context)!.selectTheme,
+
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               RadioListTile(
-                title: const Text('Light Theme'),
+                title: Text(AppLocalizations.of(context)!.lighttheme),
                 value: 'light',
                 groupValue: _selectedMode,
                 onChanged: (value) {
@@ -114,7 +122,7 @@ class _ThemesPageState extends State<ThemesPage> {
                 activeColor: Colors.blue,
               ),
               RadioListTile(
-                title: const Text('Dark Theme'),
+                title: Text(AppLocalizations.of(context)!.darktheme),
                 value: 'dark',
                 groupValue: _selectedMode,
                 onChanged: (value) {

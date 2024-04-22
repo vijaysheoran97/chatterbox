@@ -1678,9 +1678,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
-  final _textController = TextEditingController();
-  bool _showEmoji = false, _isUploading = false;
-  bool _isRecording = false;
+    final _textController = TextEditingController();
+    bool _showEmoji = false, _isUploading = false;
+    bool _isRecording = false;
   late Record audioRecord;
   late AudioPlayer audioPlayer;
   String audioPath = '';

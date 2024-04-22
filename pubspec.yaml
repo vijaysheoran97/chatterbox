@@ -77,6 +77,12 @@ dependencies:
   flutter_sound: ^9.2.13
   path_provider: ^2.1.2
   record: ^3.0.4
+  video_player: ^2.8.2
+  chewie: ^1.2.2
+  intl: ^0.18.1
+  flutter_localizations:
+    sdk: flutter
+
 
 
 
@@ -97,6 +103,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

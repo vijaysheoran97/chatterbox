@@ -156,7 +156,8 @@ class Message {
       'toId': toId,
       'msg': msg,
       'read': read,
-      'type': type.name,
+      'type': _getTypeString(type), // Serialize Type enum to string
+
       'fromId': fromId,
       'sent': sent,
       'contactName': contactName,
@@ -180,12 +181,27 @@ class Message {
         return Type.audio;
       case 'video':
         return Type.video;
+
       case 'contact':
         return Type.contact;
       case 'location':
         return Type.location;
       default:
         throw ArgumentError('Invalid message type: $typeString');
+    }
+  }
+
+  // Helper method to get string representation of Type enum
+  static String _getTypeString(Type type) {
+    switch (type) {
+      case Type.image:
+        return 'image';
+      case Type.audio:
+        return 'audio';
+      case Type.video:
+        return 'video';
+      default:
+        return 'text';
     }
   }
 }

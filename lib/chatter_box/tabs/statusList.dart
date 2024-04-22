@@ -448,6 +448,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../api/apis.dart';
 import '../../models/chat_user_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatusListPage extends StatefulWidget {
   final ChatUser user;
@@ -554,16 +556,20 @@ class _StatusListPageState extends State<StatusListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('To upload status',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                const SizedBox(height: 10,),
+
+                Text(AppLocalizations.of(context)!.toUploadStatus,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
                         maxLength: 50,
                         controller: _statusController,
-                        decoration: const InputDecoration(labelText: 'Enter Status'),
+
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.enterStatus),
+
                       ),
                     ),
                     InkWell(
@@ -637,8 +643,10 @@ class _StatusListPageState extends State<StatusListPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Your status',
+
+                            Text(
+                              AppLocalizations.of(context)!.yourstatus,
+
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
@@ -662,9 +670,11 @@ class _StatusListPageState extends State<StatusListPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 16),
-                            const Text(
-                              'Other Status',
+
+                            SizedBox(height: 16),
+                            Text(
+                              AppLocalizations.of(context)!.otherstatus,
+
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
@@ -744,7 +754,9 @@ class _StatusListPageState extends State<StatusListPage> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Status'),
+
+                  Text(AppLocalizations.of(context)!.status),
+
                   if (isCurrentUserStatus) // Show delete icon only for the current user's status
                     IconButton(
                       onPressed: () {
@@ -765,16 +777,16 @@ class _StatusListPageState extends State<StatusListPage> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Posted by: $userName',
+                    '${AppLocalizations.of(context)!.postedby}: $userName',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Date: ${_formatDate(status['timestamp'])}',
+                    '${AppLocalizations.of(context)!.date}: ${_formatDate(status['timestamp'])}',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   Text(
-                    'Time: ${_formatTime(status['timestamp'])}',
+                    '${AppLocalizations.of(context)!.time}: ${_formatTime(status['timestamp'])}',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                 ],

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'GroupList.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({Key? key}) : super(key: key);
 
@@ -33,7 +38,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create group'),
+        title: Text(AppLocalizations.of(context)!.createGroup),
+
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -98,11 +104,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Create Group'),
+          title: Text(AppLocalizations.of(context)!.createGroup),
           content: TextField(
             controller: _groupNameController,
             decoration: InputDecoration(
-              hintText: 'Enter group name',
+              hintText: AppLocalizations.of(context)!.enterGroupName,
+
             ),
           ),
           actions: <Widget>[
@@ -110,7 +117,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
+
             ),
             TextButton(
               onPressed: () {
@@ -118,7 +126,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
-              child: Text('Create'),
+              child: Text(AppLocalizations.of(context)!.add),
+
             ),
           ],
         );
@@ -153,3 +162,4 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     });
   }
 }
+

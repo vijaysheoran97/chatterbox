@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../api/apis.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class YourAccountPage extends StatefulWidget {
   const YourAccountPage({Key? key}) : super(key: key);
@@ -32,13 +34,13 @@ class _YourAccountPageState extends State<YourAccountPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Your Account'),
+        title: Text(AppLocalizations.of(context)!.youraccount),
       ),
       body: Column(
         children: [
           ListTile(
             title: Text(
-              'Switch to Professional',
+              AppLocalizations.of(context)!.switchToProfessional,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: Switch(

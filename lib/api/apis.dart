@@ -184,12 +184,14 @@ class APIs {
       isProfessional: false,
       audioUrl: '',
 
+
       audioDuration: null,
       groupId: 'groupId',
       // Initializing isProfessional
 
       // audioDuration: null,
       isMuted: false,
+
     );
 
     return await firestore

@@ -1553,11 +1553,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
+import 'package:url_launcher/url_launcher.dart'; // Add this import
 
 import '../api/apis.dart';
 import '../chatter_box/screens/noti_screen.dart';
@@ -1565,7 +1567,6 @@ import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
 import '../models/message.dart';
-
 
 class MessageCard extends StatefulWidget {
   const MessageCard({Key? key, required this.message}) : super(key: key);
@@ -1592,7 +1593,6 @@ class _MessageCardState extends State<MessageCard> {
       });
     });
   }
-
 
   @override
   void dispose() {
@@ -1621,7 +1621,9 @@ class _MessageCardState extends State<MessageCard> {
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                widget.message.type == Type.video || widget.message.type == Type.audio|| widget.message.type == Type.contact|| widget.message.type == Type.location
+                widget.message.type == Type.video ||
+                widget.message.type == Type.audio
+
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -1636,11 +1638,15 @@ class _MessageCardState extends State<MessageCard> {
               ),
             ),
             child: widget.message.type == Type.text
-                ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
-                : _buildMediaAll(widget.message.msg, widget.message.type),
+                ? _buildTextWithLinks(widget.message.msg)
+                : widget.message.type == Type.image
+                ? _buildMediaWidget(widget.message.msg)
+                : widget.message.type == Type.video
+                ? _buildMediaWidgetVideo(widget.message.msg)
+                : widget.message.type == Type.audio
+                ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+                : Container(),
+
           ),
         ),
         Padding(
@@ -1656,6 +1662,7 @@ class _MessageCardState extends State<MessageCard> {
       ],
     );
   }
+
 
   /// get all media function
 
@@ -1733,25 +1740,28 @@ class _MessageCardState extends State<MessageCard> {
               if (isPlaying) {
                 audioPlayer.pause(); // Pause the audio
               } else {
-                playRecording(widget.message.msg); // Start playing the audio
+                playRecording(mediaUrl); // Start playing the audio
               }
             },
             icon: Container(
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(50)
-                ),
-
-                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)),
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                isPlaying ? Icons.pause : Icons.play_arrow,
+                color: Colors.white,
+                size: 30,
+              ),
+            ), // Toggle icon based on playback state
 
           ),
           SizedBox(width: 8),
           Flexible(
             child: Text(
               'Audio Message',
-              // ': ${widget.message.msg ?? 'Audio URL not available'}',
               style: const TextStyle(fontSize: 15, color: Colors.black87),
             ),
           ),
@@ -1761,6 +1771,81 @@ class _MessageCardState extends State<MessageCard> {
       return Container();
     }
   }
+
+
+  Widget _buildTextWithLinks(String text) {
+    final RegExp emailRegExp =
+    RegExp(r'[\w\.-]+@[\w\.-]+\.\w+'); // Regular expression to match emails
+    final RegExp urlRegExp = RegExp(
+        r'http(s)?:\/\/(?:www\.)?[a-zA-Z0-9\-\_\.]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9\-\_\?\=\&\%\#\.]*)*');
+    final RegExp phoneRegExp = RegExp(r'(\d{3})[- .]?(\d{3})[- .]?(\d{4})'); // Regular expression to match phone numbers
+
+    final List<TextSpan> spans = [];
+
+    int start = 0;
+    for (final match in emailRegExp.allMatches(text)) {
+      final linkText = match.group(0)!;
+      spans.add(TextSpan(
+        text: text.substring(start, match.start),
+        style: const TextStyle(color: Colors.black87),
+      ));
+      spans.add(TextSpan(
+        text: linkText,
+        style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            launch("mailto:$linkText");
+          },
+      ));
+      start = match.end;
+    }
+
+    for (final match in urlRegExp.allMatches(text)) {
+      final linkText = match.group(0)!;
+      spans.add(TextSpan(
+        text: text.substring(start, match.start),
+        style: const TextStyle(color: Colors.black87),
+      ));
+      spans.add(TextSpan(
+        text: linkText,
+        style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            launch(linkText);
+          },
+      ));
+      start = match.end;
+    }
+
+    for (final match in phoneRegExp.allMatches(text)) {
+      final linkText = match.group(0)!;
+      spans.add(TextSpan(
+        text: text.substring(start, match.start),
+        style: const TextStyle(color: Colors.black87),
+      ));
+      spans.add(TextSpan(
+        text: linkText,
+        style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            launch("tel:$linkText");
+          },
+      ));
+      start = match.end;
+    }
+
+    spans.add(TextSpan(
+      text: text.substring(start),
+      style: const TextStyle(color: Colors.black87),
+    ));
+
+    return RichText(
+      text: TextSpan(
+        children: spans,
+      ),
+    );
+  }
+
 
   Widget _greenMessage() {
     return Row(
@@ -1781,11 +1866,12 @@ class _MessageCardState extends State<MessageCard> {
             ),
           ],
         ),
-
         Flexible(
           child: Container(
             padding: EdgeInsets.all(widget.message.type == Type.image ||
-                widget.message.type == Type.video || widget.message.type == Type.audio|| widget.message.type == Type.contact|| widget.message.type == Type.location
+                widget.message.type == Type.video ||
+                widget.message.type == Type.audio
+
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -1800,39 +1886,21 @@ class _MessageCardState extends State<MessageCard> {
               ),
             ),
             child: widget.message.type == Type.text
-                ? Text(
-              widget.message.msg,
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
-            )
+                ? _buildTextWithLinks(widget.message.msg) // Modified this line
                 : widget.message.type == Type.image
-                ? _buildMediaWidget(widget.message.msg) : widget.message.type == Type.video ?
-            _buildMediaWidgetVideo(widget.message.msg) : widget.message.type == Type.audio ?
-            _buildMediaWidgetAudio(widget.message.msg) : widget.message.type == Type.contact
-                ? _buildMediaWidgetContact(widget.message.msg)
-                : widget.message.type == Type.location
-                ?_buildMediaWidgetLocation(widget.message.msg)
+                ? _buildMediaWidget(widget.message.msg)
+                : widget.message.type == Type.video
+                ? _buildMediaWidgetVideo(widget.message.msg)
+                : widget.message.type == Type.audio
+                ? _buildMediaWidgetAudio(widget.message.msg)
+
                 : Container(),
           ),
         ),
-        // Flexible(
-        //   child: Container(
-        //     padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .03 : mq.width * .04),
-        //     margin: EdgeInsets.symmetric(horizontal: mq.width * .04, vertical: mq.height * .01),
-        //     decoration: BoxDecoration(
-        //       color: const Color.fromARGB(225, 218, 255, 176),
-        //       border: Border.all(color: Colors.lightGreen),
-        //       borderRadius: const BorderRadius.only(
-        //         topLeft: Radius.circular(30),
-        //         topRight: Radius.circular(30),
-        //         bottomLeft: Radius.circular(30),
-        //       ),
-        //     ),
-        //     child: _buildMessageContent(),
-        //   ),
-        // ),
       ],
     );
   }
+
 
   // Widget _buildMessageContent() {
   //   if (widget.message.type == Type.text) {
@@ -2088,7 +2156,8 @@ class _MessageCardState extends State<MessageCard> {
             ),
             _OptionItem(
               icon: const Icon(Icons.remove_red_eye, color: Colors.blue),
-              name: 'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
+              name:
+              'Sent At: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
               onTap: () {},
             ),
             _OptionItem(
@@ -2152,6 +2221,103 @@ class _MessageCardState extends State<MessageCard> {
       ),
     );
   }
+
+  Widget _buildMediaWidget(String mediaUrl) {
+    if (widget.message.type == Type.image) {
+      return CachedNetworkImage(
+        imageUrl: mediaUrl,
+        placeholder: (context, url) => const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+          ),
+        ),
+        errorWidget: (context, url, error) => const Icon(
+          Icons.error,
+          size: 70,
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetVideo(String mediaUrl) {
+    if (widget.message.type == Type.video) {
+      return AspectRatio(
+        aspectRatio: 16 / 9, // Adjust aspect ratio as needed
+        child: Chewie(
+          controller: ChewieController(
+            videoPlayerController: VideoPlayerController.network(
+              mediaUrl,
+            ),
+            autoPlay: false,
+            looping: false,
+            placeholder: const Center(child: CircularProgressIndicator()),
+            errorBuilder: (context, errorMessage) {
+              return Center(
+                child: Text(
+                  'Error loading video: $errorMessage',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  // Widget _buildMediaWidgetAudio(String mediaUrl) {
+  //   if (widget.message.type == Type.audio) {
+  //     return Row(
+  //       children: [
+  //         IconButton(
+  //           onPressed: () {
+  //             if (isPlaying) {
+  //               audioPlayer.pause(); // Pause the audio
+  //             } else {
+  //               playRecording(widget.message.msg); // Start playing the audio
+  //             }
+  //           },
+  //           icon: Container(
+  //               height: 45,
+  //               width: 45,
+  //               decoration: BoxDecoration(
+  //                   color: Colors.black,
+  //                   borderRadius: BorderRadius.circular(50)),
+  //               child: Icon(
+  //                 isPlaying ? Icons.pause : Icons.play_arrow,
+  //                 color: Colors.white,
+  //                 size: 30,
+  //               )), // Toggle icon based on playback state
+  //         ),
+  //         SizedBox(width: 8),
+  //         Flexible(
+  //           child: Text(
+  //             'Audio Message',
+  //             // ': ${widget.message.msg ?? 'Audio URL not available'}',
+  //             style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
+
+  void playRecording(String audioPath) async {
+    try {
+      final audioplayers.UrlSource urlSource =
+      audioplayers.UrlSource(audioPath);
+      await audioPlayer.play(urlSource);
+    } catch (e) {
+      print('Error playing recording : $e');
+    }
+  }
 }
 
 class _OptionItem extends StatelessWidget {
@@ -2159,14 +2325,16 @@ class _OptionItem extends StatelessWidget {
   final String name;
   final VoidCallback onTap;
 
-  const _OptionItem({required this.icon, required this.name, required this.onTap});
+  const _OptionItem(
+      {required this.icon, required this.name, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onTap(),
       child: Padding(
-        padding: EdgeInsets.only(left: mq.width * .05, top: mq.height * .015, bottom: mq.height * .015),
+        padding: EdgeInsets.only(
+            left: mq.width * .05, top: mq.height * .015, bottom: mq.height * .015),
         child: Row(
           children: [
             icon,
@@ -2182,3 +2350,4 @@ class _OptionItem extends StatelessWidget {
     );
   }
 }
+
