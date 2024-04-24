@@ -118,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Text(
                     widget.user.email,
-                    style: const TextStyle(color: Colors.black54, fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   SizedBox(
                     height: mq.height * .05,
@@ -135,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12)),
-                      hintText: "eg. Happy Singh",
+                      hintText: "eg. Happy",
                       label: const Text("Name"),
                     ),
                   ),

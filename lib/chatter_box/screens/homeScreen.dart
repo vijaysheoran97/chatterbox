@@ -425,8 +425,6 @@ import '../../screens/profile_screen.dart';
 import '../tabs/callList.dart';
 import '../tabs/statusList.dart';
 import 'drawer.dart';
-
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 

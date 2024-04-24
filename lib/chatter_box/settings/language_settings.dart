@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chatterbox/providers/language_change_controller.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'dart:async';
 
 class LanguageSettingsPage extends StatefulWidget {
   const LanguageSettingsPage({Key? key}) : super(key: key);

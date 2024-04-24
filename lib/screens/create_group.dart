@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'GroupList.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({Key? key}) : super(key: key);
@@ -118,7 +114,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                 Navigator.of(context).pop();
               },
               child: Text(AppLocalizations.of(context)!.cancel),
-
             ),
             TextButton(
               onPressed: () {
