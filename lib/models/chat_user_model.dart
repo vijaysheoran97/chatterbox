@@ -9,6 +9,9 @@ class ChatUser {
   late String lastActive;
   late String pushToken;
   late bool isProfessional;
+  late String audioUrl;
+  int? audioDuration;
+  late String groupId; // Add groupId field
 
   ChatUser({
     required this.id,
@@ -21,32 +24,41 @@ class ChatUser {
     required this.lastActive,
     required this.pushToken,
     required this.isProfessional,
+    required this.audioUrl,
+    required this.audioDuration,
+    required this.groupId, // Initialize groupId field
   });
 
-  ChatUser.fromJson(Map<String, dynamic> json)
-      : id = json['id'] ?? '',
-        name = json['name'] ?? '',
-        email = json['email'] ?? '',
-        about = json['about'] ?? '',
-        image = json['image'] ?? '',
-        createdAt = json['created_at'] ?? '',
-        isOnline = json['is_online'] ?? false,
-        lastActive = json['last_active'] ?? '',
-        pushToken = json['push_token'] ?? '',
-        isProfessional = json['is_professional'] ?? false;
+  ChatUser.fromJson(Map<String, dynamic>? json)
+      : id = json?['id'] ?? '',
+        name = json?['name'] ?? '',
+        email = json?['email'] ?? '',
+        about = json?['about'] ?? '',
+        image = json?['image'] ?? '',
+        createdAt = json?['createdAt'] ?? '',
+        isOnline = json?['isOnline'] ?? false,
+        lastActive = json?['lastActive'] ?? '',
+        pushToken = json?['pushToken'] ?? '',
+        isProfessional = json?['isProfessional'] ?? false,
+        audioUrl = json?['audioUrl'] ?? '',
+        audioDuration = json?['audioDuration'],
+        groupId = json?['groupId'] ?? ''; // Initialize groupId field
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['email'] = email;
-    data['about'] = about;
-    data['image'] = image;
-    data['created_at'] = createdAt;
-    data['is_online'] = isOnline;
-    data['last_active'] = lastActive;
-    data['push_token'] = pushToken;
-    data['is_professional'] = isProfessional;
-    return data;
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'about': about,
+      'image': image,
+      'createdAt': createdAt,
+      'isOnline': isOnline,
+      'lastActive': lastActive,
+      'pushToken': pushToken,
+      'isProfessional': isProfessional,
+      'audioUrl': audioUrl,
+      'audioDuration': audioDuration,
+      'groupId': groupId,
+    };
   }
 }

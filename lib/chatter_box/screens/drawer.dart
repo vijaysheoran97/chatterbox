@@ -21,10 +21,12 @@ import '../settings/settings.dart';
 import '../theme/dark_theme.dart';
 import '../theme/light_theme.dart';
 import '../theme/theme_manager.dart';
+import 'create_group.dart';
 import 'newMessage.dart';
 
 class DrawerPage extends StatefulWidget {
   final ChatUser user;
+
   const DrawerPage({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -32,11 +34,9 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-
   late String _selectedMode = 'light';
   bool _showThemeOptions = false;
   bool _isProfessional = false;
-
 
   late User _currentUser; // To store the current user data
 
@@ -50,7 +50,8 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   void fetchProfessionalStatus() async {
-    final userData = await APIs.firestore.collection('users').doc(widget.user.id).get();
+    final userData =
+        await APIs.firestore.collection('users').doc(widget.user.id).get();
     setState(() {
       _isProfessional = userData['isProfessional'] ?? false;
     });
@@ -77,7 +78,7 @@ class _DrawerPageState extends State<DrawerPage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
@@ -98,7 +99,8 @@ class _DrawerPageState extends State<DrawerPage> {
                               // height:  mq.height * .14,
                               fit: BoxFit.cover,
                               imageUrl: widget.user.image,
-                              errorWidget: (context, url, error) => CircleAvatar(
+                              errorWidget: (context, url, error) =>
+                                  const CircleAvatar(
                                 child: Icon(CupertinoIcons.person),
                               ),
                             ),
@@ -115,15 +117,15 @@ class _DrawerPageState extends State<DrawerPage> {
                               children: [
                                 Text(
                                   widget.user.name,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 if (_isProfessional)
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 3),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 3),
                                     child: Icon(
                                       Icons.verified,
                                       size: 16,
@@ -142,7 +144,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
                     widget.user.email,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                     ),
@@ -151,39 +153,43 @@ class _DrawerPageState extends State<DrawerPage> {
               ],
             ),
           ),
-
-
-
           ListTile(
             leading: Icon(Icons.group_outlined),
             title: Text('New Group'),
-            onTap: () {
-              // Add onTap handler for Item 1
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.person_outline_rounded),
-            title: Text('Contacts'),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => const NewMessagePage(title: Text('Contacts')),
+                  builder: (context) => const CreateGroupPage(),
                 ),
               );
             },
           ),
           ListTile(
-            leading: Icon(Icons.bookmark_border_outlined),
-            title: Text('Saved'),
+            leading: const Icon(Icons.person_outline_rounded),
+            title: const Text('Contacts'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) =>
+                      const NewMessagePage(title: Text('Contacts')),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bookmark_border_outlined),
+            title: const Text('Saved'),
             onTap: () {
               // Add onTap handler for Item 2
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings_outlined),
-            title: Text('Settings'),
+            leading: const Icon(Icons.settings_outlined),
+            title: const Text('Settings'),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -193,8 +199,8 @@ class _DrawerPageState extends State<DrawerPage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.monetization_on_outlined),
-            title: Text('Monetisation'),
+            leading: const Icon(Icons.monetization_on_outlined),
+            title: const Text('Monetisation'),
             onTap: () {
               // Add onTap handler for Item 2
             },
@@ -203,8 +209,8 @@ class _DrawerPageState extends State<DrawerPage> {
             color: Colors.grey.shade300,
           ),
           ListTile(
-            leading: Icon(Icons.change_circle_outlined),
-            title: Text('Themes'),
+            leading: const Icon(Icons.change_circle_outlined),
+            title: const Text('Themes'),
             trailing: Icon(_showThemeOptions
                 ? Icons.keyboard_arrow_up_outlined
                 : Icons.keyboard_arrow_down_outlined),
@@ -245,24 +251,26 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
           ],
           ListTile(
-            leading: Icon(Icons.help_outline_outlined),
-            title: Text('Help center'),
+            leading: const Icon(Icons.help_outline_outlined),
+            title: const Text('Help center'),
             onTap: () {
               // Add onTap handler for Item 2
             },
           ),
           ListTile(
-
-
-            leading: Icon(Icons.logout_outlined, color: Colors.red,),
-            title: Text('Logout', style: TextStyle(color: Colors.red),),
-
+            leading: const Icon(
+              Icons.logout_outlined,
+              color: Colors.red,
+            ),
+            title: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
             onTap: () async {
               Dialogs.showProgressBar(context);
               await APIs.updateActiveStatus(false);
               await APIs.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
-
                   Navigator.pop(context);
                   APIs.auth = FirebaseAuth.instance;
                   Navigator.pushReplacement(context,
@@ -273,12 +281,13 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           SizedBox(height: mq.height * .02),
           ListTile(
-            title: Row(mainAxisAlignment: MainAxisAlignment.center,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Joined On: ',
                   style: TextStyle(
-                    //color: Colors.black87,
+                      //color: Colors.black87,
                       fontWeight: FontWeight.w500,
                       fontSize: 15),
                 ),
@@ -288,11 +297,10 @@ class _DrawerPageState extends State<DrawerPage> {
                         time: widget.user.createdAt,
                         showYear: true),
                     style: const TextStyle(
-                      // color: Colors.black54,
+                        // color: Colors.black54,
                         fontSize: 15)),
               ],
             ),
-
           )
         ],
       ),

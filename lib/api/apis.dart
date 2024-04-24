@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 
 class APIs {
@@ -157,16 +158,20 @@ class APIs {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final chatUser = ChatUser(
-        id: user.uid,
-        name: user.displayName.toString(),
-        email: user.email.toString(),
-        about: "Hey, I'm using Chatter Box!",
-        image: user.photoURL.toString(),
-        createdAt: time,
-        isOnline: false,
-        lastActive: time,
-        pushToken: '',
-        isProfessional: false);
+      id: user.uid,
+      name: user.displayName.toString(),
+      email: user.email.toString(),
+      about: "Hey, I'm using Chatter Box!",
+      image: user.photoURL.toString(),
+      createdAt: time,
+      isOnline: false,
+      lastActive: time,
+      pushToken: '',
+      isProfessional: false,
+      audioUrl: '',
+      audioDuration: null,
+      groupId: 'groupId', // Initializing isProfessional
+    );
 
     return await firestore
         .collection('users')
@@ -257,15 +262,16 @@ class APIs {
   }
 
   /// send  ************************************************************    Message
+
   static Future<void> sendMessage(
-      ChatUser chatUser,
-      String msg,
-      Type type, {
-        String contactName = '',
-        String contactPhone = '',
-        double? latitude,
-        double? longitude,
-      }) async {
+    ChatUser chatUser,
+    String msg,
+    Type type, {
+    String contactName = '',
+    String contactPhone = '',
+    double? latitude,
+    double? longitude,
+  }) async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final Message message = Message(
         toId: chatUser.id,
@@ -277,16 +283,12 @@ class APIs {
         contactPhone: contactPhone,
         latitude: latitude,
         longitude: longitude,
-        sent: time
-    );
-    final ref = firestore.collection('chats/${getConversationID(chatUser.id)}/messages/');
+        sent: time, senderName: '');
+    final ref = firestore
+        .collection('chats/${getConversationID(chatUser.id)}/messages/');
     await ref.doc(time).set(message.toJson()).then((value) =>
-        sendPushNotification(chatUser, type == Type.text ? msg : 'image')
-    );
+        sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
   }
-
-
-
 
   /// send  ************************************************************    Token
 
@@ -385,22 +387,19 @@ class APIs {
 
   ///******************************/// Contact share
 
-  Future<void> shareContact(ChatUser chatUser, File contactFile, String contactName, String contactPhone) async {
+  Future<void> shareContact(ChatUser chatUser, File contactFile,
+      String contactName, String contactPhone) async {
     try {
-      final ext = contactFile.path
-          .split('.')
-          .last;
+      final ext = contactFile.path.split('.').last;
       final ref = FirebaseStorage.instance.ref().child(
-          'audio/${getConversationID(chatUser.id)}/${DateTime
-              .now()
-              .millisecondsSinceEpoch}.$ext');
+          'audio/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
       final uploadTask = ref.putFile(
         contactFile,
         SettableMetadata(contentType: 'audio/$ext'),
       );
       await uploadTask.whenComplete(() {
-        print('Data Transferred: ${uploadTask.snapshot.totalBytes /
-            (1024 * 1024)} MB');
+        print(
+            'Data Transferred: ${uploadTask.snapshot.totalBytes / (1024 * 1024)} MB');
       });
       final downloadURL = await ref.getDownloadURL();
       await sendMessage(chatUser, downloadURL.toString(), Type.contact,
@@ -410,10 +409,10 @@ class APIs {
     }
   }
 
-
   ///******************************/// Contact Location///
 
-  Future<void> shareLocation(ChatUser chatUser, double latitude, double longitude) async {
+  Future<void> shareLocation(
+      ChatUser chatUser, double latitude, double longitude) async {
     try {
       if (latitude != null && longitude != null) {
         final locationData = {'latitude': latitude, 'longitude': longitude};
@@ -427,7 +426,8 @@ class APIs {
         );
 
         await uploadTask.whenComplete(() {
-          print('Data Transferred: ${uploadTask.snapshot.totalBytes / (1024 * 1024)} MB');
+          print(
+              'Data Transferred: ${uploadTask.snapshot.totalBytes / (1024 * 1024)} MB');
         });
 
         final downloadURL = await ref.getDownloadURL();
@@ -438,6 +438,27 @@ class APIs {
       }
     } catch (e) {
       print('Error sharing location: $e');
+    }
+  }
+
+  Future<String> getAddress(double? latitude, double? longitude) async {
+    try {
+      if (latitude != null && longitude != null) {
+        List<Placemark> placemarks =
+            await placemarkFromCoordinates(latitude, longitude);
+        if (placemarks != null && placemarks.isNotEmpty) {
+          Placemark address = placemarks.first;
+          String formattedAddress =
+              "${address.name}, ${address.locality}, ${address.administrativeArea}, ${address.country}";
+          return formattedAddress;
+        } else {
+          return "Address not found";
+        }
+      } else {
+        return "Latitude or longitude is null";
+      }
+    } catch (e) {
+      return "Error: $e";
     }
   }
 
@@ -464,6 +485,69 @@ class APIs {
       log('Sending video call request to ${chatUser.name}');
     } catch (e) {
       log('Error sending video call request: $e');
+    }
+  }
+
+
+
+
+
+  ///**************************************************************GROUP CHAT
+
+  // static Future<void> createChatGroup(ChatUser chatGroup) async {
+  //   try {
+  //     await FirebaseFirestore.instance.collection('chat_groups').add(chatGroup.toJson());
+  //   } catch (e) {
+  //     print('Error creating chat group: $e');
+  //   }
+  // }
+  //
+  // static Future<void> addUserToGroup(ChatUser chatGroup, ChatUser user) async {
+  //   try {
+  //     await FirebaseFirestore.instance.collection('chat_groups').doc(chatGroup.id).update({
+  //       'members': FieldValue.arrayUnion([user.toJson()]),
+  //     });
+  //   } catch (e) {
+  //     print('Error adding user to group: $e');
+  //   }
+  // }
+  //
+  // static Stream<QuerySnapshot<Map<String, dynamic>>> getGroupMessages(
+  //     ChatUser chatGroup) {
+  //   try {
+  //     return FirebaseFirestore.instance
+  //         .collection('chat_groups/${chatGroup.id}/messages')
+  //         .snapshots();
+  //   } catch (e) {
+  //     print('Error getting group messages: $e');
+  //     return Stream.empty();
+  //   }
+  // }
+  //
+  // static Future<void> leaveGroup(ChatUser chatGroup, ChatUser user) async {
+  //   try {
+  //     await FirebaseFirestore.instance.collection('chat_groups').doc(chatGroup.id).update({
+  //       'members': FieldValue.arrayRemove([user.toJson()]),
+  //     });
+  //   } catch (e) {
+  //     print('Error leaving group: $e');
+  //   }
+  // }
+
+
+  static Future<void> sendMessageToGroup(
+      String chatGroupId, String message, String? imageUrl, String? audioUrl, String? videoUrl) async {
+    try {
+      await FirebaseFirestore.instance.collection('chat_groups/$chatGroupId/messages').add({
+        'senderId': 'currentUserId',
+        'message': message,
+        'imageUrl': imageUrl,
+        'audioUrl': audioUrl,
+        'videoUrl': videoUrl,
+        'timestamp': Timestamp.now(),
+      });
+    } catch (e) {
+      print('Error sending message to group: $e');
     }
   }
 }

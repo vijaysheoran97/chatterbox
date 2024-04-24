@@ -144,6 +144,7 @@ import 'package:chatterbox/screens/profile_screen.dart';
 import '../tabs/callList.dart';
 import '../tabs/chatlist.dart';
 import '../tabs/statusList.dart';
+import 'groupList.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -211,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                     // Pass the query to HomeScreen for search functionality
                   },
                 )
-                    : const Text('ChatterBox'),
+                    : const Text('CINLINE'),
                 actions: [
                   IconButton(
                     onPressed: () {
@@ -246,6 +247,9 @@ class _HomePageState extends State<HomePage> {
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: [
                     Tab(
+                      icon: Icon(Icons.group),
+                    ),
+                    Tab(
                       text: 'Chats',
                     ),
                     Tab(
@@ -259,9 +263,10 @@ class _HomePageState extends State<HomePage> {
               ),
               body: TabBarView(
                 children: [
-                  HomeScreen(),
-                  StatusListPage(user: APIs.me), // Pass the user object received from the API
-                  CallListPage(),
+                  GroupListPage(currentUserID: APIs.me.id,),
+                  const HomeScreen(),
+                  StatusListPage(user: APIs.me),
+                  const CallListPage(),
                 ],
               ),
               drawer: DrawerPage(user: APIs.me),
