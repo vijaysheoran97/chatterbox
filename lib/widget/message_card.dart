@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/chatter_box/settings/noti.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -13,9 +14,7 @@ import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart'; // Add this import
-
 import '../api/apis.dart';
-import '../chatter_box/screens/noti_screen.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';

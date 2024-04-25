@@ -94,6 +94,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+import 'package:chatterbox/chatter_box/provider/user_chat_provider.dart';
 import 'package:chatterbox/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:chatterbox/chatter_box/provider/auth_provider.dart';

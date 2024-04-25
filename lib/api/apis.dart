@@ -16,7 +16,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../chatter_box/screens/noti_screen.dart';
 
 class APIs {
   static FirebaseAuth auth = FirebaseAuth.instance;
