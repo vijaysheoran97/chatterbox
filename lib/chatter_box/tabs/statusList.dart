@@ -446,9 +446,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../api/apis.dart';
 import '../../models/chat_user_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatusListPage extends StatefulWidget {
   final ChatUser user;
@@ -467,7 +468,6 @@ class _StatusListPageState extends State<StatusListPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch user's professional status from Firebase
     fetchProfessionalStatus();
   }
 
@@ -478,71 +478,58 @@ class _StatusListPageState extends State<StatusListPage> {
         _isProfessional = userData.data()?['isProfessional'] ?? false;
       });
     } else {
-      // Handle the case where the document doesn't exist or "isProfessional" field is missing
       print('User data not found or isProfessional field missing');
     }
   }
 
-
-
-
   void uploadStatus(BuildContext context) {
     String statusText = _statusController.text;
-    User? user = FirebaseAuth.instance.currentUser; // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       // If user is authenticated
       FirebaseFirestore.instance.collection('statuses').add({
         'text': statusText,
         'timestamp': DateTime.now(),
-        'userId': user.uid, // Include the user ID
+        'userId': user.uid,
       }).then((_) {
-        // Status uploaded successfully
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Status uploaded successfully!'),
         ));
         _statusController.clear();
         Navigator.pop(
-            context); // Close the bottom sheet after status is uploaded
+            context);
       }).catchError((error) {
-        // Error uploading status
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to upload status: $error'),
         ));
       });
     } else {
-      // If user is not authenticated
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('User not authenticated.'),
       ));
     }
   }
 
   void _deleteStatus(DocumentSnapshot status) {
-    // Get the ID of the status document
     String statusId = status.id;
 
-    // Check if the status belongs to the current user
     String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
     String statusUserId = status['userId'];
 
     if (currentUserId == statusUserId) {
-      // If the status belongs to the current user, delete it
       FirebaseFirestore.instance.collection('statuses').doc(statusId).delete()
           .then((value) {
-        // Status deleted successfully
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Status deleted successfully!'),
         ));
       })
           .catchError((error) {
-        // Error deleting status
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Failed to delete status: $error'),
         ));
       });
     } else {
-      // If the status doesn't belong to the current user, show an error message
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('You can only delete your own status.'),
       ));
     }
@@ -564,21 +551,25 @@ class _StatusListPageState extends State<StatusListPage> {
                 .bottom,
           ),
           child: Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('To upload status',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+
+                Text(AppLocalizations.of(context)!.toUploadStatus,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
+
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
                         maxLength: 50,
                         controller: _statusController,
-                        decoration: InputDecoration(labelText: 'Enter Status'),
+
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.enterStatus),
+
                       ),
                     ),
                     InkWell(
@@ -602,7 +593,7 @@ class _StatusListPageState extends State<StatusListPage> {
                     )
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -627,7 +618,7 @@ class _StatusListPageState extends State<StatusListPage> {
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: const CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
@@ -652,12 +643,14 @@ class _StatusListPageState extends State<StatusListPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             Text(
-                              'Your status',
+                              AppLocalizations.of(context)!.yourstatus,
+
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             ListView.builder(
                               shrinkWrap: true,
                               itemCount: currentUserStatuses.length,
@@ -677,13 +670,15 @@ class _StatusListPageState extends State<StatusListPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
                             SizedBox(height: 16),
                             Text(
-                              'Other Status',
+                              AppLocalizations.of(context)!.otherstatus,
+
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             ListView.builder(
                               shrinkWrap: true,
                               itemCount: otherUserStatuses.length,
@@ -698,12 +693,12 @@ class _StatusListPageState extends State<StatusListPage> {
                                       DocumentSnapshot> userSnapshot) {
                                     if (userSnapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return ListTile(
+                                      return const ListTile(
                                         title: Center(child: CircularProgressIndicator()),
                                       );
                                     }
                                     if (userSnapshot.hasError) {
-                                      return ListTile(
+                                      return const ListTile(
                                         title: Text('Error loading user data'),
                                       );
                                     }
@@ -731,12 +726,12 @@ class _StatusListPageState extends State<StatusListPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // FloatingActionButton.small(onPressed: () {}, child: Icon(Icons.camera_alt_outlined),) ,
-          SizedBox(height: 8,),
+          const SizedBox(height: 8,),
           FloatingActionButton.extended(
             onPressed: () {
               _showTextFieldBottomSheet(context); // Pass the function reference
             },
-            label: Icon(Icons.edit_outlined),
+            label: const Icon(Icons.edit_outlined),
           ),
         ],
       ),
@@ -759,14 +754,16 @@ class _StatusListPageState extends State<StatusListPage> {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Status'),
+
+                  Text(AppLocalizations.of(context)!.status),
+
                   if (isCurrentUserStatus) // Show delete icon only for the current user's status
                     IconButton(
                       onPressed: () {
                         _deleteStatus(status);
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.delete, color: Colors.redAccent),
+                      icon: const Icon(Icons.delete, color: Colors.redAccent),
                     )
                 ],
               ),
@@ -776,26 +773,26 @@ class _StatusListPageState extends State<StatusListPage> {
                 children: [
                   Text(
                     status['text'],
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
-                    'Posted by: $userName',
+                    '${AppLocalizations.of(context)!.postedby}: $userName',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
-                    'Date: ${_formatDate(status['timestamp'])}',
+                    '${AppLocalizations.of(context)!.date}: ${_formatDate(status['timestamp'])}',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   Text(
-                    'Time: ${_formatTime(status['timestamp'])}',
+                    '${AppLocalizations.of(context)!.time}: ${_formatTime(status['timestamp'])}',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                 ],
               ),
               actions: [
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -817,7 +814,7 @@ class _StatusListPageState extends State<StatusListPage> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundImage: profileImageUrl != null ? NetworkImage(profileImageUrl) : null,
-          child: profileImageUrl == null ? Icon(Icons.account_circle) : null,
+          child: profileImageUrl == null ? const Icon(Icons.account_circle) : null,
         ),
         title: Row(
           children: [
@@ -826,17 +823,17 @@ class _StatusListPageState extends State<StatusListPage> {
               future: FirebaseFirestore.instance.collection('users').doc(status['userId']).get(),
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(); // Return an empty widget while loading
+                  return const SizedBox(); // Return an empty widget while loading
                 }
                 if (snapshot.hasError || !snapshot.data!.exists) {
-                  return SizedBox(); // Return an empty widget if user document not found
+                  return const SizedBox(); // Return an empty widget if user document not found
                 }
                 final userData = snapshot.data!.data() as Map<String, dynamic>?; // Cast userData to Map<String, dynamic>?
                 final bool isProfessional = userData?['isProfessional'] ?? false;
 
                 if (isProfessional) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 3),
+                  return const Padding(
+                    padding: EdgeInsets.only(left: 3),
                     child: Icon(
                       Icons.verified,
                       size: 16,
@@ -844,7 +841,7 @@ class _StatusListPageState extends State<StatusListPage> {
                     ),
                   );
                 } else {
-                  return SizedBox(); // Return an empty widget if user is not professional
+                  return const SizedBox(); // Return an empty widget if user is not professional
                 }
               },
             ),

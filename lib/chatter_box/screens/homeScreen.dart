@@ -408,15 +408,25 @@
 //
 //
 
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../../api/apis.dart';
+import '../../screens/GroupList.dart';
+
 import 'package:chatterbox/screens/group_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../api/apis.dart';
+
 import '../../screens/home_screen.dart';
 import '../../screens/profile_screen.dart';
 import '../tabs/callList.dart';
 import '../tabs/statusList.dart';
 import 'drawer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -454,6 +464,9 @@ class _HomePageState extends State<HomePage> {
           );
         } else {
           return DefaultTabController(
+
+            initialIndex: 1,
+
             length: 4, // Increase the length to accommodate the new tab
             child: Scaffold(
               backgroundColor: Theme.of(context).colorScheme.background,
@@ -472,6 +485,7 @@ class _HomePageState extends State<HomePage> {
                 title: _isSearching
                     ? TextField(
 
+
                   controller: _searchController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -481,6 +495,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 )
                     : const Text('CINLINE'),
+
 
                 actions: [
                   IconButton(
@@ -510,7 +525,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
-                bottom: const TabBar(
+                bottom: TabBar(
                   isScrollable: false,
                   labelPadding: EdgeInsets.zero,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -520,13 +535,15 @@ class _HomePageState extends State<HomePage> {
                       icon: Icon(Icons.group),
                     ),
                     Tab(
-                      text: 'Chats',
+
+                      text: AppLocalizations.of(context)!.chats,
+
                     ),
                     Tab(
-                      text: 'Status',
+                      text: AppLocalizations.of(context)!.status,
                     ),
                     Tab(
-                      text: 'Calls',
+                      text: AppLocalizations.of(context)!.calls,
                     ),
                   ],
                 ),
@@ -534,10 +551,12 @@ class _HomePageState extends State<HomePage> {
               body: TabBarView(
                 children: [
 
+
                   GroupListPage(currentUserID: APIs.me.id,),
                   const HomeScreen(),
                   StatusListPage(user: APIs.me),
                   const CallListPage(),
+
 
                 ],
               ),

@@ -1,6 +1,6 @@
 class AppStringConstant {
 
-  static const String appName = 'ChatterBox';
+  static const String appName = 'CINLINE';
   static String email ='Email';
   static String password ='Password';
   static String confirmPassword ='Confirm Password';
@@ -32,7 +32,7 @@ class AppStringConstant {
   static const String appId = "d95680fe3a6b466c8a2b778d1a5e4a06";
   static const String appPrimCertificate = "d5a9517439ca4035b045d9c99696c3d8";
   static const String appSecCertificate = "e35ce649bb394f818905a5c790fdb181";
-  static const String appChannelName = "Chatter Box";
+  static const String appChannelName = "CINLINE";
   static const String appToken =
   "007eJxTYDCf6WOy235x/YEfO2OlOZmO7JLfHC44rdv5wRu1CeEM7MIKDCmWpmYWBmmpxolmSSZmZskWiUZJ5uYWKYaJpqkmiQZm+wR50xoCGRl+rXnNwsgAgSA+N4NzRmJJSWqRglN+BQMDAItaIBY=";
   }

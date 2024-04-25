@@ -238,6 +238,8 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../helper/dialogs.dart';
 import '../models/chat_user_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 
@@ -412,14 +414,14 @@ class _HomeScreenState extends State<HomeScreen> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20)),
           //title
-          title: const Row(
+          title: Row(
             children: [
               Icon(
                 Icons.person_add,
                 color: Colors.blue,
                 size: 28,
               ),
-              Text('Add User')
+              Text(AppLocalizations.of(context)!.addUser)
             ],
           ),
 
@@ -428,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
             maxLines: null,
             onChanged: (value) => email = value,
             decoration: InputDecoration(
-                hintText: 'Email Id',
+                hintText: AppLocalizations.of(context)!.emailId,
                 prefixIcon: const Icon(Icons.email, color: Colors.blue),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15))),
@@ -442,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //hide alert dialog
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel',
+                child: Text(AppLocalizations.of(context)!.cancel,
                     style: TextStyle(color: Colors.blue, fontSize: 16))),
 
             //add button
@@ -459,8 +461,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                   }
                 },
-                child: const Text(
-                  'Add',
+                child: Text(
+                  AppLocalizations.of(context)!.add,
                   style: TextStyle(color: Colors.blue, fontSize: 16),
                 ))
           ],

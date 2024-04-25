@@ -18,8 +18,6 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
 
   @override
   void initState() {
-    super.initState();
-    userChatProvider = Provider.of<UserChatProvider>(context,listen: false);
   }
   @override
   Widget build(BuildContext context) {

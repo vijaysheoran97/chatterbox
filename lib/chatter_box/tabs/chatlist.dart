@@ -30,7 +30,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../screens/newMessage.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -44,16 +43,22 @@ class _ChatListPageState extends State<ChatListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: const Center(
         child: Text('Chats Tab Content'),
       ),
-      floatingActionButton: FloatingActionButton.extended(onPressed: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(builder: (context) => const NewMessagePage(title: Text('New Message'),)),
-        );
-      },
-        label: Icon(Icons.add_comment_sharp),),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => const NewMessagePage(
+                title: Text('New Message'),
+              ),
+            ),
+          );
+        },
+        label: const Icon(Icons.add_comment_sharp),
+      ),
     );
   }
 }

@@ -83,8 +83,6 @@ import 'package:chatterbox/screens/view_profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-
 class ProfileDialog extends StatelessWidget {
   const ProfileDialog({super.key, required this.user});
 

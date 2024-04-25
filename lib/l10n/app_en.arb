@@ -1,0 +1,58 @@
+
+{
+    "newgroup" : "New Group",
+    "contacts" : "Contacts",
+    "saved" : "Saved",
+    "settings" : "Settings",
+    "monetisation" : "Monetisation",
+    "theme" : "Themes",
+    "lighttheme": "Light Theme",
+    "darktheme": "Dark Theme",
+    "helpcenter" : "Help Center",
+    "logout" : "Logout",
+    "joinedOn" : "Joined On",
+
+    "chats" : "Chats",
+    "status" : "Status",
+    "calls" : "Calls",
+
+    "addUser" : "Add User",
+    "emailId" : "Email Id",
+    "cancel" : "Cancel",
+    "add" : "Add",
+
+    "yourstatus" : "Your status",
+    "otherstatus" : "Other status",
+    "toUploadStatus" : "To upload status",
+    "enterStatus" : "Enter Status",
+    "postedby" : "Posted by",
+    "date" : "Date",
+    "time" : "Time",
+
+    "createdAt" : "Created At",
+    "createGroup" : "Create group",
+    "enterGroupName" : "Enter group name",
+
+    "youraccount" : "Your account",
+    "youraccountSubtitle" : "See information about your account and learn about your account deactivation options.",
+    "securityAndAccountAccess" : "Security and account access",
+    "securityAndAccountAccessSubtitle" : "Manage your account's security and keep track of your account's usages, including apps that you have connected to your account.",
+    "preminum" : "Premium",
+    "premiumSubtitle" : "See what's included in Premium and manage your settings.",
+    "privacyAndSafety": "Privacy and safety",
+    "privacyAndSafetySubtitle" : "Manage what information you see and share on Q to others.",
+    "notifications" : "Notifications",
+    "notificationsSubtitle" : "Select the kinds of notification you get about your activities, interests and recommendations.",
+    "languages" : "Languages",
+    "languagesSubtitle" : "Choose languages as per your preferences and compatibility",
+    "themeSubtitle" : "Choose themes as per your preferences and compatibility",
+    "helpcenterSubtitle" : "Get answer to some common questions related to Q and get 24*7 assistance.",
+
+    "chooseTheme" : "Choose theme",
+    "chooseThemeSubtitle" :  "Select any theme as your preference",
+    "selectTheme" : "Select theme",
+
+    "selectLanguages" : "Select languages",
+    "switchToProfessional" : "Switch to professional"
+
+}

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../api/apis.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class YourAccountPage extends StatefulWidget {
   const YourAccountPage({Key? key}) : super(key: key);
@@ -9,16 +11,14 @@ class YourAccountPage extends StatefulWidget {
 }
 
 class _YourAccountPageState extends State<YourAccountPage> {
-  late bool switchValue = false; // Initialize switchValue to false
+  late bool switchValue = false;
 
   @override
   void initState() {
     super.initState();
-    // Fetch professional status from Firebase
     fetchProfessionalStatus();
   }
 
-  // Function to fetch professional status from Firebase
   void fetchProfessionalStatus() async {
     final userData = await APIs.firestore.collection('users').doc(APIs.user.uid).get();
     final isProfessional = userData['isProfessional'] ?? false;
@@ -34,13 +34,13 @@ class _YourAccountPageState extends State<YourAccountPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text('Your Account'),
+        title: Text(AppLocalizations.of(context)!.youraccount),
       ),
       body: Column(
         children: [
           ListTile(
             title: Text(
-              'Switch to Professional',
+              AppLocalizations.of(context)!.switchToProfessional,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: Switch(
@@ -58,7 +58,6 @@ class _YourAccountPageState extends State<YourAccountPage> {
     );
   }
 
-  // Function to save the professional status to Firebase
   void saveProfessionalStatus(bool isProfessional) async {
     APIs.me.isProfessional = isProfessional;
     await APIs.firestore.collection('users').doc(APIs.user.uid).update({
