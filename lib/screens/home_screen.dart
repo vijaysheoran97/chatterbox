@@ -236,7 +236,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../chatter_box/screens/noti_screen.dart';
 import '../helper/dialogs.dart';
 import '../models/chat_user_model.dart';
 

@@ -1,5 +1,5 @@
+import 'package:chatterbox/chatter_box/provider/user_chat_provider.dart';
 import 'package:chatterbox/models/chat_user_model.dart';
-import 'package:chatterbox/provider/user_chat_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';

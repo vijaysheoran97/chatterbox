@@ -1551,6 +1551,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/chatter_box/settings/noti.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -1558,9 +1559,7 @@ import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
-
 import '../api/apis.dart';
-import '../chatter_box/screens/noti_screen.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
