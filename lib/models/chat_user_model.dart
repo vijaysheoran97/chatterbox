@@ -170,7 +170,7 @@ class ChatUser {
         createdAt = json?['createdAt'] ?? '',
         isOnline = json?['isOnline'] ?? false,
         lastActive = json?['lastActive'] ?? '',
-        pushToken = json?['pushToken'] ?? '',
+        pushToken = json?['push_token'] ?? '',
         isProfessional = json?['isProfessional'] ?? false,
         audioUrl = json?['audioUrl'] ?? '',
         audioDuration = json?['audioDuration'],
