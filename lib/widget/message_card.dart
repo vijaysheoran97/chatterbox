@@ -89,15 +89,29 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30),
               ),
             ),
-            child: widget.message.type == Type.text
-                ? _buildTextWithLinks(widget.message.msg)
+            child:
+            widget.message.contactName != "" ?
+            _buildMediaWidgetContact(widget.message.contactName.toString())
+                : widget.message.latitude != null && widget.message.longitude != null
+                ? _buildMediaWidgetLocation('')
+                :widget.message.type == Type.text && widget.message.latitude == null
+                ? _buildTextWithLinks(widget.message.msg) // Modified this line
                 : widget.message.type == Type.image
                 ? _buildMediaWidget(widget.message.msg)
                 : widget.message.type == Type.video
                 ? _buildMediaWidgetVideo(widget.message.msg)
                 : widget.message.type == Type.audio
-                ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+                ? _buildMediaWidgetAudio(widget.message.msg)
                 : Container(),
+            // widget.message.type == Type.text
+            //     ? _buildTextWithLinks(widget.message.msg)
+            //     : widget.message.type == Type.image
+            //     ? _buildMediaWidget(widget.message.msg)
+            //     : widget.message.type == Type.video
+            //     ? _buildMediaWidgetVideo(widget.message.msg)
+            //     : widget.message.type == Type.audio
+            //     ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+            //     : _buildMediaAll(widget.message.audioUrl.toString(),widget.message.type),
 
           ),
         ),
@@ -337,7 +351,11 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30),
               ),
             ),
-            child: widget.message.type == Type.text
+            child: widget.message.contactName != "" ?
+    _buildMediaWidgetContact(widget.message.contactName.toString())
+            : widget.message.latitude != null && widget.message.longitude != null
+    ? _buildMediaWidgetLocation('')
+            :widget.message.type == Type.text && widget.message.latitude == null
                 ? _buildTextWithLinks(widget.message.msg) // Modified this line
                 : widget.message.type == Type.image
                 ? _buildMediaWidget(widget.message.msg)
@@ -345,13 +363,20 @@ class _MessageCardState extends State<MessageCard> {
                 ? _buildMediaWidgetVideo(widget.message.msg)
                 : widget.message.type == Type.audio
                 ? _buildMediaWidgetAudio(widget.message.msg)
-
                 : Container(),
+                //: _buildMediaAll(widget.message.audioUrl.toString(),widget.message.type),
           ),
         ),
       ],
     );
   }
+
+  bool containsUrl(String text) {
+    final RegExp urlRegExp = RegExp(
+        r'https?:\/\/(?:www\.)?[a-zA-Z0-9\-\_\.]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9\-\_\?\=\&\%\#\.]*)*');
+    return urlRegExp.hasMatch(text);
+  }
+
 
 
   // Widget _buildMessageContent() {
@@ -413,7 +438,7 @@ class _MessageCardState extends State<MessageCard> {
 
 
   Widget _buildMediaWidgetContact(String msg) {
-    if (widget.message.type == Type.contact) {
+    if (widget.message.type == Type.text || widget.message.type  == Type.contact) {
       Noti.contactNotification();
 
       return Container(
@@ -431,7 +456,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Widget _buildMediaWidgetLocation(String msg) {
-    if (widget.message.type == Type.location) {
+    if (widget.message.type == Type.text || widget.message.type == Type.location) {
       Noti.imageNotification();
       return FutureBuilder<String>(
         future: getAddress(widget.message.latitude, widget.message.longitude),
@@ -493,7 +518,8 @@ class _MessageCardState extends State<MessageCard> {
         color: Colors.blue,
         size: 20,
       );
-    } else if (widget.message.sent.isNotEmpty) {
+    }
+    else if (widget.message.sent.isNotEmpty) {
       return const Icon(
         Icons.done,
         color: Colors.grey,
