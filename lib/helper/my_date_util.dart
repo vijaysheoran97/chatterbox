@@ -17,11 +17,15 @@ class MyDateUtil {
     final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
-    if (now.day == sent.day && now.month == sent.month && now.year == sent.year) {
+    if (now.day == sent.day &&
+        now.month == sent.month &&
+        now.year == sent.year) {
       return TimeOfDay.fromDateTime(sent).format(context);
     }
 
-    return showYear ? '${sent.day} ${_getMonth(sent)} ${sent.year}' : '${sent.day} ${_getMonth(sent)}';
+    return showYear
+        ? '${sent.day} ${_getMonth(sent)} ${sent.year}'
+        : '${sent.day} ${_getMonth(sent)}';
   }
 
   static String getMessageTime({
@@ -32,11 +36,15 @@ class MyDateUtil {
     final DateTime now = DateTime.now();
     final formattedTime = TimeOfDay.fromDateTime(sent).format(context);
 
-    if (now.day == sent.day && now.month == sent.month && now.year == sent.year) {
+    if (now.day == sent.day &&
+        now.month == sent.month &&
+        now.year == sent.year) {
       return formattedTime;
     }
 
-    return now.year == sent.year ? '$formattedTime - ${sent.day} ${_getMonth(sent)}' : '$formattedTime - ${sent.day} ${_getMonth(sent)} ${sent.year}';
+    return now.year == sent.year
+        ? '$formattedTime - ${sent.day} ${_getMonth(sent)}'
+        : '$formattedTime - ${sent.day} ${_getMonth(sent)} ${sent.year}';
   }
 
   static String getLastActiveTime({
@@ -51,12 +59,16 @@ class MyDateUtil {
     final DateTime now = DateTime.now();
     final formattedTime = TimeOfDay.fromDateTime(time).format(context);
 
-    if (time.day == now.day && time.month == now.month && time.year == now.year) {
+    if (time.day == now.day &&
+        time.month == now.month &&
+        time.year == now.year) {
       return 'Last seen today at $formattedTime';
     }
 
     final yesterday = now.subtract(const Duration(days: 1));
-    if (time.day == yesterday.day && time.month == yesterday.month && time.year == yesterday.year) {
+    if (time.day == yesterday.day &&
+        time.month == yesterday.month &&
+        time.year == yesterday.year) {
       return 'Last seen yesterday at $formattedTime';
     }
 

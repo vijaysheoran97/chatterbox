@@ -4,25 +4,20 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chatterbox/chatter_box/settings/noti.dart';
 import 'package:chewie/chewie.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sound/public/tau.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:video_player/video_player.dart';
 import 'package:url_launcher/url_launcher.dart'; // Add this import
-
 import '../api/apis.dart';
 import '../helper/dialogs.dart';
 import '../helper/my_date_util.dart';
 import '../main.dart';
-import '../models/chat_user_model.dart';
 import '../models/message.dart';
 
 class MessageCard extends StatefulWidget {
@@ -38,7 +33,7 @@ class _MessageCardState extends State<MessageCard> {
   late bool isMe;
   late AudioPlayer audioPlayer;
   String audioPath = '';
-  late bool isPlaying = false; // Track whether audio is playing
+  late bool isPlaying = false;
 
   @override
   void initState() {
@@ -80,6 +75,7 @@ class _MessageCardState extends State<MessageCard> {
             padding: EdgeInsets.all(widget.message.type == Type.image ||
                 widget.message.type == Type.video ||
                 widget.message.type == Type.audio
+
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -93,15 +89,31 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30),
               ),
             ),
-            child: widget.message.type == Type.text
-                ? _buildTextWithLinks(widget.message.msg)
+
+            child:
+            widget.message.contactName != "" ?
+            _buildMediaWidgetContact(widget.message.contactName.toString())
+                : widget.message.latitude != null && widget.message.longitude != null
+                ? _buildMediaWidgetLocation('')
+                :widget.message.type == Type.text && widget.message.latitude == null
+                ? _buildTextWithLinks(widget.message.msg) // Modified this line
                 : widget.message.type == Type.image
                 ? _buildMediaWidget(widget.message.msg)
                 : widget.message.type == Type.video
                 ? _buildMediaWidgetVideo(widget.message.msg)
                 : widget.message.type == Type.audio
-                ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+                ? _buildMediaWidgetAudio(widget.message.msg)
                 : Container(),
+            // widget.message.type == Type.text
+            //     ? _buildTextWithLinks(widget.message.msg)
+            //     : widget.message.type == Type.image
+            //     ? _buildMediaWidget(widget.message.msg)
+            //     : widget.message.type == Type.video
+            //     ? _buildMediaWidgetVideo(widget.message.msg)
+            //     : widget.message.type == Type.audio
+            //     ? _buildMediaWidgetAudio(widget.message.msg) // Changed this line
+            //     : _buildMediaAll(widget.message.audioUrl.toString(),widget.message.type),
+
           ),
         ),
         Padding(
@@ -118,8 +130,75 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
+  /// get all media function
+
+  Widget _buildMediaAll(String mediaUrl, Type mediaType) {
+    if (mediaType == Type.image) {
+      return _buildMediaWidget(mediaUrl);
+    } else if (mediaType == Type.video) {
+      return _buildMediaWidgetVideo(mediaUrl);
+    } else if (mediaType == Type.audio) {
+      return _buildMediaWidgetAudio(mediaUrl);
+    } else if (mediaType == Type.contact) {
+      return _buildMediaWidgetContact(mediaUrl);
+    } else if (mediaType == Type.location) {
+      return _buildMediaWidgetLocation(mediaUrl);
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  // Widget _buildMediaWidget(String mediaUrl) {
+  //   if (widget.message.type == Type.image ) {
+  //     Noti.imageNotification();
+  //     return CachedNetworkImage(
+  //       imageUrl: mediaUrl,
+  //       placeholder: (context, url) => const Padding(
+  //         padding: EdgeInsets.all(8.0),
+  //         child: CircularProgressIndicator(
+  //           strokeWidth: 2,
+  //         ),
+  //       ),
+  //       errorWidget: (context, url, error) => const Icon(
+  //         Icons.error,
+  //         size: 70,
+  //       ),
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
+  // Widget _buildMediaWidgetVideo(String mediaUrl) {
+  //   if (widget.message.type == Type.video) {
+  //     Noti.videoNotification();
+  //     return AspectRatio(
+  //       aspectRatio: 16 / 9,
+  //       child: Chewie(
+  //         controller: ChewieController(
+  //           videoPlayerController: VideoPlayerController.network(
+  //             mediaUrl,
+  //           ),
+  //           autoPlay: false,
+  //           looping: false,
+  //           placeholder: const Center(child: CircularProgressIndicator()),
+  //           errorBuilder: (context, errorMessage) {
+  //             return Center(
+  //               child: Text(
+  //                 'Error loading video: $errorMessage',
+  //                 style: const TextStyle(color: Colors.red),
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     return Container();
+  //   }
+  // }
   Widget _buildMediaWidgetAudio(String mediaUrl) {
     if (widget.message.type == Type.audio) {
+      Noti.audioNotification();
       return Row(
         children: [
           IconButton(
@@ -143,6 +222,7 @@ class _MessageCardState extends State<MessageCard> {
                 size: 30,
               ),
             ), // Toggle icon based on playback state
+
           ),
           SizedBox(width: 8),
           Flexible(
@@ -232,6 +312,7 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
+
   Widget _greenMessage() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -256,6 +337,7 @@ class _MessageCardState extends State<MessageCard> {
             padding: EdgeInsets.all(widget.message.type == Type.image ||
                 widget.message.type == Type.video ||
                 widget.message.type == Type.audio
+
                 ? mq.width * .03
                 : mq.width * .04),
             margin: EdgeInsets.symmetric(
@@ -269,7 +351,11 @@ class _MessageCardState extends State<MessageCard> {
                 bottomLeft: Radius.circular(30),
               ),
             ),
-            child: widget.message.type == Type.text
+            child: widget.message.contactName != "" ?
+    _buildMediaWidgetContact(widget.message.contactName.toString())
+            : widget.message.latitude != null && widget.message.longitude != null
+    ? _buildMediaWidgetLocation('')
+            :widget.message.type == Type.text && widget.message.latitude == null
                 ? _buildTextWithLinks(widget.message.msg) // Modified this line
                 : widget.message.type == Type.image
                 ? _buildMediaWidget(widget.message.msg)
@@ -278,11 +364,152 @@ class _MessageCardState extends State<MessageCard> {
                 : widget.message.type == Type.audio
                 ? _buildMediaWidgetAudio(widget.message.msg)
                 : Container(),
+                //: _buildMediaAll(widget.message.audioUrl.toString(),widget.message.type),
           ),
         ),
       ],
     );
   }
+
+  bool containsUrl(String text) {
+    final RegExp urlRegExp = RegExp(
+        r'https?:\/\/(?:www\.)?[a-zA-Z0-9\-\_\.]+\.[a-zA-Z]{2,}(\/[a-zA-Z0-9\-\_\?\=\&\%\#\.]*)*');
+    return urlRegExp.hasMatch(text);
+  }
+
+
+
+  // Widget _buildMessageContent() {
+  //   if (widget.message.type == Type.text) {
+  //     return Text(
+  //       widget.message.msg,
+  //       style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //     );
+  //   }  else if (widget.message.type == Type.audio) {
+  //     return Row(
+  //       children: [
+  //         IconButton(
+  //           onPressed: () {
+  //             if (isPlaying) {
+  //               audioPlayer.pause(); // Pause the audio
+  //             } else {
+  //               playRecording(widget.message.msg); // Start playing the audio
+  //             }
+  //           },
+  //           icon: Container(
+  //             height: 45,
+  //             width: 45,
+  //             decoration: BoxDecoration(
+  //               color: Colors.black,
+  //               borderRadius: BorderRadius.circular(50)
+  //             ),
+  //               child: Icon(isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 30,)), // Toggle icon based on playback state
+  //         ),
+  //         SizedBox(width: 8),
+  //         Flexible(
+  //           child: Text(
+  //             'Audio Message',
+  //                 // ': ${widget.message.msg ?? 'Audio URL not available'}',
+  //             style: const TextStyle(fontSize: 15, color: Colors.black87),
+  //           ),
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     return ClipRRect(
+  //       borderRadius: BorderRadius.circular(15),
+  //       child: CachedNetworkImage(
+  //         imageUrl: widget.message.msg,
+  //         placeholder: (context, url) => Padding(
+  //           padding: const EdgeInsets.all(8.0),
+  //           child: CircularProgressIndicator(
+  //             strokeWidth: 2,
+  //           ),
+  //         ),
+  //         errorWidget: (context, url, error) => const Icon(
+  //           Icons.image,
+  //           size: 70,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // }
+
+
+
+  Widget _buildMediaWidgetContact(String msg) {
+    if (widget.message.type == Type.text || widget.message.type  == Type.contact) {
+      Noti.contactNotification();
+
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Name: ${widget.message.contactName ?? ""}', style: const TextStyle(fontSize: 16)),
+            Text('Phone: ${widget.message.contactPhone ?? ""}', style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildMediaWidgetLocation(String msg) {
+    if (widget.message.type == Type.text || widget.message.type == Type.location) {
+      Noti.imageNotification();
+      return FutureBuilder<String>(
+        future: getAddress(widget.message.latitude, widget.message.longitude),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Address: ${snapshot.data ?? ""}', style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+            );
+          }
+        },
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Future<String> getAddress(double? latitude, double? longitude) async {
+    try {
+      if (latitude != null && longitude != null) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+        if (placemarks != null && placemarks.isNotEmpty) {
+          Placemark address = placemarks.first;
+          String formattedAddress = "${address.name}, ${address.locality}, ${address.administrativeArea}, ${address.country}";
+          return formattedAddress;
+        } else {
+          return "Address not found";
+        }
+      } else {
+        return "Latitude or longitude is null";
+      }
+    } catch (e) {
+      return "Error: $e";
+    }
+  }
+
+
+  // void playRecording(String audioPath) async {
+  //   try {
+  //     final audioplayers.UrlSource urlSource = audioplayers.UrlSource(audioPath);
+  //     await audioPlayer.play(urlSource);
+  //   } catch (e) {
+  //     print('Error playing recording : $e');
+  //   }
+  // }
 
   Widget _buildReadStatusIcon() {
     if (widget.message.read.isNotEmpty) {
@@ -291,7 +518,8 @@ class _MessageCardState extends State<MessageCard> {
         color: Colors.blue,
         size: 20,
       );
-    } else if (widget.message.sent.isNotEmpty) {
+    }
+    else if (widget.message.sent.isNotEmpty) {
       return const Icon(
         Icons.done,
         color: Colors.grey,
@@ -359,7 +587,7 @@ class _MessageCardState extends State<MessageCard> {
                   log('Image Url: ${widget.message.msg}');
                   await GallerySaver.saveImage(
                     widget.message.msg,
-                    albumName: 'Chatter Box',
+                    albumName: 'CINLINE',
                   ).then((success) {
                     Navigator.pop(context);
                     if (success != null && success) {
@@ -600,3 +828,4 @@ class _OptionItem extends StatelessWidget {
     );
   }
 }
+

@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "70178944183-v8civttibmhcrfo7eb7dq3cag5rvp3fs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chatterbox",
+            "certificate_hash": "0beea445ce614af8797351134379a5d6b2b56c16"
+          }
+        },
+        {
           "client_id": "70178944183-1m9cj8di16oqlo9hlmldfeung5iuen7q.apps.googleusercontent.com",
           "client_type": 3
         }
