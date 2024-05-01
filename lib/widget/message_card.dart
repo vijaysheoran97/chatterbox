@@ -89,6 +89,7 @@ class _MessageCardState extends State<MessageCard> {
                 bottomRight: Radius.circular(30),
               ),
             ),
+
             child:
             widget.message.contactName != "" ?
             _buildMediaWidgetContact(widget.message.contactName.toString())
@@ -128,7 +129,6 @@ class _MessageCardState extends State<MessageCard> {
       ],
     );
   }
-
 
   /// get all media function
 
